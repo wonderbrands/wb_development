@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cat_amazon,access_cat_amazon,model_cat_amazon,,1,1,1,1
+access_cat_claro,access_cat_claro,model_cat_claro,,1,1,1,1
+access_cat_linio,access_cat_linio,model_cat_linio,,1,1,1,1
+access_cat_meli,access_cat_meli,model_cat_meli,,1,1,1,1
+access_cat_sears,access_cat_sears,model_cat_sears,,1,1,1,1
+access_cat_elenas,access_cat_elenas,model_cat_elenas,,1,1,1,1
+access_cat_elektra,access_cat_elektra,model_cat_elektra,,1,1,1,1
+access_cat_web,access_cat_web,model_cat_web,,1,1,1,1
+access_cat_walmart,access_cat_walmart,model_cat_walmart,,1,1,1,1
+access_cat_vivia,access_cat_vivia,model_cat_vivia,,1,1,1,1
+access_cat_coppel,access_cat_coppel,model_cat_coppel,,1,1,1,1
+access_cat_liverpool,access_cat_liverpool,model_cat_liverpool,,1,1,1,1
+access_cat_shopee,access_cat_shopee,model_cat_shopee,,1,1,1,1
+access_esquema_logistico,access_esquema_logistico,model_esquema_logistico,,1,1,1,1
+access_usr_comprador,access_usr_comprador,model_usr_comprador,,1,1,1,1
+access_prod_relacionado,access_prod_relacionado,model_prod_relacionado,,1,1,1,1

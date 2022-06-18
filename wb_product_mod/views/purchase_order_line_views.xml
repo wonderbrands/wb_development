@@ -1,0 +1,18 @@
+<odoo>
+  <data>
+    <record  id="purchase_order_line_form_inherit" model="ir.ui.view">
+
+      <field name="name">purchase_order_line_inherit</field>
+      <field name="model">purchase.order.line</field>
+      <field name="inherit_id" ref="purchase.purchase_order_line_tree"/>
+      <field name="arch" type="xml">
+
+          <!-- Agrega campos a la tabla order_line-->
+          <xpath expr="//field[@name='product_qty']" position="after">
+              <field name="pedido_original"/>
+          </xpath>
+
+      </field>
+    </record>
+  </data>
+</odoo>

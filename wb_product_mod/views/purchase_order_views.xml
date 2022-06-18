@@ -1,0 +1,35 @@
+<odoo>
+    <data>
+    <record  id="purchase_order_form_inherit" model="ir.ui.view">
+
+      <field name="name">purchase_order_inherit</field>
+      <field name="model">purchase.order</field>
+      <field name="inherit_id" ref="purchase.purchase_order_form"/>
+      <field name="arch" type="xml">
+
+          <!-- Agrega campos al formulario de Compra -->
+          <xpath expr="//group[1]" position="inside">
+              <group>
+                  <label for="monto_minimo"/>
+                  <div class="o_row" name="monto_minimo">
+                    <field name="monto_minimo"/>
+                    <span><field name="unidad"/></span>
+                  </div>
+                  <field name="dias_credito"/>
+                  <field name="dias_compra"/>
+              </group>
+              <group>
+                  <field name="leadtime"/>
+                  <field name="fecha_cita_almc"/>
+                  <field name="fecha_prevista"/>
+              </group>
+          </xpath>
+
+          <xpath expr="//field[@name='product_qty']" position="after">
+              <field name="pedido_original"/>
+          </xpath>
+
+      </field>
+    </record>
+    </data>
+</odoo>
