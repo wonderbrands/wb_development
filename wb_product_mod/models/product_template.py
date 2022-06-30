@@ -50,6 +50,7 @@ class ProductTemplate(models.Model):
     costo_anterior = fields.Float(string='Costo anterior', help='Muestra el costo anterior del producto', compute='_costo_anterior')
     costo_reposicion = fields.Float(string='Costo reposición', help='Muestra el costo de reposición del producto', compute='_costo_reposicion')
     costo_ultimo = fields.Float(string='Costo última entrada', help='Muestra el costo de la última entrada del producto al inventario', compute='_costo_ultimo')
+    monto_minimo = fields.Float(string='Monto mínimo', help='Monto de compra mínimo por producto')
 
     #Estacionales y Periodo
     fecha_inicio = fields.Char(string='Inicio del periodo', help='Fecha/Mes en que inicia una estación o un Periodo para un SKU')

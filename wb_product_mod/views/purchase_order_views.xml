@@ -15,17 +15,26 @@
                     <field name="monto_minimo"/>
                     <span><field name="unidad"/></span>
                   </div>
-                  <field name="dias_credito"/>
+                  <label for="dias_credito"/>
+                  <div class="o_row" name="dias_credito">
+                    <field name="dias_credito"/>
+                    <span>días</span>
+                  </div>
                   <field name="dias_compra"/>
               </group>
               <group>
-                  <field name="leadtime"/>
+                  <label for="leadtime"/>
+                  <div class="o_row" name="leadtime">
+                    <field name="leadtime"/>
+                    <span>días</span>
+                  </div>
                   <field name="fecha_cita_almc"/>
                   <field name="fecha_prevista"/>
               </group>
           </xpath>
 
-          <xpath expr="//field[@name='product_qty']" position="after">
+          <xpath expr="//field[@name='product_qty']" position="before">
+              <field name="monto_minimo"/>
               <field name="pedido_original"/>
           </xpath>
 

@@ -21,7 +21,11 @@
                 <span>días</span>
               </div>
               <field name="dias_compra"/>
-              <field name="leadtime"/>
+              <label for="leadtime"/>
+              <div class="o_row" name="leadtime">
+                <field name="leadtime"/>
+                <span>días</span>
+              </div>
           </xpath>
 
       </field>

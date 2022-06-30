@@ -79,6 +79,7 @@
                   <field name="costo_anterior" widget='monetary'/>
                   <field name="costo_reposicion" widget='monetary'/>
                   <field name="costo_ultimo" widget='monetary'/>
+                  <field name="monto_minimo"/>
               </group>
           </xpath>
 

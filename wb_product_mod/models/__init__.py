@@ -8,3 +8,4 @@ from . import product_supplierinfo
 from . import cat_marketplace
 from . import logistics
 from . import stock_picking
+from . import sale_order

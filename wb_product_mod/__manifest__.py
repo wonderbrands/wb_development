@@ -39,6 +39,7 @@
     # any module necessary for this one to work correctly
     'depends': ['base',
                 'product',
+                'sale',
                 'stock'],
 
     # always loaded
@@ -51,6 +52,7 @@
         'views/purchase_order_views.xml',
         'views/purchase_order_line_views.xml',
         'views/stock_picking_views.xml',
+        'views/sale_order_views.xml',
         'views/templates.xml',
 
         'data/cat.amazon.csv',

@@ -1,0 +1,23 @@
+<odoo>
+    <data>
+    <record  id="sale_order_form_inherit" model="ir.ui.view">
+
+      <field name="name">sale_order_form_inherit</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_form"/>
+      <field name="arch" type="xml">
+
+          <!-- Agrega campos al formulario de Venta -->
+          <xpath expr="//field[@name='payment_term_id']" position="after">
+              <group string='Negados'>
+                  <field name="disponibilidad"/>
+                  <field name="tiempo_entrega"/>
+                  <field name="precio_venta"/>
+              </group>
+
+          </xpath>
+
+      </field>
+    </record>
+    </data>
+</odoo>
