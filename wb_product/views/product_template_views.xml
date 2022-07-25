@@ -1,0 +1,162 @@
+<odoo>
+  <data>
+    <record  id="product_template_form_inherit" model="ir.ui.view">
+
+      <field name="name">product_template_inherit</field>
+      <field name="model">product.template</field>
+      <field name="inherit_id" ref="product.product_template_form_view"/>
+      <field name="arch" type="xml">
+
+          <!-- Agrega campos a la página Inventario -->
+          <xpath expr="//group[@name='group_lots_and_weight']" position="after">
+              <group string="Medidas de Producto">
+                  <label for="alto_producto"/>
+                  <div class="o_row" name="alto_producto">
+                    <field name="alto_producto"/>
+                    <span>cm</span>
+                  </div>
+
+                  <label for="ancho_producto"/>
+                  <div class="o_row" name="ancho_producto">
+                    <field name="ancho_producto"/>
+                    <span>cm</span>
+                  </div>
+
+                  <label for="largo_producto"/>
+                  <div class="o_row" name="largo_producto">
+                    <field name="largo_producto"/>
+                    <span>cm</span>
+                  </div>
+
+                  <label for="peso_producto"/>
+                  <div class="o_row" name="peso_producto">
+                    <field name="peso_producto"/>
+                    <span>kg</span>
+                  </div>
+              </group>
+          </xpath>
+
+          <xpath expr="//group[@name='group_lots_and_weight']" position="after">
+              <group string="Medidas de Empaque">
+                  <label for="alto_empaque"/>
+                  <div class="o_row" name="alto_empaque">
+                    <field name="alto_empaque"/>
+                    <span>cm</span>
+                  </div>
+
+                  <label for="ancho_empaque"/>
+                  <div class="o_row" name="ancho_empaque">
+                    <field name="ancho_empaque"/>
+                    <span>cm</span>
+                  </div>
+
+                  <label for="largo_empaque"/>
+                  <div class="o_row" name="largo_empaque">
+                    <field name="largo_empaque"/>
+                    <span>cm</span>
+                  </div>
+
+                  <label for="peso_empaque"/>
+                  <div class="o_row" name="peso_empaque">
+                    <field name="peso_empaque"/>
+                    <span>kg</span>
+                  </div>
+
+              </group>
+          </xpath>
+
+          <!-- Agrega campos a la pagina Información General -->
+          <xpath expr="//group[@name='group_standard_price']" position="after">
+              <group>
+                <field name="comprador" options="{'no_create': True}">
+                    <tree>
+                        <field name="name"/>
+                        <field name="kam"/>
+                    </tree>
+                </field>
+              </group>
+              <group>
+                  <field name="costo_anterior" widget='monetary'/>
+                  <field name="costo_reposicion" widget='monetary'/>
+                  <field name="costo_ultimo" widget='monetary'/>
+                  <field name="monto_minimo"/>
+              </group>
+          </xpath>
+
+          <notebook>
+            <page name="logistica" string="Logística">
+              <group>
+                  <group string="Logística">
+                      <field name="codigos_marketplace" placeholder="ej. MAR-905977"/>
+                      <field name="codigos_proveedor" placeholder="ej. PRO-905922"/>
+                      <field name="importacion_nacional"/>
+                      <field name="create_date"/>
+                      <field name="fecha_aprox_llega" attrs="{'invisible':[('agotado_industria','=', False)]}"/>
+                  </group>
+                  <group string="Estatus">
+                      <field name="grava_iva"/>
+                      <field name="estatus_act"/>
+                      <field name="estatus_des"/>
+                      <field name="subestatus_act"/>
+                      <field name="subestatus_des"/>
+                      <field name="prox_baja"/>
+                      <field name="inactivo"/>
+                      <field name="agotado_industria"/>
+                  </group>
+                  <group string="Esquemas logísticos">
+                      <field name="esq_amazon" options="{'no_create_edit': True, 'no_create': True}"/>
+                      <field name="esq_claro" options="{'no_create_edit': True, 'no_create': True}"/>
+                      <field name="esq_linio" options="{'no_create_edit': True, 'no_create': True}"/>
+                      <field name="esq_meli" options="{'no_create_edit': True, 'no_create': True}"/>
+                  </group>
+                  <group string="Planning">
+                      <field name="fecha_prim_entrada"/>
+                      <field name="fecha_ulti_entrada"/>
+                      <field name="fecha_prim_salid"/>
+                      <field name="fecha_ulti_salid"/>
+                      <label for="fecha_inicio"/>
+                      <div class="o_row" name="fecha_inicio">
+                        <span> Entre </span>
+                        <field name="fecha_inicio" options="{'related_end_date': 'fecha_fin'}"/>
+                        <span> y </span>
+                        <field name="fecha_fin" options="{'related_end_date': 'fecha_inicio'}"/>
+                      </div>
+                  </group>
+              </group>
+
+              <group string="Categorías Marketplace">
+                  <group>
+                    <field name="categoria_amazon" options="{'no_create_edit': True, 'no_create': True}"/>
+                    <field name="categoria_claro" options="{'no_create_edit': True, 'no_create': True}"/>
+                    <field name="categoria_coppel" options="{'no_create_edit': True, 'no_create': True}"/>
+                    <field name="categoria_elenas" options="{'no_create_edit': True, 'no_create': True}"/>
+                    <field name="categoria_elektra" options="{'no_create_edit': True, 'no_create': True}"/>
+                    <field name="categoria_linio" options="{'no_create_edit': True, 'no_create': True}"/>
+                    <field name="categoria_liverpool" options="{'no_create_edit': True, 'no_create': True}"/>
+                  </group>
+                  <group>
+                    <field name="categoria_meli" options="{'no_create_edit': True, 'no_create': True}"/>
+                    <field name="categoria_sears" options="{'no_create_edit': True, 'no_create': True}"/>
+                    <field name="categoria_shopee" options="{'no_create_edit': True, 'no_create': True}"/>
+                    <field name="categoria_vivia" options="{'no_create_edit': True, 'no_create': True}"/>
+                    <field name="categoria_walmart" options="{'no_create_edit': True, 'no_create': True}"/>
+                    <field name="categoria_web" options="{'no_create_edit': True, 'no_create': True}"/>
+                  </group>
+              </group>
+              <group string="Sustitutos y Espejo">
+                <field name="sustituto" options="{'no_create': True}">
+                    <tree>
+                        <field name="product_id" invisible="1" />
+                        <field name="name_sus"/>
+                        <field name="name_mir"/>
+                    </tree>
+                </field>
+              </group>
+            </page>
+          </notebook>
+
+      </field>
+    </record>
+
+  </data>
+</odoo>

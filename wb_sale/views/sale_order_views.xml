@@ -1,0 +1,26 @@
+<odoo>
+    <data>
+    <record  id="sale_order_form_inherit" model="ir.ui.view">
+      <field name="name">sale_order_form_inherit</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_form"/>
+      <field name="arch" type="xml">
+          <!-- Agrega campos al formulario de Venta-->
+          <notebook>
+              <page name="denied" string="Negados" attrs="{'invisible':[('state', '!=', 'cancel')]}">
+                  <group>
+                      <group string='Motivos de cancelación de venta'>
+                          <field name="availability"/>
+                          <field name="delivery_time"/>
+                          <field name="sale_price"/>
+                          <field name="other"/>
+                          <field name="message" attrs="{'invisible':[('other', '=', False)]}"/>
+                          <field name="time_zone"/>
+                      </group>
+                  </group>
+              </page>
+          </notebook>
+      </field>
+    </record>
+    </data>
+</odoo>

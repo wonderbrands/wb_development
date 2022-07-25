@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="wb_upc.list">
+      <field name="name">wb_upc list</field>
+      <field name="model">wb_upc.wb_upc</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="wb_upc.action_window">
+      <field name="name">wb_upc window</field>
+      <field name="res_model">wb_upc.wb_upc</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="wb_upc.action_server">
+      <field name="name">wb_upc server</field>
+      <field name="model_id" ref="model_wb_upc_wb_upc"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="wb_upc" id="wb_upc.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="wb_upc.menu_1" parent="wb_upc.menu_root"/>
+    <menuitem name="Menu 2" id="wb_upc.menu_2" parent="wb_upc.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="wb_upc.menu_1_list" parent="wb_upc.menu_1"
+              action="wb_upc.action_window"/>
+    <menuitem name="Server to list" id="wb_upc" parent="wb_upc.menu_2"
+              action="wb_upc.action_server"/>
+-->
+  </data>
+</odoo>

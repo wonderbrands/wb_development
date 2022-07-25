@@ -1,0 +1,27 @@
+# -*- coding: utf-8 -*-
+import base64
+from odoo import models, fields, api, _
+from odoo.exceptions import Warning
+from datetime import datetime
+from pytz import timezone
+import logging
+import json
+import requests
+
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+
+    availability = fields.Boolean(string='Disponibilidad', help='Venta negada o cancelada por disponibilidad')
+    delivery_time = fields.Boolean(string='Tiempo de entrega', help='Venta negada o cancelada por tiempo de entrega')
+    sale_price = fields.Boolean(string='Precio de venta', help='Venta negada o cancelada por precio de venta')
+    other = fields.Boolean(string='Otra', help='Venta negada o cancelada por una razón que no se encuentra en el listado')
+    message = fields.Text(string='¿Cuál?', help='Anote la razón por la cual se negó o canceló la venta')
+    time_zone = fields.Datetime(string='Zona horaria', help='Prueba de la zona horaria')
+
+    @api.onchange('precio_venta')
+    def _get_date(self):
+        fmt = '%Y-%m-%d'
+        now_ec = datetime.now(timezone('America/Mexico_City'))
+        fecha = now_ec.strftime(fmt)
+        #return fecha
+        self.time_zone = fecha
