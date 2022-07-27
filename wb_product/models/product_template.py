@@ -18,15 +18,12 @@ class ProductTemplate(models.Model):
     alto_producto = fields.Float(string='Alto producto', help="Alto del Producto en centimentros")
     ancho_producto = fields.Float(string='Ancho producto', help="Ancho del Producto en centimentros")
     peso_producto = fields.Float(string='Peso producto', help="Peso del Producto en centimentros")
-
     #Medidas de Empaque
     largo_empaque = fields.Float(string='Largo empaque', help="Largo del Empaque en centimentros")
     alto_empaque = fields.Float(string='Alto empaque', help="Alto del Empaque en centimentros")
     ancho_empaque = fields.Float(string='Ancho empaque', help="Ancho del Empaque en centimentros")
     peso_empaque = fields.Float(string='Peso empaque', help="Peso del Empaque en centimentros")
-
     comprador = fields.One2many('usr.comprador', inverse_name='partner_id', string='Comprador responsable', help="Comprador responsable del SKU")
-
     #Logística
     codigos_marketplace = fields.Char(string='Códigos por marketplace', help='Códigos para comunicación con marketplace')
     codigos_proveedor = fields.Char(string='Códigos por proveedor', help='Códigos del proveedor por SKU')
@@ -35,21 +32,7 @@ class ProductTemplate(models.Model):
                                             string='Importacion/Nacional', help="Indica si el producto es importado o nacional")
     agotado_industria = fields.Boolean(string='Agotado de industria', help='Producto que el proveedor reporta como agotado')
     fecha_aprox_llega = fields.Date(string='Fecha aprox de llegada', help='Posible fecha de resurtido por parte del proveedor para agotados de industria')
-
-    estatus_act = fields.Selection([('activo', 'Activo'),
-                                    ('reactivo', 'Reactivado'),
-                                    ('desarchivo', 'Desarchivado'),
-                                    ('inactivo', 'Inactivo'),
-                                    ('proxbaja', 'Prox Baja')],
-                                   string='Estatus ACT', help='Estatus del producto')
-
-    estatus_des = fields.Selection([('activo', 'Activo'),
-                                    ('reactivo', 'Reactivado'),
-                                    ('desarchivo', 'Desarchivado'),
-                                    ('inactivo', 'Inactivo'),
-                                    ('proxbaja', 'Prox Baja')],
-                                   string='Estatus DES', help='Estatus del producto')
-
+    #Estatus del producto
     subestatus_act = fields.Selection([('resurtible', 'Resurtible'),
                                        ('agotado', 'Agotado de industria'),
                                        ('nocompetitivo', 'No competitivo'),
@@ -59,16 +42,22 @@ class ProductTemplate(models.Model):
                                        ('rotacion', 'Descontinuado por rotación'),
                                        ('competitivo', 'No competitivo')],
                                       string='Sub estatus B', help='Sub estatus del producto si éste se encuentra Inactivo o por proximidad baja')
+    prod_active = fields.Boolean(string='Activo', help='Muestra si el producto está en estatus de Reactivado')
+    prod_reactivated = fields.Boolean(string='Reactivado', help='Muestra si el producto está en estatus de Reactivado')
+    prod_unarchived = fields.Boolean(string='Archivado', help='Muestra si el producto está en estatus de Desarchivado')
+    prod_inactive = fields.Boolean(string='Inactivo', help='Muestra si el producto está en estatus de Inactivo')
+    prod_low_proximity = fields.Boolean(string='Prox baja', help='Muestra si el producto está en estatus de Proximidad Baja')
 
-    prox_baja = fields.Boolean(string='Prox baja', help='Muestra si el producto tiene proximidad baja')
-    inactivo = fields.Boolean(string='Inactivo', help='Muestra si el producto estuvo archivado o inactivo')#, compute='_estatus', readonly=False)
 
-    @api.onchange('estatus_act','estatus_des','subestatus_act','subestatus_ina')
+    #@api.onchange('estatus_act','estatus_des')
     def _estatus(self):
         self.ensure_one()
 
         estatus = self.estatus_act
+        estado = self.active
 
+        if estado == False:
+            self.archivo = True
         if estatus == 'inactivo':
             self.inactivo = True
             self.estatus_des = 'desarchivo'

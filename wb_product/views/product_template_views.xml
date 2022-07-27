@@ -15,19 +15,16 @@
                     <field name="alto_producto"/>
                     <span>cm</span>
                   </div>
-
                   <label for="ancho_producto"/>
                   <div class="o_row" name="ancho_producto">
                     <field name="ancho_producto"/>
                     <span>cm</span>
                   </div>
-
                   <label for="largo_producto"/>
                   <div class="o_row" name="largo_producto">
                     <field name="largo_producto"/>
                     <span>cm</span>
                   </div>
-
                   <label for="peso_producto"/>
                   <div class="o_row" name="peso_producto">
                     <field name="peso_producto"/>
@@ -43,25 +40,21 @@
                     <field name="alto_empaque"/>
                     <span>cm</span>
                   </div>
-
                   <label for="ancho_empaque"/>
                   <div class="o_row" name="ancho_empaque">
                     <field name="ancho_empaque"/>
                     <span>cm</span>
                   </div>
-
                   <label for="largo_empaque"/>
                   <div class="o_row" name="largo_empaque">
                     <field name="largo_empaque"/>
                     <span>cm</span>
                   </div>
-
                   <label for="peso_empaque"/>
                   <div class="o_row" name="peso_empaque">
                     <field name="peso_empaque"/>
                     <span>kg</span>
                   </div>
-
               </group>
           </xpath>
 
@@ -90,18 +83,37 @@
                       <field name="codigos_marketplace" placeholder="ej. MAR-905977"/>
                       <field name="codigos_proveedor" placeholder="ej. PRO-905922"/>
                       <field name="importacion_nacional"/>
+                      <field name="grava_iva"/>
                       <field name="create_date"/>
+                      <field name="agotado_industria"/>
                       <field name="fecha_aprox_llega" attrs="{'invisible':[('agotado_industria','=', False)]}"/>
                   </group>
                   <group string="Estatus">
-                      <field name="grava_iva"/>
-                      <field name="estatus_act"/>
-                      <field name="estatus_des"/>
-                      <field name="subestatus_act"/>
-                      <field name="subestatus_des"/>
-                      <field name="prox_baja"/>
-                      <field name="inactivo"/>
-                      <field name="agotado_industria"/>
+                      <label for="prod_active"/>
+                      <div class="o_row" name="prod_active">
+                        <field name="prod_active"/>
+                        <span><field name="subestatus_act" attrs="{'invisible':[('prod_active','=', False)]}"/></span>
+                      </div>
+                      <label for="prod_reactivated"/>
+                      <div class="o_row" name="prod_reactivated">
+                        <field name="prod_reactivated"/>
+                        <span><field name="subestatus_act" attrs="{'invisible':[('prod_reactivated','=', False)]}"/></span>
+                      </div>
+                      <label for="prod_unarchived"/>
+                      <div class="o_row" name="prod_unarchived">
+                        <field name="prod_unarchived"/>
+                        <span><field name="subestatus_act" attrs="{'invisible':[('prod_unarchived','=', False)]}"/></span>
+                      </div>
+                      <label for="prod_inactive"/>
+                      <div class="o_row" name="prod_inactive">
+                        <field name="prod_inactive"/>
+                        <span><field name="subestatus_des" attrs="{'invisible':[('prod_inactive','=', False)]}"/></span>
+                      </div>
+                      <label for="prod_low_proximity"/>
+                      <div class="o_row" name="prod_low_proximity">
+                        <field name="prod_low_proximity"/>
+                        <span><field name="subestatus_des" attrs="{'invisible':[('prod_low_proximity','=', False)]}"/></span>
+                      </div>
                   </group>
                   <group string="Esquemas logísticos">
                       <field name="esq_amazon" options="{'no_create_edit': True, 'no_create': True}"/>
