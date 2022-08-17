@@ -89,31 +89,8 @@
                       <field name="fecha_aprox_llega" attrs="{'invisible':[('agotado_industria','=', False)]}"/>
                   </group>
                   <group string="Estatus">
-                      <label for="prod_active"/>
-                      <div class="o_row" name="prod_active">
-                        <field name="prod_active"/>
-                        <span><field name="subestatus_act" attrs="{'invisible':[('prod_active','=', False)]}"/></span>
-                      </div>
-                      <label for="prod_reactivated"/>
-                      <div class="o_row" name="prod_reactivated">
-                        <field name="prod_reactivated"/>
-                        <span><field name="subestatus_act" attrs="{'invisible':[('prod_reactivated','=', False)]}"/></span>
-                      </div>
-                      <label for="prod_unarchived"/>
-                      <div class="o_row" name="prod_unarchived">
-                        <field name="prod_unarchived"/>
-                        <span><field name="subestatus_act" attrs="{'invisible':[('prod_unarchived','=', False)]}"/></span>
-                      </div>
-                      <label for="prod_inactive"/>
-                      <div class="o_row" name="prod_inactive">
-                        <field name="prod_inactive"/>
-                        <span><field name="subestatus_des" attrs="{'invisible':[('prod_inactive','=', False)]}"/></span>
-                      </div>
-                      <label for="prod_low_proximity"/>
-                      <div class="o_row" name="prod_low_proximity">
-                        <field name="prod_low_proximity"/>
-                        <span><field name="subestatus_des" attrs="{'invisible':[('prod_low_proximity','=', False)]}"/></span>
-                      </div>
+                      <field name="estatus"/>
+                      <field name="subestatus"/>
                   </group>
                   <group string="Esquemas logísticos">
                       <field name="esq_amazon" options="{'no_create_edit': True, 'no_create': True}"/>

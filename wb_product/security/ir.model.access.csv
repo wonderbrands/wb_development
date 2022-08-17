@@ -15,3 +15,6 @@ access_cat_shopee,access_cat_shopee,model_cat_shopee,,1,1,1,1
 access_esquema_logistico,access_esquema_logistico,model_esquema_logistico,,1,1,1,1
 access_usr_comprador,access_usr_comprador,model_usr_comprador,,1,1,1,1
 access_prod_relacionado,access_prod_relacionado,model_prod_relacionado,,1,1,1,1
+access_prod_relacionado,access_prod_relacionado,model_prod_relacionado,,1,1,1,1
+access_product_estatus,access_product_estatus,model_product_estatus,,1,1,1,1
+access_product_subestatus,access_product_subestatus,model_product_subestatus,,1,1,1,1

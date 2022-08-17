@@ -33,39 +33,13 @@ class ProductTemplate(models.Model):
     agotado_industria = fields.Boolean(string='Agotado de industria', help='Producto que el proveedor reporta como agotado')
     fecha_aprox_llega = fields.Date(string='Fecha aprox de llegada', help='Posible fecha de resurtido por parte del proveedor para agotados de industria')
     #Estatus del producto
-    subestatus_act = fields.Selection([('resurtible', 'Resurtible'),
-                                       ('agotado', 'Agotado de industria'),
-                                       ('nocompetitivo', 'No competitivo'),
-                                       ('noresurtible', 'No resurtible')],
-                                      string='Sub estatus A', help='Sub estatus del producto si el éste se encuentra Activo, reactivado o desarchivado')
-    subestatus_des = fields.Selection([('proveedor', 'Descontinuado por proveedor'),
-                                       ('rotacion', 'Descontinuado por rotación'),
-                                       ('competitivo', 'No competitivo')],
-                                      string='Sub estatus B', help='Sub estatus del producto si éste se encuentra Inactivo o por proximidad baja')
-    prod_active = fields.Boolean(string='Activo', help='Muestra si el producto está en estatus de Reactivado')
-    prod_reactivated = fields.Boolean(string='Reactivado', help='Muestra si el producto está en estatus de Reactivado')
-    prod_unarchived = fields.Boolean(string='Archivado', help='Muestra si el producto está en estatus de Desarchivado')
-    prod_inactive = fields.Boolean(string='Inactivo', help='Muestra si el producto está en estatus de Inactivo')
-    prod_low_proximity = fields.Boolean(string='Prox baja', help='Muestra si el producto está en estatus de Proximidad Baja')
-
-
-    #@api.onchange('estatus_act','estatus_des')
-    def _estatus(self):
-        self.ensure_one()
-
-        estatus = self.estatus_act
-        estado = self.active
-
-        if estado == False:
-            self.archivo = True
-        if estatus == 'inactivo':
-            self.inactivo = True
-            self.estatus_des = 'desarchivo'
-        if estatus == 'proxbaja':
-            self.prox_baja = True
-            self.estatus_des = 'reactivo'
-
-
+    estatus = fields.Many2one('product.estatus', string='Estatus', help='Estatus del producto')
+    subestatus = fields.Many2one('product.subestatus', string='Subestatus', help='Subestatus del producto')
+    #Estacionales y Periodo
+    fecha_inicio = fields.Char(string='Inicio del periodo', help='Fecha/Mes en que inicia una estación o un Periodo para un SKU')
+    fecha_fin = fields.Char(string='Fin del periodo', help='Fecha/Mes en que finaliza una estación o un Periodo para un SKU')
+    #Planning
+    clasificacion_abc = fields.Char(string='Clasificación abc', help='Clasificación desarrollada por Planning')
     fecha_prim_entrada = fields.Date(string='Fecha primera entrada')
     fecha_ulti_entrada = fields.Date(string='Fecha última entrada')
     fecha_prim_salid = fields.Date(string='Fecha primera salida')
@@ -77,20 +51,11 @@ class ProductTemplate(models.Model):
     costo_reposicion = fields.Float(string='Costo reposición', help='Muestra el costo de reposición del producto', compute='_costo_reposicion')
     costo_ultimo = fields.Float(string='Costo última entrada', help='Muestra el costo de la última entrada del producto al inventario', compute='_costo_ultimo')
     monto_minimo = fields.Float(string='Cantidad mínima', help='Cantidad de compra mínima por producto')
-
-    #Estacionales y Periodo
-    fecha_inicio = fields.Char(string='Inicio del periodo', help='Fecha/Mes en que inicia una estación o un Periodo para un SKU')
-    fecha_fin = fields.Char(string='Fin del periodo', help='Fecha/Mes en que finaliza una estación o un Periodo para un SKU')
-
-    #Planning
-    clasificacion_abc = fields.Char(string='Clasificación abc', help='Clasificación desarrollada por Planning')
-
     #Esquema Logístico
     esq_amazon = fields.Many2one('esquema.logistico', string='Esquema Amazon', help="Mapea por sku el esquema logístico (FBA/FBM/Drop/Bajo pedido/Inactivo)")
     esq_claro = fields.Many2one('esquema.logistico', string='Esquema Claro Shop', help="Mapea por sku el esquema logístico (FBA/FBM/Drop/Bajo pedido/Inactivo)")
     esq_linio = fields.Many2one('esquema.logistico', string='Esquema Linio', help="Mapea por sku el esquema logístico (FBA/FBM/Drop/Bajo pedido/Inactivo)")
     esq_meli = fields.Many2one('esquema.logistico', string='Esquema Mercado Libre', help="Mapea por sku el esquema logístico (FBA/FBM/Drop/Bajo pedido/Inactivo)")
-
     #Categorías por Marketplace
     categoria_amazon = fields.Many2one('cat.amazon', string='Categoría Amazon')
     categoria_claro = fields.Many2one('cat.claro', string='Categoría Claro Shop')
@@ -99,14 +64,12 @@ class ProductTemplate(models.Model):
     categoria_elektra = fields.Many2one('cat.elektra', string='Categoría Elektra')
     categoria_linio = fields.Many2one('cat.linio', string='Categoría Linio')
     categoria_liverpool = fields.Many2one('cat.liverpool', string='Categoría Liverpool')
-
     categoria_meli = fields.Many2one('cat.meli', string='Categoría Mercado Libre')
     categoria_sears = fields.Many2one('cat.sears', string='Categoría Sears')
     categoria_shopee = fields.Many2one('cat.shopee', string='Categoría Shopee')
     categoria_vivia = fields.Many2one('cat.vivia', string='Categoría Vivia')
     categoria_walmart = fields.Many2one('cat.walmart', string='Categoría Walmart')
     categoria_web = fields.Many2one('cat.web', string='Categoría Web')
-
     #Sustituto, Espejo y Variantes
     sustituto = fields.One2many('prod.relacionado', inverse_name='product_id', string='Productos')
 

@@ -47,11 +47,11 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-
         'views/product_supplierinfo_views.xml',
         'views/product_template_views.xml',
         'views/templates.xml',
-
+        'data/product.estatus.csv',
+        'data/product.subestatus.csv',
         'data/cat.amazon.csv',
         'data/cat.claro.csv',
         'data/cat.coppel.csv',
