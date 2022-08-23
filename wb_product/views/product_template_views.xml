@@ -74,7 +74,6 @@
                 <field name="internal_category"/>
               </group>
               <group string="Costos">
-                  <field name="vat_price" widget='monetary'/>
                   <field name="last_cost" widget='monetary'/>
                   <field name="replacement_cost" widget='monetary'/>
                   <field name="last_entry_cost" widget='monetary'/>

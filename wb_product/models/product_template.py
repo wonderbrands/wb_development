@@ -18,7 +18,7 @@ class ProductTemplate(models.Model):
     product_height = fields.Float(string='Alto producto', help="Alto del Producto en centimentros")
     product_width = fields.Float(string='Ancho producto', help="Ancho del Producto en centimentros")
     product_weight = fields.Float(string='Peso producto', help="Peso del Producto en kilogramos")
-    product_volume = fields.Float(string='Volumen producto', help="Volumen del Producto en centimentros")
+    product_volume = fields.Float(string='Volumen producto', help="Volumen del Producto", compute='_volumen')
     #Packaging Measurements
     packing_length = fields.Float(string='Largo empaque', help="Largo del Empaque en centimentros")
     packing_height = fields.Float(string='Alto empaque', help="Alto del Empaque en centimentros")
@@ -58,8 +58,7 @@ class ProductTemplate(models.Model):
     last_entry_cost = fields.Float(string='Costo última entrada', help='Muestra el costo de la última entrada del producto al inventario', compute='_previous_cost')
     ps_cost = fields.Float(string='Costo PP', help="Campo con costo pronto pago. Aplica para descuentos financieros por pago")
     minimal_amount = fields.Float(string='Cantidad mínima', help='Cantidad de compra mínima por producto')
-    vat_price = fields.Float(string='Precio con IVA', helP='Muestra el precio del producto con IVA', compute='_price_vat')
-    #Logistics Scheme
+    #Logistic Scheme
     amazon_sch = fields.Many2one('esquema.logistico', string='Esquema Amazon', help="Mapea por sku el esquema logístico (FBA/FBM/Drop/Bajo pedido/Inactivo)")
     claro_sch = fields.Many2one('esquema.logistico', string='Esquema Claro Shop', help="Mapea por sku el esquema logístico (FBA/FBM/Drop/Bajo pedido/Inactivo)")
     linio_sch = fields.Many2one('esquema.logistico', string='Esquema Linio', help="Mapea por sku el esquema logístico (FBA/FBM/Drop/Bajo pedido/Inactivo)")
@@ -282,7 +281,7 @@ class ProductTemplate(models.Model):
 
                 _logger.info('SR STOCK| default_code:' + str(default_code) + '|location_id:' + str(location_id) + '|location_name:' + str(location_name) + '|' + str(location_display_name) + '|quantity:' + str(quantity) + '|reserved_quantity:' + str(reserved_quantity) + '|previsto:' + str(previsto))
                 # --- Todo lo que esta en las ubicaciones AG
-                if 'AG/Stock' in location_display_name:
+                if 'AG/Stock' in str(location_display_name):
                     # stock_real += quantity
                     quantity_total = quantity_total + quantity
                     reserved_quantity_total = reserved_quantity_total + reserved_quantity
@@ -386,9 +385,11 @@ class ProductTemplate(models.Model):
         else:
             self.vat_price=0.00
 
-    #Function that print VAT price
-    @api.depends('ancho','alto', 'largo')
+    #Function that print the volume of product
+    @api.depends('product_width','product_height','product_length')
     def _volumen(self):
         self.ensure_one()
         if self.product_width > 0 and self.product_height > 0 and self.product_length > 0:
             self.product_volume = round( (self.product_width * self.product_height * self.product_length) / 5000,2)
+        else:
+            self.product_volume = 0.00
