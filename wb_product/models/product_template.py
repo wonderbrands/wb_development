@@ -17,15 +17,18 @@ class ProductTemplate(models.Model):
     product_length = fields.Float(string='Largo producto', help="Largo del Producto en centimentros")
     product_height = fields.Float(string='Alto producto', help="Alto del Producto en centimentros")
     product_width = fields.Float(string='Ancho producto', help="Ancho del Producto en centimentros")
-    product_weight = fields.Float(string='Peso producto', help="Peso del Producto en centimentros")
+    product_weight = fields.Float(string='Peso producto', help="Peso del Producto en kilogramos")
+    product_volume = fields.Float(string='Volumen producto', help="Volumen del Producto en centimentros")
     #Packaging Measurements
     packing_length = fields.Float(string='Largo empaque', help="Largo del Empaque en centimentros")
     packing_height = fields.Float(string='Alto empaque', help="Alto del Empaque en centimentros")
     packing_width = fields.Float(string='Ancho empaque', help="Ancho del Empaque en centimentros")
     packing_weight = fields.Float(string='Peso empaque', help="Peso del Empaque en centimentros")
+    #Comercial
     #buyer = fields.One2many('usr.comprador', inverse_name='partner_id', string='Comprador responsable', help="Comprador responsable del SKU")
     buyer = fields.Many2one('res.partner', string='Comprador responsable', help='Establece el comprador encargado de este SKU')
     owner = fields.Many2one('res.partner', string='Owner comercial', help='Establece el comercial responsable de este SKU')
+    internal_category = fields.Many2one('internal.category', string='Categoría interna', help='Categoría interna para el equipo de SR')
     #Logistics
     marketplace_codes = fields.Char(string='Códigos por marketplace', help='Códigos para comunicación con marketplace')
     provider_codes = fields.Char(string='Códigos por proveedor', help='Códigos del proveedor por SKU')
@@ -49,11 +52,13 @@ class ProductTemplate(models.Model):
     grava_iva = fields.Selection([('si', 'Si'),
                                   ('no', 'No')],
                                  string='Grava IVA', help='Identifica si el producto grava IVA')
+    #Costs
     last_cost = fields.Float(string='Costo anterior', help='Muestra el costo anterior del producto', compute='_last_cost')
     replacement_cost = fields.Float(string='Costo reposición', help='Muestra el costo de reposición del producto', compute='_replacement_cost')
     last_entry_cost = fields.Float(string='Costo última entrada', help='Muestra el costo de la última entrada del producto al inventario', compute='_previous_cost')
     ps_cost = fields.Float(string='Costo PP', help="Campo con costo pronto pago. Aplica para descuentos financieros por pago")
     minimal_amount = fields.Float(string='Cantidad mínima', help='Cantidad de compra mínima por producto')
+    vat_price = fields.Float(string='Precio con IVA', helP='Muestra el precio del producto con IVA', compute='_price_vat')
     #Logistics Scheme
     amazon_sch = fields.Many2one('esquema.logistico', string='Esquema Amazon', help="Mapea por sku el esquema logístico (FBA/FBM/Drop/Bajo pedido/Inactivo)")
     claro_sch = fields.Many2one('esquema.logistico', string='Esquema Claro Shop', help="Mapea por sku el esquema logístico (FBA/FBM/Drop/Bajo pedido/Inactivo)")
@@ -79,14 +84,21 @@ class ProductTemplate(models.Model):
     stock_real = fields.Integer(string="Stock Real", compute='_total', help='muestral el stock real')
     stock_exclusivas = fields.Integer(string="Stock Exclusivas", help='Muestra el stock de exclusivas')
     stock_urrea = fields.Integer(string="Stock Urrea", help='Muestra el stock de Urrea')
-    stock_markets = fields.Integer(string="Stock Markets", help='Muestra el stock en markets')
+    stock_markets = fields.Integer(string="Stock Markets", help='Muestra el stock en markets')#, compute='_min_stock_markets')
     stock_supplier = fields.Integer(string="Stock Proveedor", help='Muestra el stock del proveedor')
+    stock_mercadolibre = fields.Integer(string="Stock mercado Libre", compute='_total', readonly=False)
+    stock_linio = fields.Integer(string="Stock Linio", compute='_total', readonly=False)
+    stock_amazon = fields.Integer(string="Stock Amazon", compute='_total', readonly=False)
     #Location
     location_hallway = fields.Char(string="Pasillo")
     location_level = fields.Char(string="Nivel")
     location_area = fields.Char(string="Zona")
     location_box = fields.Char(string="Caja")
+    #Label
+    txt_filename = fields.Char()
+    txt_binary = fields.Binary("Etiqueta ZPL")
 
+    # Function that prints the previous cost
     @api.depends('seller_ids')
     def _previous_cost(self):
         self.ensure_one()
@@ -124,6 +136,7 @@ class ProductTemplate(models.Model):
                 else:
                     self.last_entry_cost = 0.0
 
+    # Function that prints the last cost
     @api.depends('seller_ids')
     def _last_cost(self):
         self.ensure_one()
@@ -161,6 +174,7 @@ class ProductTemplate(models.Model):
                 else:
                     self.last_cost = 0.0
 
+    #Function that prints the replacement cost
     @api.depends('seller_ids')
     def _replacement_cost(self):
         self.ensure_one()
@@ -240,3 +254,141 @@ class ProductTemplate(models.Model):
             'txt_filename': str(record.default_code) + '.zpl',
             'txt_binary': base64.encodestring(content.encode('utf-8'))
         })
+
+    #Function that print the actual stock
+    @api.depends('stock_exclusivas', 'stock_urrea')
+    def _total(self):
+        self.ensure_one()
+        _logger = logging.getLogger(__name__)
+        try:
+            stock_real = 0
+            reserved_quantity = 0
+            previsto = 0
+            quantity_total = 0
+            reserved_quantity_total = 0
+
+            default_code = self.default_code
+            product = self.env['product.product'].search([('default_code', '=', default_code)])
+            quants = product.stock_quant_ids
+            for quant in quants:
+                quant_id = quant.id
+                location_id = quant.location_id.id
+                location = self.env['stock.location'].search([('id', '=', location_id)])
+                location_display_name = location.display_name
+                location_name = quant.location_id.name
+                quantity = quant.quantity
+                reserved_quantity = quant.reserved_quantity
+                previsto = quantity - reserved_quantity
+
+                _logger.info('SR STOCK| default_code:' + str(default_code) + '|location_id:' + str(location_id) + '|location_name:' + str(location_name) + '|' + str(location_display_name) + '|quantity:' + str(quantity) + '|reserved_quantity:' + str(reserved_quantity) + '|previsto:' + str(previsto))
+                # --- Todo lo que esta en las ubicaciones AG
+                if 'AG/Stock' in location_display_name:
+                    # stock_real += quantity
+                    quantity_total = quantity_total + quantity
+                    reserved_quantity_total = reserved_quantity_total + reserved_quantity
+                    _logger.info('quantity_total:' + str(quantity_total) + ',reserved_quantity_total: ' + str(
+                        reserved_quantity_total))
+
+            self.stock_real = quantity_total - reserved_quantity_total
+
+            # --- Calculando el stock para los marketplaces
+            if self.stock_markets == 0:
+                self.stock_mercadolibre = self.stock_real + self.stock_exclusivas + self.stock_urrea
+            else:
+                self.stock_mercadolibre = self.stock_markets
+
+            if self.stock_mercadolibre < 0:
+                self.stock_mercadolibre = 0
+
+            if self.stock_markets == 0:
+                self.stock_linio = self.stock_real + self.stock_exclusivas
+            else:
+                self.stock_linio = self.stock_markets
+
+            if self.stock_linio < 0:
+                self.stock_linio = 0
+
+            if self.stock_markets == 0:
+                self.stock_amazon = self.stock_real + self.stock_exclusivas + self.stock_urrea
+            else:
+                self.stock_amazon = self.stock_markets
+
+            if self.stock_amazon < 0:
+                self.stock_amazon = 0
+
+        except Exception as e:
+            _logger.error('ODOO CALCULATE|' + str(e))
+
+    #Function that print the actual stock
+    @api.depends('stock_real')
+    def _min_stock_markets(self):
+        self.ensure_one()
+        try:
+            # --- Adecuacion para cuando el producto es un combo "is_kit=True"
+            _logger = logging.getLogger(__name__)
+            lista_stock_markets = []
+            lista_stock_real = []
+            stock_markets = 0
+            stock_subproducto = 0
+
+            default_code = self.default_code
+            _logger.info('default_code: %s', default_code)
+            product_is_kit = self.env['product.product'].search([('default_code', '=', default_code)])#.is_kit
+            # _logger.info('product_is_kit: %s', str(product_is_kit) )
+            if product_is_kit:
+                sub_product_line_ids = self.env['product.product'].search([('default_code', '=', default_code)]).sub_product_line_ids
+                # _logger.info('sub_product_line_ids: %s', str(sub_product_line_ids) )
+                for sub_product_line_id in sub_product_line_ids:
+                    id_sub_product = sub_product_line_id.id
+                    _logger.info('id_sub_product: %s', str(id_sub_product))
+                    product_id = self.env['sub.product.lines'].search([('id', '=', id_sub_product)]).product_id.id
+                    product_quantity = self.env['sub.product.lines'].search([('id', '=', id_sub_product)]).quantity
+                    # _logger.info('product_id: %s,  PRODUCT CUANTITY: %s', str(product_id), str(product_quantity) )
+
+                    stock_markets_subproductos = self.env['product.product'].search(
+                        [('id', '=', product_id)]).stock_markets
+
+                    # -- para los combos cuando vienen varios productos
+                    stock_real_subproducto = int(int(
+                        self.env['product.product'].search([('id', '=', product_id)]).stock_real) / product_quantity)
+
+                    stock_exclusivas_subproducto = self.env['product.product'].search(
+                        [('id', '=', product_id)]).stock_exclusivas
+                    stock_urrea_subproducto = self.env['product.product'].search([('id', '=', product_id)]).stock_urrea
+
+                    if stock_markets_subproductos <= 0:
+                        stock_subproducto_markets = stock_real_subproducto + stock_exclusivas_subproducto + stock_urrea_subproducto
+                    else:
+                        stock_subproducto_markets = stock_markets_subproductos
+
+                    # _logger.info('stock_markets: %s', stock_subproducto_markets  )
+                    # _logger.info('stock_real_subproducto: %s', str(stock_real_subproducto) )
+
+                    lista_stock_markets.append(stock_subproducto_markets)
+                    lista_stock_real.append(stock_real_subproducto)
+                # Cual es ma lenor cantidad
+                # _logger.info('lista_stock_markets: %s', str(lista_stock_markets) )
+                stock_minimo_markets = min(lista_stock_markets)
+                stock_minimo_real = min(lista_stock_real)
+                self.stock_markets = stock_minimo_markets
+                self.stock_real = stock_minimo_real
+            # --- Termina Adecuacion
+
+        except Exception as e:
+            _logger.info('ERROR _min_stock_markets(): | %s', str(e))
+
+    #Function that print VAT price
+    @api.depends('list_price')
+    def _price_vat(self):
+        self.ensure_one()
+        if self.list_price:
+            self.vat_price = round(float(self.list_price)*1.16, 0)
+        else:
+            self.vat_price=0.00
+
+    #Function that print VAT price
+    @api.depends('ancho','alto', 'largo')
+    def _volumen(self):
+        self.ensure_one()
+        if self.product_width > 0 and self.product_height > 0 and self.product_length > 0:
+            self.product_volume = round( (self.product_width * self.product_height * self.product_length) / 5000,2)

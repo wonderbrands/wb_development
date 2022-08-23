@@ -66,6 +66,7 @@
         'data/cat.walmart.csv',
         'data/cat.web.csv',
         'data/esquema.logistico.csv',
+        'data/internal.category.csv',
     ],
     # only loaded in demonstration mode
     'demo': [

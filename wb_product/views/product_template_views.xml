@@ -6,6 +6,10 @@
       <field name="model">product.template</field>
       <field name="inherit_id" ref="product.product_template_form_view"/>
       <field name="arch" type="xml">
+          <!-- Botón de impresión de etiquetas -->
+          <xpath expr="//header" position="inside">
+              <button string="Imprimir ZPL" type="object" name="print_zpl" />
+          </xpath>
 
           <!-- Agrega campos a la página Inventario -->
           <xpath expr="//group[@name='group_lots_and_weight']" position="after">
@@ -29,6 +33,10 @@
                   <div class="o_row" name="product_weight">
                     <field name="product_weight"/>
                     <span>kg</span>
+                  </div>
+                  <label for="product_volume"/>
+                  <div class="o_row" name="product_volume">
+                    <field name="product_volume"/>
                   </div>
               </group>
           </xpath>
@@ -60,11 +68,13 @@
 
           <!-- Agrega campos a la pagina Información General -->
           <xpath expr="//group[@name='group_standard_price']" position="after">
-              <group>
+              <group string="Comercial">
                 <field name="buyer"/>
                 <field name="owner"/>
+                <field name="internal_category"/>
               </group>
-              <group>
+              <group string="Costos">
+                  <field name="vat_price" widget='monetary'/>
                   <field name="last_cost" widget='monetary'/>
                   <field name="replacement_cost" widget='monetary'/>
                   <field name="last_entry_cost" widget='monetary'/>
@@ -72,7 +82,7 @@
                   <field name="minimal_amount"/>
               </group>
           </xpath>
-
+          <!-- Agrega una nueva página al formulario llamada Logística -->
           <notebook>
             <page name="logistica" string="Logística">
               <group>
@@ -121,11 +131,14 @@
                 </field>
               </group>
             </page>
+          <!-- Agrega una nueva página al formulario llamada Planificación -->
             <page name="planning" string="Planificación">
               <group>
-                  <group string="Estatus">
+                  <group string="Estatus y Etiquetas">
                       <field name="status"/>
                       <field name="substatus"/>
+                      <field name="txt_filename" invisible="1"/>
+                      <field name="txt_binary" filename="txt_filename" readonly="1"/>
                   </group>
                   <group string="Planning">
                       <field name="first_entry_date"/>
@@ -139,6 +152,22 @@
                         <span> y </span>
                         <field name="end_period"/>
                       </div>
+                  </group>
+                  <group string="Ubicación">
+                      <field name="location_hallway"/>
+                      <field name="location_level"/>
+                      <field name="location_area"/>
+                      <field name="location_box"/>
+                  </group>
+                  <group string="Stock">
+                      <field name="stock_real"/>
+                      <field name="stock_exclusivas"/>
+                      <field name="stock_urrea"/>
+                      <field name="stock_markets"/>
+                      <field name="stock_supplier"/>
+                      <field name="stock_mercadolibre"/>
+                      <field name="stock_linio"/>
+                      <field name="stock_amazon"/>
                   </group>
               </group>
             </page>

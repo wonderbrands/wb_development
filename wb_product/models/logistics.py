@@ -30,3 +30,10 @@ class PRODRelacionado(models.Model):
     product_id = fields.Integer(string='id', readonly=True)
     name_sus = fields.Many2one('product.product', string='Producto Sustituto')
     name_mir = fields.Many2one('product.product', string='Producto Espejo')
+
+class InternalCategory(models.Model):
+    _name = "internal.category"
+    _description = "Modelo que incluye un catálogo de categorías internas para el Owner y Comprador"
+
+    name = fields.Char(string='Nombre')
+    description = fields.Char(string='Descripción')

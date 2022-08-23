@@ -18,3 +18,4 @@ access_prod_relacionado,access_prod_relacionado,model_prod_relacionado,,1,1,1,1
 access_prod_relacionado,access_prod_relacionado,model_prod_relacionado,,1,1,1,1
 access_product_estatus,access_product_estatus,model_product_estatus,,1,1,1,1
 access_product_subestatus,access_product_subestatus,model_product_subestatus,,1,1,1,1
+access_internal_category,access_internal_category,model_internal_category,,1,1,1,1
