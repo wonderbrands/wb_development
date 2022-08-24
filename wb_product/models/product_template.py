@@ -150,19 +150,19 @@ class ProductTemplate(models.Model):
                 self.last_cost = 0.0
             else:
                 if all_seller_ids:
-                    id_ultimo_costo = all_seller_ids[-1]
+                    id_ultimo_costo = all_seller_ids[-2]
                     supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
                     self.last_cost = supplier.price
                     _logger.info('Costo ultimo: %s', self.last_cost)
 
                     if self.last_cost == 0.0:
-                        id_ultimo_costo = all_seller_ids[-2]
+                        id_ultimo_costo = all_seller_ids[-3]
                         supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
                         self.last_cost = supplier.price
                         _logger.info('Costo ultimo: %s', self.last_cost)
 
                         if self.last_cost == 0.0:
-                            id_ultimo_costo = all_seller_ids[-3]
+                            id_ultimo_costo = all_seller_ids[-4]
                             supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
                             self.last_cost = supplier.price
                             _logger.info('Costo ultimo: %s', self.last_cost)
@@ -318,7 +318,7 @@ class ProductTemplate(models.Model):
         except Exception as e:
             _logger.error('ODOO CALCULATE|' + str(e))
 
-    #Function that print the actual stock
+    #Function that print the actual stock - not currently in use
     @api.depends('stock_real')
     def _min_stock_markets(self):
         self.ensure_one()
