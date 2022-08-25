@@ -29,6 +29,7 @@ class ProductTemplate(models.Model):
     buyer = fields.Many2one('res.partner', string='Comprador responsable', help='Establece el comprador encargado de este SKU')
     owner = fields.Many2one('res.partner', string='Owner comercial', help='Establece el comercial responsable de este SKU')
     internal_category = fields.Many2one('internal.category', string='Categoría interna', help='Categoría interna para el equipo de SR')
+    brand = fields.Many2one('product.brands', string='Marca', help='Muestra la marca a la que pertenece el SKU')
     #Logistics
     marketplace_codes = fields.Char(string='Códigos por marketplace', help='Códigos para comunicación con marketplace')
     provider_codes = fields.Char(string='Códigos por proveedor', help='Códigos del proveedor por SKU')

@@ -37,3 +37,10 @@ class InternalCategory(models.Model):
 
     name = fields.Char(string='Nombre')
     description = fields.Char(string='Descripción')
+
+class ProductBrands(models.Model):
+    _name = "product.brands"
+    _description = "Modelo que incluye un catálogo de marcas para cada producto"
+
+    name = fields.Char(string='Nombre')
+    description = fields.Char(string='Descripción')
