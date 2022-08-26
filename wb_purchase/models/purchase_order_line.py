@@ -10,8 +10,8 @@ import requests
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
-    pedido_original = fields.Float(string='Pedido Original', help='Indica la cantidad demandada original')#, compute='_monto_minimo', inverse='_inverse_monto_minimo')
-    monto_minimo = fields.Float(related='product_id.monto_minimo', string='Cantidad mínima', help='Cantidad de compra mínima por producto')
+    pedido_original = fields.Float(string='Pedido Original', help='Indica la cantidad demandada original')
+    monto_minimo = fields.Float(related='product_id.minimal_amount', string='Cantidad mínima', help='Cantidad de compra mínima por producto')
 
     @api.onchange('product_qty','pedido_original')
     def _monto_minimo(self):
