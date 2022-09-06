@@ -29,7 +29,6 @@ class ProductTemplate(models.Model):
     buyer = fields.Many2one('res.partner', string='Comprador responsable', help='Establece el comprador encargado de este SKU')
     owner = fields.Many2one('res.partner', string='Owner comercial', help='Establece el comercial responsable de este SKU')
     internal_category = fields.Many2one('internal.category', string='Categoría interna', help='Categoría interna para el equipo de SR')
-    brand = fields.Many2one('product.brands', string='Marca', help='Muestra la marca a la que pertenece el SKU')
     #Logistics
     marketplace_codes = fields.Char(string='Códigos por marketplace', help='Códigos para comunicación con marketplace')
     provider_codes = fields.Char(string='Códigos por proveedor', help='Códigos del proveedor por SKU')
@@ -151,19 +150,19 @@ class ProductTemplate(models.Model):
                 self.last_cost = 0.0
             else:
                 if all_seller_ids:
-                    id_ultimo_costo = all_seller_ids[-2]
+                    id_ultimo_costo = all_seller_ids[-1]
                     supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
                     self.last_cost = supplier.price
                     _logger.info('Costo ultimo: %s', self.last_cost)
 
                     if self.last_cost == 0.0:
-                        id_ultimo_costo = all_seller_ids[-3]
+                        id_ultimo_costo = all_seller_ids[-2]
                         supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
                         self.last_cost = supplier.price
                         _logger.info('Costo ultimo: %s', self.last_cost)
 
                         if self.last_cost == 0.0:
-                            id_ultimo_costo = all_seller_ids[-4]
+                            id_ultimo_costo = all_seller_ids[-3]
                             supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
                             self.last_cost = supplier.price
                             _logger.info('Costo ultimo: %s', self.last_cost)
@@ -319,7 +318,7 @@ class ProductTemplate(models.Model):
         except Exception as e:
             _logger.error('ODOO CALCULATE|' + str(e))
 
-    #Function that print the actual stock - not currently in use
+    #Function that print the actual stock
     @api.depends('stock_real')
     def _min_stock_markets(self):
         self.ensure_one()

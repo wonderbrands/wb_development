@@ -31,13 +31,20 @@ class PurchaseOrder(models.Model):
 
     def _fecha_cita(self):
         self.ensure_one()
+        _logger = logging.getLogger(__name__)
 
         if self.incoming_picking_count >= 1:
-            fecha = self.env['stock.picking'].search([('origin', '=', self.name)], limit=1)
-            new_fecha = fecha.fecha_cita_almc
-            self.fecha_cita_almc = new_fecha
+            fecha = self.env['stock.picking'].search([('origin', '=', self.name)])
+            registry = fecha[1].name
+            date = fecha[1].fecha_cita_almc
+            _logger.info('Segundo %s ', registry)
+            if 'IN' in registry:
+                new_fecha = date
+                self.fecha_cita_almc = new_fecha
+            else:
+                print('Fallo el stock picking')
         else:
-            self.fecha_cita_almc = ''
+            _logger.info('Segundo %s ')
 
     def _fecha_prevista(self):
         fecha_crea = self.create_date
