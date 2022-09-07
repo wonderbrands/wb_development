@@ -15,7 +15,7 @@ class PurchaseOrder(models.Model):
 
     #Fechas proveedor
     leadtime = fields.Integer(related='partner_id.leadtime' ,string='Leadtime', help='Tiempo de entrega estimado del proveedor', readonly=False)
-    fecha_cita_almc = fields.Datetime(string='Fecha cita en almacén', compute='_fecha_cita')
+    fecha_cita_almc = fields.Datetime(string='Fecha cita en almacén')#, compute='_fecha_cita')
     fecha_prevista = fields.Datetime(string='Fecha prevista', compute='_fecha_prevista')
 
     #Relacionados
