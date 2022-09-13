@@ -9,8 +9,9 @@
 
           <!-- Agrega campos al formulario de Compra -->
           <xpath expr="//field[@name='origin']" position="after">
-              <!--<field name="leadtime"/> -->
               <field name="fecha_cita_almc"/>
+              <!--<field name="leadtime"/>
+              <field name="invisible_field"/> -->
           </xpath>
 
       </field>

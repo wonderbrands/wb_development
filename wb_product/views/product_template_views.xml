@@ -72,6 +72,7 @@
                 <field name="buyer"/>
                 <field name="owner"/>
                 <field name="internal_category"/>
+                <field name="brand"/>
               </group>
               <group string="Costos">
                   <field name="last_cost" widget='monetary'/>
@@ -136,6 +137,8 @@
                   <group string="Estatus y Etiquetas">
                       <field name="status"/>
                       <field name="substatus"/>
+                      <!--<field name="status_sequence"/>
+                      <field name="status_subsequence"/>-->
                       <field name="txt_filename" invisible="1"/>
                       <field name="txt_binary" filename="txt_filename" readonly="1"/>
                   </group>

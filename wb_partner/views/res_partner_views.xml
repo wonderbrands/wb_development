@@ -9,20 +9,20 @@
 
           <!-- Agrega campos al formulario de Compra -->
           <xpath expr="//group/field[@name='vat']" position="after">
-              <label for="monto_minimo"/>
-              <div class="o_row" name="monto_minimo">
+              <label for="monto_minimo" attrs="{'invisible':[('company_type', '!=', 'company')]}"/>
+              <div class="o_row" name="monto_minimo" attrs="{'invisible':[('company_type', '!=', 'company')]}">
                 <field name="monto_minimo"/>
                 <span><field name="unidad"/></span>
               </div>
 
-              <label for="dias_credito"/>
-              <div class="o_row" name="dias_credito">
+              <label for="dias_credito" attrs="{'invisible':[('company_type', '!=', 'company')]}"/>
+              <div class="o_row" name="dias_credito" attrs="{'invisible':[('company_type', '!=', 'company')]}">
                 <field name="dias_credito"/>
                 <span>días</span>
               </div>
-              <field name="dias_compra"/>
-              <label for="leadtime"/>
-              <div class="o_row" name="leadtime">
+              <field name="dias_compra" attrs="{'invisible':[('company_type', '!=', 'company')]}"/>
+              <label for="leadtime" attrs="{'invisible':[('company_type', '!=', 'company')]}"/>
+              <div class="o_row" name="leadtime" attrs="{'invisible':[('company_type', '!=', 'company')]}">
                 <field name="leadtime"/>
                 <span>días</span>
               </div>

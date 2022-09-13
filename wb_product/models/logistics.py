@@ -37,3 +37,11 @@ class InternalCategory(models.Model):
 
     name = fields.Char(string='Nombre')
     description = fields.Char(string='Descripción')
+
+class ProductBrand(models.Model):
+    _name = "product.brand"
+    _description = "Modelo para creación de marcas de producto"
+
+    name = fields.Char(string='Nombre')
+    description = fields.Char(string='Descripción')
+    supplier = fields.Many2one('res.partner', string='Proveedor')

@@ -29,6 +29,7 @@ class ProductTemplate(models.Model):
     buyer = fields.Many2one('res.partner', string='Comprador responsable', help='Establece el comprador encargado de este SKU')
     owner = fields.Many2one('res.partner', string='Owner comercial', help='Establece el comercial responsable de este SKU')
     internal_category = fields.Many2one('internal.category', string='Categoría interna', help='Categoría interna para el equipo de SR')
+    brand = fields.Many2one('product.brand', string='Marca', help='Marca a la que pertecene el SKU')
     #Logistics
     marketplace_codes = fields.Char(string='Códigos por marketplace', help='Códigos para comunicación con marketplace')
     provider_codes = fields.Char(string='Códigos por proveedor', help='Códigos del proveedor por SKU')
@@ -39,7 +40,9 @@ class ProductTemplate(models.Model):
     approx_date_arrival = fields.Date(string='Fecha aprox de llegada', help='Posible fecha de resurtido por parte del proveedor para agotados de industria')
     #Product Status
     status = fields.Many2one('product.estatus', string='Estatus', help='Estatus del producto')
-    substatus = fields.Many2one('product.subestatus', string='Subestatus', help='Subestatus del producto')
+    substatus = fields.Many2one('product.subestatus', string='Subestatus', help='Subestatus del producto')#, domain=[('status_subsequence', "=", 'status_sequence')])
+    status_sequence = fields.Char(related='status.sequence', string='Secuencia')
+    status_subsequence = fields.Char(related='substatus.subsequence', string='Subsecuencia')
     #Seasonal and Period
     start_period = fields.Char(string='Inicio del periodo', help='Fecha/Mes en que inicia una estación o un Periodo para un SKU')
     end_period = fields.Char(string='Fin del periodo', help='Fecha/Mes en que finaliza una estación o un Periodo para un SKU')

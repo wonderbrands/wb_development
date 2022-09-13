@@ -14,7 +14,7 @@ class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
     #Fechas proveedor
-    leadtime = fields.Integer(related='partner_id.leadtime' ,string='Leadtime', help='Tiempo de entrega estimado del proveedor', readonly=False)
+    leadtime = fields.Integer(related='partner_id.leadtime' ,string='Leadtime', help='Tiempo de entrega estimado del proveedor')
     fecha_cita_almc = fields.Datetime(string='Fecha cita en almacén')#, compute='_fecha_cita')
     fecha_prevista = fields.Datetime(string='Fecha prevista', compute='_fecha_prevista')
 
@@ -23,9 +23,9 @@ class PurchaseOrder(models.Model):
     unidad = fields.Selection([('pza', 'Piezas'),
                                ('doc', 'Docenas'),
                                ('caj', 'Cajas'),
-                               ('pes', 'Pesos')], string='Unidad', related='partner_id.unidad', readonly=False)
-    dias_credito = fields.Integer(related='partner_id.dias_credito', string='Días de crédito', help='Días de crédito que otorga el proveedor', readonly=False)
-    dias_compra = fields.Char(related='partner_id.dias_compra', string='Días de compra', help='Días en los que se le puede enviar pedido al proveedor', readonly=False)
+                               ('pes', 'Pesos')], string='Unidad', related='partner_id.unidad')
+    dias_credito = fields.Integer(related='partner_id.dias_credito', string='Días de crédito', help='Días de crédito que otorga el proveedor')
+    dias_compra = fields.Char(related='partner_id.dias_compra', string='Días de compra', help='Días en los que se le puede enviar pedido al proveedor')
 
     pedido_original = fields.Float(string='Pedido Original', help='Indica la cantidad demandada original')
 
