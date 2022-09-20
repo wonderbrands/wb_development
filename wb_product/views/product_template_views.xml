@@ -8,7 +8,9 @@
       <field name="arch" type="xml">
           <!-- Botón de impresión de etiquetas -->
           <xpath expr="//header" position="inside">
+               <!--
               <button string="Imprimir ZPL" type="object" name="print_zpl" />
+              -->
           </xpath>
 
           <!-- Agrega campos a la página Inventario -->
