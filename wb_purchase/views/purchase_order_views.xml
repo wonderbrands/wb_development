@@ -9,6 +9,7 @@
 
           <!-- Agrega campos al formulario de Compra -->
           <xpath expr="//group[1]" position="inside">
+              <!--
               <group>
                   <label for="monto_minimo"/>
                   <div class="o_row" name="monto_minimo">
@@ -32,11 +33,14 @@
                   <field name="fecha_prevista"/>
                   <field name="create_date"/>
               </group>
+              -->
           </xpath>
 
           <xpath expr="//field[@name='product_qty']" position="before">
+              <!--
               <field name="monto_minimo"/>
               <field name="pedido_original"/>
+              -->
           </xpath>
 
       </field>

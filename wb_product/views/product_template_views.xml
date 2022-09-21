@@ -15,6 +15,7 @@
 
           <!-- Agrega campos a la página Inventario -->
           <xpath expr="//group[@name='group_lots_and_weight']" position="after">
+              <!--
               <group string="Medidas de Producto">
                   <label for="product_length"/>
                   <div class="o_row" name="product_length">
@@ -41,9 +42,11 @@
                     <field name="product_volume"/>
                   </div>
               </group>
+              -->
           </xpath>
 
           <xpath expr="//group[@name='group_lots_and_weight']" position="after">
+              <!--
               <group string="Medidas de Empaque">
                   <label for="packing_length"/>
                   <div class="o_row" name="packing_length">
@@ -66,7 +69,9 @@
                     <span>kg</span>
                   </div>
               </group>
+              -->
           </xpath>
+
 
           <!-- Agrega campos a la pagina Información General -->
           <xpath expr="//group[@name='group_standard_price']" position="after">
@@ -77,15 +82,16 @@
                 <field name="brand"/>
               </group>
               <group string="Costos">
-                  <field name="last_cost" widget='monetary'/>
-                  <field name="replacement_cost" widget='monetary'/>
+                  <field name="previous_cost" widget='monetary'/>
+                  <!-- <field name="replacement_cost" widget='monetary'/>
                   <field name="last_entry_cost" widget='monetary'/>
                   <field name="ps_cost" widget='monetary'/>
-                  <field name="minimal_amount"/>
+                  <field name="minimal_amount"/> -->
               </group>
           </xpath>
           <!-- Agrega una nueva página al formulario llamada Logística -->
           <notebook>
+              <!--
             <page name="logistica" string="Logística">
               <group>
                   <group string="Logística">
@@ -133,6 +139,7 @@
                 </field>
               </group>
             </page>
+            -->
           <!-- Agrega una nueva página al formulario llamada Planificación -->
             <page name="planning" string="Planificación">
               <group>
@@ -140,10 +147,11 @@
                       <field name="status"/>
                       <field name="substatus"/>
                       <!--<field name="status_sequence"/>
-                      <field name="status_subsequence"/>-->
+                      <field name="status_subsequence"/>
                       <field name="txt_filename" invisible="1"/>
-                      <field name="txt_binary" filename="txt_filename" readonly="1"/>
+                      <field name="txt_binary" filename="txt_filename" readonly="1"/>-->
                   </group>
+                  <!--
                   <group string="Planning">
                       <field name="first_entry_date"/>
                       <field name="last_entry_date"/>
@@ -163,8 +171,10 @@
                       <field name="location_area"/>
                       <field name="location_box"/>
                   </group>
+                  -->
                   <group string="Stock">
                       <field name="stock_real"/>
+                      <!--
                       <field name="stock_exclusivas"/>
                       <field name="stock_urrea"/>
                       <field name="stock_markets"/>
@@ -172,6 +182,7 @@
                       <field name="stock_mercadolibre"/>
                       <field name="stock_linio"/>
                       <field name="stock_amazon"/>
+                      -->
                   </group>
               </group>
             </page>

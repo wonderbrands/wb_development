@@ -26,7 +26,7 @@
         -Esquema logístico
     """,
 
-    'author': "WonderBrands",
+    'author': "Wonderbrands",
     'website': "https://www.wonderbrands.co",
 
     # Categories can be used to filter modules in modules listing

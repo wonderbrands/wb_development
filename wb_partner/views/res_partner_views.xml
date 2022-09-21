@@ -9,6 +9,7 @@
 
           <!-- Agrega campos al formulario de Compra -->
           <xpath expr="//group/field[@name='vat']" position="after">
+              <!--
               <label for="monto_minimo" attrs="{'invisible':[('company_type', '!=', 'company')]}"/>
               <div class="o_row" name="monto_minimo" attrs="{'invisible':[('company_type', '!=', 'company')]}">
                 <field name="monto_minimo"/>
@@ -26,6 +27,7 @@
                 <field name="leadtime"/>
                 <span>días</span>
               </div>
+              -->
           </xpath>
 
       </field>

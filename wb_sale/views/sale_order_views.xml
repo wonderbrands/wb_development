@@ -7,7 +7,7 @@
       <field name="arch" type="xml">
           <!-- Agrega campos al formulario de Venta-->
           <notebook>
-              <page name="denied" string="Negados" attrs="{'invisible':[('state', '!=', 'cancel')]}">
+              <page name="denied" string="Motivos de cancelación" attrs="{'invisible':[('state', '!=', 'cancel')]}">
                   <group>
                       <group string='Motivos de cancelación de venta'>
                           <field name="availability"/>
@@ -15,7 +15,6 @@
                           <field name="sale_price"/>
                           <field name="other"/>
                           <field name="message" attrs="{'invisible':[('other', '=', False)]}"/>
-                          <field name="time_zone"/>
                       </group>
                   </group>
               </page>

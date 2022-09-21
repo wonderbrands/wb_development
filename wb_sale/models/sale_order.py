@@ -15,13 +15,11 @@ class SaleOrder(models.Model):
     delivery_time = fields.Boolean(string='Tiempo de entrega', help='Venta negada o cancelada por tiempo de entrega')
     sale_price = fields.Boolean(string='Precio de venta', help='Venta negada o cancelada por precio de venta')
     other = fields.Boolean(string='Otra', help='Venta negada o cancelada por una razón que no se encuentra en el listado')
-    message = fields.Text(string='¿Cuál?', help='Anote la razón por la cual se negó o canceló la venta')
+    message = fields.Text(string='¿Cuál es el motivo?', help='Anote la razón por la cual se negó o canceló la venta', track_visibility='onchange')
     time_zone = fields.Datetime(string='Zona horaria', help='Prueba de la zona horaria')
 
-    @api.onchange('precio_venta')
-    def _get_date(self):
-        fmt = '%Y-%m-%d'
-        now_ec = datetime.now(timezone('America/Mexico_City'))
-        fecha = now_ec.strftime(fmt)
-        #return fecha
-        self.time_zone = fecha
+    @api.onchange('other')
+    def _clear_field(self):
+
+        if not self.other:
+            self.message = False

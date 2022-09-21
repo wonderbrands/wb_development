@@ -9,8 +9,10 @@
 
           <!-- Agrega campos a la tabla order_line-->
           <xpath expr="//field[@name='product_qty']" position="before">
+              <!--
               <field name="monto_minimo"/>
               <field name="pedido_original"/>
+              -->
           </xpath>
 
       </field>

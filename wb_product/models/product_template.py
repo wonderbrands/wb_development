@@ -56,9 +56,9 @@ class ProductTemplate(models.Model):
                                   ('no', 'No')],
                                  string='Grava IVA', help='Identifica si el producto grava IVA')
     #Costs
-    last_cost = fields.Float(string='Costo anterior', help='Muestra el costo anterior del producto', compute='_last_cost')
+    previous_cost = fields.Float(string='Costo anterior', help='Muestra el costo anterior del producto', compute='_previous_cost')
     replacement_cost = fields.Float(string='Costo reposición', help='Muestra el costo de reposición del producto', compute='_replacement_cost')
-    last_entry_cost = fields.Float(string='Costo última entrada', help='Muestra el costo de la última entrada del producto al inventario', compute='_previous_cost')
+    last_entry_cost = fields.Float(string='Costo última entrada', help='Muestra el costo de la última entrada del producto al inventario', compute='_last_cost')
     ps_cost = fields.Float(string='Costo PP', help="Campo con costo pronto pago. Aplica para descuentos financieros por pago")
     minimal_amount = fields.Float(string='Cantidad mínima', help='Cantidad de compra mínima por producto')
     #Logistic Scheme
@@ -112,6 +112,44 @@ class ProductTemplate(models.Model):
             _logger.info('seller_ids: %s', all_seller_ids)
 
             if len(all_seller_ids) <= 1:
+                self.previous_cost = 0.0
+            else:
+                if all_seller_ids:
+                    id_ultimo_costo = all_seller_ids[-1]
+                    supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
+                    self.previous_cost = supplier.price
+                    _logger.info('Costo anterior: %s', self.previous_cost)
+
+                    if self.previous_cost == 0.0:
+                        id_ultimo_costo = all_seller_ids[-2]
+                        supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
+                        self.previous_cost = supplier.price
+                        _logger.info('Costo anterior: %s', self.previous_cost)
+
+                        if self.previous_cost == 0.0:
+                            id_ultimo_costo = all_seller_ids[-3]
+                            supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
+                            self.previous_cost = supplier.price
+                            _logger.info('Costo anterior: %s', self.previous_cost)
+                        else:
+                            _logger.info('Registro [-3] no es igual a 0.0')
+                    else:
+                        _logger.info('Registro [-3] no es igual a 0.0')
+                else:
+                    self.previous_cost = 0.0
+
+    # Function that prints the last cost
+    @api.depends('seller_ids')
+    def _last_cost(self):
+        self.ensure_one()
+
+        _logger = logging.getLogger(__name__)
+        if self.default_code or self.default_code != '':
+            product_search = self.env['product.product'].search([('default_code', '=', self.default_code)], limit=1)
+            all_seller_ids = product_search.seller_ids.ids
+            _logger.info('seller_ids: %s', all_seller_ids)
+
+            if len(all_seller_ids) <= 1:
                 self.last_entry_cost = 0.0
             else:
                 if all_seller_ids:
@@ -137,44 +175,6 @@ class ProductTemplate(models.Model):
                         _logger.info('Registro [-3] no es igual a 0.0')
                 else:
                     self.last_entry_cost = 0.0
-
-    # Function that prints the last cost
-    @api.depends('seller_ids')
-    def _last_cost(self):
-        self.ensure_one()
-
-        _logger = logging.getLogger(__name__)
-        if self.default_code or self.default_code != '':
-            product_search = self.env['product.product'].search([('default_code', '=', self.default_code)], limit=1)
-            all_seller_ids = product_search.seller_ids.ids
-            _logger.info('seller_ids: %s', all_seller_ids)
-
-            if len(all_seller_ids) <= 1:
-                self.last_cost = 0.0
-            else:
-                if all_seller_ids:
-                    id_ultimo_costo = all_seller_ids[-1]
-                    supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
-                    self.last_cost = supplier.price
-                    _logger.info('Costo ultimo: %s', self.last_cost)
-
-                    if self.last_cost == 0.0:
-                        id_ultimo_costo = all_seller_ids[-2]
-                        supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
-                        self.last_cost = supplier.price
-                        _logger.info('Costo ultimo: %s', self.last_cost)
-
-                        if self.last_cost == 0.0:
-                            id_ultimo_costo = all_seller_ids[-3]
-                            supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
-                            self.last_cost = supplier.price
-                            _logger.info('Costo ultimo: %s', self.last_cost)
-                        else:
-                            _logger.info('Registro [-3] no es igual a 0.0')
-                    else:
-                        _logger.info('Registro [-2] no es igual a 0.0')
-                else:
-                    self.last_cost = 0.0
 
     #Function that prints the replacement cost
     @api.depends('seller_ids')
