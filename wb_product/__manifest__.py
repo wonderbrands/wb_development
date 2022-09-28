@@ -67,6 +67,7 @@
         'data/cat.web.csv',
         'data/esquema.logistico.csv',
         'data/internal.category.csv',
+        'data/product.brand.csv',
     ],
     # only loaded in demonstration mode
     'demo': [
