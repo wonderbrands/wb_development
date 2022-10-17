@@ -23,6 +23,7 @@
                   </div>
                   <field name="dias_compra"/>
               </group>
+
               <group>
                   <label for="leadtime"/>
                   <div class="o_row" name="leadtime">

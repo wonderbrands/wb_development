@@ -11,9 +11,10 @@
           <xpath expr="//field[@name='origin']" position="after">
               <!--
               <field name="fecha_cita_almc"/>
+
               <field name="leadtime"/>
               <field name="invisible_field"/>
-              -->
+                -->
           </xpath>
 
       </field>

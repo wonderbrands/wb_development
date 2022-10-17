@@ -33,18 +33,28 @@ class PurchaseOrder(models.Model):
         self.ensure_one()
         _logger = logging.getLogger(__name__)
 
-        if self.incoming_picking_count >= 1:
-            fecha = self.env['stock.picking'].search([('origin', '=', self.name)])
-            registry = fecha[1].name
-            date = fecha[1].fecha_cita_almc
-            _logger.info('Segundo %s ', registry)
-            if 'IN' in registry:
-                new_fecha = date
-                self.fecha_cita_almc = new_fecha
-            else:
-                print('Fallo el stock picking')
+        stock_pick = self.env['stock.picking'].search([('origin', '=', self.name)])
+
+        if self.incoming_picking_count:
+
+            for each in stock_pick:
+                picking_type = each.picking_type_id.ids
+                picking_date = each.fecha_cita_almc
+                picking_name = each.name
+
+                _logger.info('picking_type: %s', picking_type)
+                _logger.info('picking_date: %s', picking_date)
+                _logger.info('picking_name: %s', picking_name)
+
+                for rec in picking_type:
+                    if rec == 1:
+                        self.fecha_cita_almc = picking_date
+                        _logger.info('El picking_type_id es 1')
+                    else:
+                        self.fecha_cita_almc = ''
+                        _logger.info('El picking_type_id es diferente de 1 ')
         else:
-            _logger.info('Segundo %s ')
+            self.fecha_cita_almc = ''
 
     def _fecha_prevista(self):
         fecha_crea = self.create_date

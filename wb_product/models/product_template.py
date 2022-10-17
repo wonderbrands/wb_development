@@ -260,66 +260,66 @@ class ProductTemplate(models.Model):
     #Function that print the actual stock
     @api.depends('stock_exclusivas', 'stock_urrea')
     def _total(self):
-        self.ensure_one()
         _logger = logging.getLogger(__name__)
-        try:
-            stock_real = 0
-            reserved_quantity = 0
-            previsto = 0
-            quantity_total = 0
-            reserved_quantity_total = 0
+        for each in self:
+            try:
+                stock_real = 0
+                reserved_quantity = 0
+                previsto = 0
+                quantity_total = 0
+                reserved_quantity_total = 0
 
-            default_code = self.default_code
-            product = self.env['product.product'].search([('default_code', '=', default_code)])
-            quants = product.stock_quant_ids
-            for quant in quants:
-                quant_id = quant.id
-                location_id = quant.location_id.id
-                location = self.env['stock.location'].search([('id', '=', location_id)])
-                location_display_name = location.display_name
-                location_name = quant.location_id.name
-                quantity = quant.quantity
-                reserved_quantity = quant.reserved_quantity
-                previsto = quantity - reserved_quantity
+                default_code = each.default_code
+                product = each.env['product.product'].search([('default_code', '=', default_code)], limit=1)
+                quants = product.stock_quant_ids
+                for quant in quants:
+                    quant_id = quant.id
+                    location_id = quant.location_id.id
+                    location = each.env['stock.location'].search([('id', '=', location_id)], limit=1)
+                    location_display_name = location.display_name
+                    location_name = quant.location_id.name
+                    quantity = quant.quantity
+                    reserved_quantity = quant.reserved_quantity
+                    previsto = quantity - reserved_quantity
 
-                _logger.info('SR STOCK| default_code:' + str(default_code) + '|location_id:' + str(location_id) + '|location_name:' + str(location_name) + '|' + str(location_display_name) + '|quantity:' + str(quantity) + '|reserved_quantity:' + str(reserved_quantity) + '|previsto:' + str(previsto))
-                # --- Todo lo que esta en las ubicaciones AG
-                if 'AG/Stock' in str(location_display_name):
-                    # stock_real += quantity
-                    quantity_total = quantity_total + quantity
-                    reserved_quantity_total = reserved_quantity_total + reserved_quantity
-                    _logger.info('quantity_total:' + str(quantity_total) + ',reserved_quantity_total: ' + str(
-                        reserved_quantity_total))
+                    _logger.info('SR STOCK| default_code:' + str(default_code) + '|location_id:' + str(location_id) + '|location_name:' + str(location_name) + '|' + str(location_display_name) + '|quantity:' + str(quantity) + '|reserved_quantity:' + str(reserved_quantity) + '|previsto:' + str(previsto))
+                    # --- Todo lo que esta en las ubicaciones AG
+                    if 'AG/Stock' in str(location_display_name):
+                        # stock_real += quantity
+                        quantity_total = quantity_total + quantity
+                        reserved_quantity_total = reserved_quantity_total + reserved_quantity
+                        _logger.info('quantity_total:' + str(quantity_total) + ',reserved_quantity_total: ' + str(
+                            reserved_quantity_total))
 
-            self.stock_real = quantity_total - reserved_quantity_total
+                each.stock_real = quantity_total - reserved_quantity_total
 
-            # --- Calculando el stock para los marketplaces
-            if self.stock_markets == 0:
-                self.stock_mercadolibre = self.stock_real + self.stock_exclusivas + self.stock_urrea
-            else:
-                self.stock_mercadolibre = self.stock_markets
+                # --- Calculando el stock para los marketplaces
+                if each.stock_markets == 0:
+                    each.stock_mercadolibre = each.stock_real + each.stock_exclusivas + each.stock_urrea
+                else:
+                    each.stock_mercadolibre = each.stock_markets
 
-            if self.stock_mercadolibre < 0:
-                self.stock_mercadolibre = 0
+                if each.stock_mercadolibre < 0:
+                    each.stock_mercadolibre = 0
 
-            if self.stock_markets == 0:
-                self.stock_linio = self.stock_real + self.stock_exclusivas
-            else:
-                self.stock_linio = self.stock_markets
+                if each.stock_markets == 0:
+                    each.stock_linio = each.stock_real + each.stock_exclusivas
+                else:
+                    each.stock_linio = each.stock_markets
 
-            if self.stock_linio < 0:
-                self.stock_linio = 0
+                if each.stock_linio < 0:
+                    each.stock_linio = 0
 
-            if self.stock_markets == 0:
-                self.stock_amazon = self.stock_real + self.stock_exclusivas + self.stock_urrea
-            else:
-                self.stock_amazon = self.stock_markets
+                if each.stock_markets == 0:
+                    each.stock_amazon = each.stock_real + each.stock_exclusivas + each.stock_urrea
+                else:
+                    each.stock_amazon = each.stock_markets
 
-            if self.stock_amazon < 0:
-                self.stock_amazon = 0
+                if each.stock_amazon < 0:
+                    each.stock_amazon = 0
 
-        except Exception as e:
-            _logger.error('ODOO CALCULATE|' + str(e))
+            except Exception as e:
+                _logger.error('ODOO CALCULATE|' + str(e))
 
     #Function that print the actual stock
     @api.depends('stock_real')
