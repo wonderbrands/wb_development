@@ -111,7 +111,9 @@ class ProductTemplate(models.Model):
             all_seller_ids = product_search.seller_ids.ids
             _logger.info('seller_ids: %s', all_seller_ids)
 
-            if len(all_seller_ids) >= 1:
+            if len(all_seller_ids) < 1:
+                self.previous_cost = 0.0
+            else:
                 if all_seller_ids:
                     id_ultimo_costo = all_seller_ids[-1]
                     supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
@@ -135,8 +137,6 @@ class ProductTemplate(models.Model):
                         _logger.info('Registro [-3] no es igual a 0.0')
                 else:
                     self.previous_cost = 0.0
-            else:
-                self.previous_cost = 0.0
 
     # Function that prints the last cost
     @api.depends('seller_ids')
