@@ -174,9 +174,9 @@
                   -->
                   <group string="Stock">
                       <field name="stock_real"/>
+                      <field name="stock_urrea"/>
                       <!--
                       <field name="stock_exclusivas"/>
-                      <field name="stock_urrea"/>
                       <field name="stock_markets"/>
                       <field name="stock_supplier"/>
                       <field name="stock_mercadolibre"/>
