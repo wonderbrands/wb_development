@@ -120,21 +120,26 @@ class ProductTemplate(models.Model):
                     self.previous_cost = supplier.price
                     _logger.info('Costo anterior: %s', self.previous_cost)
 
-                    if self.previous_cost == 0.0:
-                        id_ultimo_costo = all_seller_ids[-2]
-                        supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
-                        self.previous_cost = supplier.price
-                        _logger.info('Costo anterior: %s', self.previous_cost)
-
+                    if len(all_seller_ids) > 1:
                         if self.previous_cost == 0.0:
-                            id_ultimo_costo = all_seller_ids[-3]
+                            id_ultimo_costo = all_seller_ids[-2]
                             supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
                             self.previous_cost = supplier.price
                             _logger.info('Costo anterior: %s', self.previous_cost)
+                            if len(all_seller_ids) > 2:
+                                if self.previous_cost == 0.0:
+                                    id_ultimo_costo = all_seller_ids[-3]
+                                    supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
+                                    self.previous_cost = supplier.price
+                                    _logger.info('Costo anterior: %s', self.previous_cost)
+                                else:
+                                    _logger.info('Registro [-3] no es igual a 0.0')
+                            else:
+                                self.previous_cost = 0.0
                         else:
-                            _logger.info('Registro [-3] no es igual a 0.0')
+                            self.previous_cost = 0.0
                     else:
-                        _logger.info('Registro [-3] no es igual a 0.0')
+                        self.previous_cost = 0.0
                 else:
                     self.previous_cost = 0.0
 
