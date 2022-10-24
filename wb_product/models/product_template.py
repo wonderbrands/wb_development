@@ -103,45 +103,45 @@ class ProductTemplate(models.Model):
     # Function that prints the previous cost
     @api.depends('seller_ids')
     def _previous_cost(self):
-        self.ensure_one()
-
+        #self.ensure_one()
         _logger = logging.getLogger(__name__)
-        if self.default_code or self.default_code != '':
-            product_search = self.env['product.product'].search([('default_code', '=', self.default_code)], limit=1)
-            all_seller_ids = product_search.seller_ids.ids
-            _logger.info('seller_ids: %s', all_seller_ids)
+        for each in self:
+            if each.default_code or each.default_code != '':
+                product_search = each.env['product.product'].search([('default_code', '=', each.default_code)], limit=1)
+                all_seller_ids = product_search.seller_ids.ids
+                _logger.info('seller_ids: %s', all_seller_ids)
 
-            if len(all_seller_ids) < 1:
-                self.previous_cost = 0.0
-            else:
-                if all_seller_ids:
-                    id_ultimo_costo = all_seller_ids[-1]
-                    supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
-                    self.previous_cost = supplier.price
-                    _logger.info('Costo anterior: %s', self.previous_cost)
-
-                    if len(all_seller_ids) > 1:
-                        if self.previous_cost == 0.0:
-                            id_ultimo_costo = all_seller_ids[-2]
-                            supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
-                            self.previous_cost = supplier.price
-                            _logger.info('Costo anterior: %s', self.previous_cost)
-                            if len(all_seller_ids) > 2:
-                                if self.previous_cost == 0.0:
-                                    id_ultimo_costo = all_seller_ids[-3]
-                                    supplier = self.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
-                                    self.previous_cost = supplier.price
-                                    _logger.info('Costo anterior: %s', self.previous_cost)
-                                else:
-                                    _logger.info('Registro [-3] no es igual a 0.0')
-                            else:
-                                self.previous_cost = 0.0
-                        else:
-                            self.previous_cost = 0.0
-                    else:
-                        self.previous_cost = 0.0
+                if len(all_seller_ids) < 1:
+                    each.previous_cost = 0.0
                 else:
-                    self.previous_cost = 0.0
+                    if all_seller_ids:
+                        id_ultimo_costo = all_seller_ids[-1]
+                        supplier = each.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
+                        each.previous_cost = supplier.price
+                        _logger.info('Costo anterior: %s', each.previous_cost)
+
+                        if len(all_seller_ids) > 1:
+                            if each.previous_cost == 0.0:
+                                id_ultimo_costo = all_seller_ids[-2]
+                                supplier = each.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
+                                each.previous_cost = supplier.price
+                                _logger.info('Costo anterior: %s', each.previous_cost)
+                                if len(all_seller_ids) > 2:
+                                    if each.previous_cost == 0.0:
+                                        id_ultimo_costo = all_seller_ids[-3]
+                                        supplier = each.env['product.supplierinfo'].search([('id', '=', id_ultimo_costo)])
+                                        each.previous_cost = supplier.price
+                                        _logger.info('Costo anterior: %s', each.previous_cost)
+                                    else:
+                                        _logger.info('Registro [-3] no es igual a 0.0')
+                                else:
+                                    each.previous_cost = 0.0
+                            else:
+                                each.previous_cost = 0.0
+                        else:
+                            each.previous_cost = 0.0
+                    else:
+                        each.previous_cost = 0.0
 
     # Function that prints the last cost
     @api.depends('seller_ids')
