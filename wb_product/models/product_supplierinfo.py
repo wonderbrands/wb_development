@@ -14,3 +14,5 @@ class SupplierInfo(models.Model):
     precio_max_proveedor = fields.Float(string='Precio max', help='Precio máximo por proveedor')
 
     minimo_compra = fields.Float(string='Monto min compra', help='Monto de compra mínimo por proveedor')
+
+    supplier = fields.Boolean(string='¿Es proveedor?', help='Marca si el usuario de compra es un Proveedor')
