@@ -134,14 +134,12 @@ class ProductTemplate(models.Model):
                                         _logger.info('Costo anterior: %s', each.previous_cost)
                                     else:
                                         _logger.info('Registro [-3] no es igual a 0.0')
-                                else:
-                                    each.previous_cost = 0.0
                             else:
-                                each.previous_cost = 0.0
-                        else:
-                            each.previous_cost = 0.0
+                                _logger.info('Registro [-2] no es igual a 0.0')
                     else:
                         each.previous_cost = 0.0
+            else:
+                _logger.info('No se encontró el SKU')
 
     # Function that prints the last cost
     @api.depends('seller_ids')
