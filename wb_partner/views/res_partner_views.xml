@@ -29,7 +29,16 @@
               </div>
               -->
           </xpath>
-
+          <xpath expr="//group[@name='purchase']" position="after">
+              <group name="extra">
+                  <span> </span>
+              </group>
+          </xpath>
+          <xpath expr="//group[@name='extra']" position="after">
+              <group>
+                  <field name="supplier"/>
+              </group>
+          </xpath>
       </field>
     </record>
     </data>
