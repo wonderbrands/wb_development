@@ -40,7 +40,7 @@ class ProductTemplate(models.Model):
     approx_date_arrival = fields.Date(string='Fecha aprox de llegada', help='Posible fecha de resurtido por parte del proveedor para agotados de industria')
     #Product Status
     status = fields.Many2one('product.estatus', string='Estatus', help='Estatus del producto')
-    substatus = fields.Many2one('product.subestatus', string='Subestatus', help='Subestatus del producto')#, domain=[('status_subsequence', "=", 'status_sequence')])
+    substatus = fields.Many2one('product.subestatus', string='Subestatus', help='Subestatus del producto')
     status_sequence = fields.Char(related='status.sequence', string='Secuencia')
     status_subsequence = fields.Char(related='substatus.subsequence', string='Subsecuencia')
     #Seasonal and Period
