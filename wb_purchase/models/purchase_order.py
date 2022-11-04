@@ -29,8 +29,6 @@ class PurchaseOrder(models.Model):
 
     pedido_original = fields.Float(string='Pedido Original', help='Indica la cantidad demandada original')
 
-    supplier = fields.Boolean(related='partner_id.supplier', string='¿Es proveedor?')
-
     def _fecha_cita(self):
         self.ensure_one()
         _logger = logging.getLogger(__name__)

@@ -13,7 +13,6 @@
               <field name="precio_max_proveedor"/>
               <field name="minimo_compra"/>
               -->
-              <field name="supplier"/>
           </xpath>
 
       </field>

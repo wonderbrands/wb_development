@@ -40,7 +40,7 @@ class ProductTemplate(models.Model):
     approx_date_arrival = fields.Date(string='Fecha aprox de llegada', help='Posible fecha de resurtido por parte del proveedor para agotados de industria')
     #Product Status
     status = fields.Many2one('product.estatus', string='Estatus', help='Estatus del producto')
-    substatus = fields.Many2one('product.subestatus', string='Subestatus', help='Subestatus del producto')
+    substatus = fields.Many2one('product.subestatus', string='Subestatus', help='Subestatus del producto')#, domain=[('status_subsequence', "=", 'status_sequence')])
     status_sequence = fields.Char(related='status.sequence', string='Secuencia')
     status_subsequence = fields.Char(related='substatus.subsequence', string='Subsecuencia')
     #Seasonal and Period
@@ -134,12 +134,14 @@ class ProductTemplate(models.Model):
                                         _logger.info('Costo anterior: %s', each.previous_cost)
                                     else:
                                         _logger.info('Registro [-3] no es igual a 0.0')
+                                else:
+                                    each.previous_cost = 0.0
                             else:
-                                _logger.info('Registro [-2] no es igual a 0.0')
+                                each.previous_cost = 0.0
+                        else:
+                            each.previous_cost = 0.0
                     else:
                         each.previous_cost = 0.0
-            else:
-                _logger.info('No se encontró el SKU')
 
     # Function that prints the last cost
     @api.depends('seller_ids')
