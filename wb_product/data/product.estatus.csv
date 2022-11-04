@@ -1,6 +1,6 @@
-id,name,sequence
-1,Activo,1
-2,Reactivado,1
-3,Desarchivado,1
-4,Inactivo,2
-5,Prox Baja,2
+name,sequence
+Activo,1
+Reactivado,1
+Desarchivado,1
+Inactivo,2
+Prox Baja,2
