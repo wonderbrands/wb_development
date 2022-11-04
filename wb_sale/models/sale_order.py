@@ -17,6 +17,7 @@ class SaleOrder(models.Model):
     other = fields.Boolean(string='Otra', help='Venta negada o cancelada por una razón que no se encuentra en el listado')
     message = fields.Text(string='¿Cuál es el motivo?', help='Anote la razón por la cual se negó o canceló la venta', track_visibility=True)
     time_zone = fields.Datetime(string='Zona horaria', help='Prueba de la zona horaria')
+    was_auto_invoiced = fields.Boolean(string='Fue autofacturado', help='Muestra si la SO activa fue facturada de manera automática')
 
     @api.onchange('other')
     def _clear_field(self):
