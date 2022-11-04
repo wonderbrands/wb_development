@@ -1,8 +1,8 @@
-id,name,subsequence
-1,Resurtible,1
-2,Agotado de industria,1
-3,No competitivo,1
-4,No resurtible,1
-5,Descontinuado por proveedor,2
-6,Descontinuado por rotación,2
-7,No competitivo,2
+name,subsequence
+Resurtible,1
+Agotado de industria,1
+No competitivo,1
+No resurtible,1
+Descontinuado por proveedor,2
+Descontinuado por rotación,2
+No competitivo,2
