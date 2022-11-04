@@ -7,6 +7,10 @@
       <field name="inherit_id" ref="purchase.purchase_order_form"/>
       <field name="arch" type="xml">
 
+          <!-- Agrega dominio al formulario de Compra -->
+          <xpath expr="//field[@name='partner_id']" position="attributes">
+              <attribute name ="domain">[('supplier', '=', True)]</attribute>
+          </xpath>
           <!-- Agrega campos al formulario de Compra -->
           <xpath expr="//group[1]" position="inside">
               <!--
