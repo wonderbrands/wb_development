@@ -91,25 +91,29 @@
           </xpath>
           <!-- Agrega una nueva página al formulario llamada Logística -->
           <notebook>
-              <!--
             <page name="logistica" string="Logística">
               <group>
                   <group string="Logística">
+                      <field name="nacional_import"/>
+                      <!--
                       <field name="marketplace_codes" placeholder="ej. MAR-905977"/>
                       <field name="provider_codes" placeholder="ej. PRO-905922"/>
-                      <field name="nacional_import"/>
                       <field name="grava_iva"/>
                       <field name="create_date"/>
                       <field name="sold_out_industry"/>
                       <field name="approx_date_arrival" attrs="{'invisible':[('sold_out_industry','=', False)]}"/>
+                      -->
                   </group>
+                  <!--
                   <group string="Esquemas logísticos">
                       <field name="amazon_sch" options="{'no_create_edit': True, 'no_create': True}"/>
                       <field name="claro_sch" options="{'no_create_edit': True, 'no_create': True}"/>
                       <field name="linio_sch" options="{'no_create_edit': True, 'no_create': True}"/>
                       <field name="meli_sch" options="{'no_create_edit': True, 'no_create': True}"/>
                   </group>
+                  -->
               </group>
+              <!--
               <group string="Categorías Marketplace">
                   <group>
                     <field name="amazon_category" options="{'no_create_edit': True, 'no_create': True}"/>
@@ -129,6 +133,7 @@
                     <field name="web_category" options="{'no_create_edit': True, 'no_create': True}"/>
                   </group>
              </group>
+
               <group string="Sustitutos y Espejo">
                 <field name="substitute" options="{'no_create': True}">
                     <tree>
@@ -138,8 +143,9 @@
                     </tree>
                 </field>
               </group>
+              -->
             </page>
-            -->
+
           <!-- Agrega una nueva página al formulario llamada Planificación -->
             <page name="planning" string="Planificación">
               <group>
