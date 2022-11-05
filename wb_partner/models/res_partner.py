@@ -22,4 +22,4 @@ class ResPartner(models.Model):
                                ('pes', 'Pesos')], string='Unidad')
 
     leadtime = fields.Integer(string='Leadtime', help='Tiempo de entrega estimado del proveedor')
-    supplier = fields.Boolean(string='¿Es proveedor?', help='Marca si el usuario de compra es un Proveedor')
+    wb_supplier = fields.Boolean(string='¿Es proveedor?', help='Marca si el usuario de compra es un Proveedor')

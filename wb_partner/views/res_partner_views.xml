@@ -34,9 +34,9 @@
                   <span> </span>
               </group>
           </xpath>
-          <xpath expr="//group[@name='purchase']" position="after">
+          <xpath expr="//group[@name='extra']" position="after">
               <group>
-                  <field name="supplier"/>
+                  <field name="wb_supplier"/>
               </group>
           </xpath>
 

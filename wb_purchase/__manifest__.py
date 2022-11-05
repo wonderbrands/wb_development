@@ -32,7 +32,8 @@
                 'product',
                 'sale',
                 'stock',
-                'wb_product'],
+                'wb_product',
+                'wb_partner'],
 
     # always loaded
     'data': [
