@@ -192,6 +192,22 @@
                   </group>
               </group>
             </page>
+            <page string="Markets">
+                <group>
+                    <group string="Mercado Libre">
+                        <field name="mlm_ventas"/>
+                        <field name="full_api_ventas"/>
+                        <field name="stock_full_ventas"/>
+                        <field name="mlm_oficiales"/>
+                        <field name="full_api_oficiales"/>
+                        <field name="stock_full_oficiales"/>
+                    </group>
+                    <group string="Esquema deseado">
+                        <field name="full_ventas"/>
+                        <field name="full_oficiales"/>
+                    </group>
+                </group>
+            </page>
           </notebook>
 
       </field>

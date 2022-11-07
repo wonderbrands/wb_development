@@ -99,6 +99,16 @@ class ProductTemplate(models.Model):
     #Label
     txt_filename = fields.Char()
     txt_binary = fields.Binary("Etiqueta ZPL")
+    #Markets
+    mlm_ventas = fields.Char(string='Somos Reyes Ventas', help='Código MLM del SKU perteneciente a ventas')
+    mlm_oficiales = fields.Char(string='Somos Reyes Oficiales', helpp='Código MLM del SKU perteneciente a oficiales')
+    stock_full_ventas = fields.Integer(string='Stock Full Ventas', help='Stock de ventas')
+    stock_full_oficiales = fields.Integer(string='Stock Full Oficiales', help='Stock de oficiales')
+    full_api_ventas = fields.Boolean(string='Fullfilment Ventas API', help='Esquema del SKU de ventas mapeado por API')
+    full_api_oficiales = fields.Boolean(string='Fullfilment Oficiales API', help='Esquema del SKU de oficiales mapeado por API')
+    #Markets Manual
+    full_ventas = fields.Boolean(string='Fullfilment Ventas', help='Esquema del SKU de ventas mapeado de forma manual')
+    full_oficiales = fields.Boolean(string='Fullfilment Oficiales', help='Esquema del SKU de oficiales mapeado de forma manual')
 
     # Function that prints the previous cost
     @api.depends('seller_ids')
