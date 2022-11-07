@@ -9,7 +9,7 @@
 
           <!-- Agrega dominio al formulario de Compra -->
           <xpath expr="//field[@name='partner_id']" position="attributes">
-              <attribute name ="domain">[('supplier', '=', True)]</attribute>
+              <attribute name ="domain">[('wb_supplier', '=', True)]</attribute>
           </xpath>
           <!-- Agrega campos al formulario de Compra -->
           <xpath expr="//group[1]" position="inside">

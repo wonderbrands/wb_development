@@ -6,7 +6,6 @@
       <field name="inherit_id" ref="sale.view_order_form"/>
       <field name="arch" type="xml">
           <!-- Agrega campos al formulario de Venta-->
-
           <xpath expr="//group[@name='order_details']" position="after">
               <group>
                 <field name="auto_invoiced"/>
