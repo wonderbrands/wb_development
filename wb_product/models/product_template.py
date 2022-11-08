@@ -56,7 +56,7 @@ class ProductTemplate(models.Model):
                                   ('no', 'No')],
                                  string='Grava IVA', help='Identifica si el producto grava IVA')
     #Costs
-    #previous_cost = fields.Float(string='Costo anterior', help='Muestra el costo anterior del producto', compute='_previous_cost')
+    previous_cost = fields.Float(related='product_variant_id.previous_cost' , string='Costo anterior', help='Muestra el costo anterior del producto')
     replacement_cost = fields.Float(string='Costo reposición', help='Muestra el costo de reposición del producto', compute='_replacement_cost')
     last_entry_cost = fields.Float(string='Costo última entrada', help='Muestra el costo de la última entrada del producto al inventario', compute='_last_cost')
     ps_cost = fields.Float(string='Costo PP', help="Campo con costo pronto pago. Aplica para descuentos financieros por pago")
