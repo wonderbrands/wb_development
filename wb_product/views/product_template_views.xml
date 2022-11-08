@@ -12,7 +12,6 @@
               <button string="Imprimir ZPL" type="object" name="print_zpl" />
               -->
           </xpath>
-
           <!-- Agrega campos a la página Inventario -->
           <xpath expr="//group[@name='group_lots_and_weight']" position="after">
               <!-- MEDIDAS DE PRODUCTO -->
@@ -42,9 +41,7 @@
                     <field name="product_volume"/>
                   </div>
               </group>
-
           </xpath>
-
           <xpath expr="//group[@name='group_lots_and_weight']" position="after">
               <!--
               <group string="Medidas de Empaque">
@@ -71,23 +68,23 @@
               </group>
               -->
           </xpath>
-
-
           <!-- Agrega campos a la pagina Información General -->
           <xpath expr="//group[@name='group_standard_price']" position="after">
-              <group string="Comercial">
+              <group string="Comercial" name="comercial">
                 <field name="buyer"/>
                 <field name="owner"/>
                 <field name="internal_category"/>
                 <field name="brand"/>
               </group>
+              <!--
               <group string="Costos">
                   <field name="previous_cost" widget='monetary'/>
-                  <!-- <field name="replacement_cost" widget='monetary'/>
+                   <field name="replacement_cost" widget='monetary'/>
                   <field name="last_entry_cost" widget='monetary'/>
                   <field name="ps_cost" widget='monetary'/>
-                  <field name="minimal_amount"/> -->
+                  <field name="minimal_amount"/>
               </group>
+              -->
           </xpath>
           <!-- Agrega una nueva página al formulario llamada Logística -->
           <notebook>
@@ -145,7 +142,6 @@
               </group>
               -->
             </page>
-
           <!-- Agrega una nueva página al formulario llamada Planificación -->
             <page name="planning" string="Planificación">
               <group>
