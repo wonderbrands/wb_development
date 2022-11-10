@@ -11,6 +11,21 @@
                   <field name="previous_cost" widget='monetary'/>
               </group>
           </xpath>
+          <xpath expr="//group[@name='status']" position="after">
+              <group string="Stock">
+                  <field name="stock_real"/>
+                  <field name="stock_urrea"/>
+                  <!--
+                  <field name="stock_exclusivas"/>
+                  <field name="stock_markets"/>
+                  <field name="stock_supplier"/>
+                  <field name="stock_mercadolibre"/>
+                  <field name="stock_linio"/>
+                  <field name="stock_amazon"/>
+                  -->
+              </group>
+          </xpath>
+
       </field>
     </record>
 

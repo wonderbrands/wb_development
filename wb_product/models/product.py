@@ -15,6 +15,15 @@ class ProductProduct(models.Model):
 
     #Costs
     previous_cost = fields.Float(string='Costo anterior', help='Muestra el costo anterior del producto', compute='_product_previous_cost')
+    #Stock
+    stock_real = fields.Integer(string="Stock Real", compute='_product_total', help='muestral el stock real')
+    stock_exclusivas = fields.Integer(string="Stock Exclusivas", help='Muestra el stock de exclusivas')
+    stock_urrea = fields.Integer(string="Stock Urrea", help='Muestra el stock de Urrea')
+    stock_markets = fields.Integer(string="Stock Markets", help='Muestra el stock en markets')#, compute='_min_stock_markets')
+    stock_supplier = fields.Integer(string="Stock Proveedor", help='Muestra el stock del proveedor')
+    stock_mercadolibre = fields.Integer(string="Stock mercado Libre", compute='_product_total', readonly=False)
+    stock_linio = fields.Integer(string="Stock Linio", compute='_product_total', readonly=False)
+    stock_amazon = fields.Integer(string="Stock Amazon", compute='_product_total', readonly=False)
 
     # Function that prints the previous cost
     @api.depends('seller_ids')
@@ -56,3 +65,66 @@ class ProductProduct(models.Model):
                         each.previous_cost = 0.0
             else:
                 _logger.info('No se encontró el SKU')
+
+    @api.depends('stock_exclusivas', 'stock_urrea')
+    def _product_total(self):
+        _logger = logging.getLogger(__name__)
+        for each in self:
+            try:
+                stock_real = 0
+                reserved_quantity = 0
+                previsto = 0
+                quantity_total = 0
+                reserved_quantity_total = 0
+
+                default_code = each.default_code
+                product = each.env['product.product'].search([('default_code', '=', default_code)], limit=1)
+                quants = product.stock_quant_ids
+                for quant in quants:
+                    quant_id = quant.id
+                    location_id = quant.location_id.id
+                    location = each.env['stock.location'].search([('id', '=', location_id)], limit=1)
+                    location_display_name = location.display_name
+                    location_name = quant.location_id.name
+                    quantity = quant.quantity
+                    reserved_quantity = quant.reserved_quantity
+                    previsto = quantity - reserved_quantity
+
+                    _logger.info('SR STOCK| default_code:' + str(default_code) + '|location_id:' + str(location_id) + '|location_name:' + str(location_name) + '|' + str(location_display_name) + '|quantity:' + str(quantity) + '|reserved_quantity:' + str(reserved_quantity) + '|previsto:' + str(previsto))
+                    # --- Todo lo que esta en las ubicaciones AG
+                    if 'AG/Stock' in str(location_display_name):
+                        # stock_real += quantity
+                        quantity_total = quantity_total + quantity
+                        reserved_quantity_total = reserved_quantity_total + reserved_quantity
+                        _logger.info('quantity_total:' + str(quantity_total) + ',reserved_quantity_total: ' + str(
+                            reserved_quantity_total))
+
+                each.stock_real = quantity_total - reserved_quantity_total
+
+                # --- Calculando el stock para los marketplaces
+                if each.stock_markets == 0:
+                    each.stock_mercadolibre = each.stock_real + each.stock_exclusivas + each.stock_urrea
+                else:
+                    each.stock_mercadolibre = each.stock_markets
+
+                if each.stock_mercadolibre < 0:
+                    each.stock_mercadolibre = 0
+
+                if each.stock_markets == 0:
+                    each.stock_linio = each.stock_real + each.stock_exclusivas
+                else:
+                    each.stock_linio = each.stock_markets
+
+                if each.stock_linio < 0:
+                    each.stock_linio = 0
+
+                if each.stock_markets == 0:
+                    each.stock_amazon = each.stock_real + each.stock_exclusivas + each.stock_urrea
+                else:
+                    each.stock_amazon = each.stock_markets
+
+                if each.stock_amazon < 0:
+                    each.stock_amazon = 0
+
+            except Exception as e:
+                _logger.error('ODOO CALCULATE|' + str(e))

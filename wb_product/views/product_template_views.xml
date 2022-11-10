@@ -146,7 +146,7 @@
           <!-- Agrega una nueva página al formulario llamada Planificación -->
             <page name="planning" string="Planificación">
               <group>
-                  <group string="Estatus y Etiquetas">
+                  <group string="Estatus y Etiquetas" name="status">
                       <field name="status"/>
                       <field name="substatus"/>
                       <!--<field name="status_sequence"/>

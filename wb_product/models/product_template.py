@@ -56,7 +56,7 @@ class ProductTemplate(models.Model):
                                   ('no', 'No')],
                                  string='Grava IVA', help='Identifica si el producto grava IVA')
     #Costs
-    previous_cost = fields.Float(related='product_variant_id.previous_cost' , string='Costo anterior', help='Muestra el costo anterior del producto')
+    previous_cost = fields.Float(related='product_variant_id.previous_cost', string='Costo anterior', help='Muestra el costo anterior del producto')
     replacement_cost = fields.Float(string='Costo reposición', help='Muestra el costo de reposición del producto', compute='_replacement_cost')
     last_entry_cost = fields.Float(string='Costo última entrada', help='Muestra el costo de la última entrada del producto al inventario', compute='_last_cost')
     ps_cost = fields.Float(string='Costo PP', help="Campo con costo pronto pago. Aplica para descuentos financieros por pago")
@@ -83,14 +83,14 @@ class ProductTemplate(models.Model):
     #Substitute, Mirror and Variants
     substitute = fields.One2many('prod.relacionado', inverse_name='product_id', string='Productos', help='Muestra un producto que podría sustituir o reemplazar al seleccionado')
     #Stock
-    stock_real = fields.Integer(string="Stock Real", compute='_total', help='muestral el stock real')
-    stock_exclusivas = fields.Integer(string="Stock Exclusivas", help='Muestra el stock de exclusivas')
-    stock_urrea = fields.Integer(string="Stock Urrea", help='Muestra el stock de Urrea')
-    stock_markets = fields.Integer(string="Stock Markets", help='Muestra el stock en markets')#, compute='_min_stock_markets')
-    stock_supplier = fields.Integer(string="Stock Proveedor", help='Muestra el stock del proveedor')
-    stock_mercadolibre = fields.Integer(string="Stock mercado Libre", compute='_total', readonly=False)
-    stock_linio = fields.Integer(string="Stock Linio", compute='_total', readonly=False)
-    stock_amazon = fields.Integer(string="Stock Amazon", compute='_total', readonly=False)
+    stock_real = fields.Integer(related='product_variant_id.stock_real', string="Stock Real", help='muestral el stock real')#, compute='_total')
+    stock_exclusivas = fields.Integer(related='product_variant_id.stock_exclusivas', string="Stock Exclusivas", help='Muestra el stock de exclusivas')
+    stock_urrea = fields.Integer(related='product_variant_id.stock_urrea', string="Stock Urrea", help='Muestra el stock de Urrea')
+    stock_markets = fields.Integer(related='product_variant_id.stock_markets', string="Stock Markets", help='Muestra el stock en markets')#, compute='_min_stock_markets')
+    stock_supplier = fields.Integer(related='product_variant_id.stock_supplier', string="Stock Proveedor", help='Muestra el stock del proveedor')
+    stock_mercadolibre = fields.Integer(related='product_variant_id.stock_mercadolibre', string="Stock mercado Libre", readonly=False)#, compute='_total')
+    stock_linio = fields.Integer(related='product_variant_id.stock_linio', string="Stock Linio", readonly=False)#, compute='_total')
+    stock_amazon = fields.Integer(related='product_variant_id.stock_amazon', string="Stock Amazon", readonly=False)#, compute='_total')
     #Location
     location_hallway = fields.Char(string="Pasillo")
     location_level = fields.Char(string="Nivel")
