@@ -15,6 +15,7 @@ class ProductProduct(models.Model):
 
     #Costs
     previous_cost = fields.Float(string='Costo anterior', help='Muestra el costo anterior del producto', compute='_product_previous_cost')
+    revised_cost = fields.Float(string='Costo revisado', help='Muestra el costo a revisar por el usuario')
     #Stock
     stock_real = fields.Integer(string="Stock Real", compute='_product_total', help='muestral el stock real')
     stock_exclusivas = fields.Integer(string="Stock Exclusivas", help='Muestra el stock de exclusivas')
