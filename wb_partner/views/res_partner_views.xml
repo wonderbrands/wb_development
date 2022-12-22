@@ -9,13 +9,13 @@
 
           <!-- Agrega campos al formulario de Compra -->
           <xpath expr="//group/field[@name='vat']" position="after">
+              <field name="provider_key" placeholder="ej. PRO-000001"/>
               <!--
               <label for="monto_minimo" attrs="{'invisible':[('company_type', '!=', 'company')]}"/>
               <div class="o_row" name="monto_minimo" attrs="{'invisible':[('company_type', '!=', 'company')]}">
                 <field name="monto_minimo"/>
                 <span><field name="unidad"/></span>
               </div>
-
               <label for="dias_credito" attrs="{'invisible':[('company_type', '!=', 'company')]}"/>
               <div class="o_row" name="dias_credito" attrs="{'invisible':[('company_type', '!=', 'company')]}">
                 <field name="dias_credito"/>
@@ -30,11 +30,6 @@
               -->
           </xpath>
           <xpath expr="//group[@name='purchase']" position="after">
-              <group name="extra">
-                  <span> </span>
-              </group>
-          </xpath>
-          <xpath expr="//group[@name='extra']" position="after">
               <group>
                   <field name="wb_supplier"/>
               </group>

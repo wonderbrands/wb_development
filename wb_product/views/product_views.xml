@@ -9,7 +9,7 @@
           <xpath expr="//group[@name='comercial']" position="after">
               <group string="Costos">
                   <field name="revised_cost" widget='monetary'/>
-                  <field name="previous_cost" widget='monetary'/>
+                  <!--<field name="previous_cost" widget='monetary'/> -->
               </group>
           </xpath>
           <xpath expr="//group[@name='status']" position="after">
