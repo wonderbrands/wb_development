@@ -43,7 +43,7 @@
               </group>
           </xpath>
           <xpath expr="//group[@name='group_lots_and_weight']" position="after">
-              <!--
+              <!-- MEDIDAS DE EMPAQUE -->
               <group string="Medidas de Empaque">
                   <label for="packing_length"/>
                   <div class="o_row" name="packing_length">
@@ -66,7 +66,6 @@
                     <span>kg</span>
                   </div>
               </group>
-              -->
           </xpath>
           <!-- Agrega campos a la pagina Información General -->
           <xpath expr="//group[@name='group_standard_price']" position="after">
@@ -87,8 +86,8 @@
                   -->
               </group>
           </xpath>
-          <!-- Agrega una nueva página al formulario llamada Logística -->
           <notebook>
+          <!-- Agrega una nueva página al formulario llamada Logística -->
             <page name="logistica" string="Logística">
               <group>
                   <group string="Logística">
@@ -189,6 +188,7 @@
                   </group>
               </group>
             </page>
+          <!-- Agrega una nueva página al formulario llamada Markets -->
             <page string="Markets">
                 <group>
                     <group string="Mercado Libre">
@@ -205,6 +205,24 @@
                     </group>
                 </group>
             </page>
+          <!-- Agrega una nueva página al formulario llamada Componentes -->
+            <page name="combo" string="Componentes" attrs="{'invisible':[('is_kit', '=', False)]}">
+                <group string ='Lista de materiales'>
+                    <field name="is_kit" invisible="1" />
+                    <label for="combo_qty"/>
+                    <div class="o_row" name="combo_qty">
+                        <field name="combo_qty"/><span>combos pueden crearse</span>
+                    </div>
+                    <field name="sub_product_line_ids">
+                        <tree edit="0" create="0" delete="0">
+                            <field name="product_id"/>
+                            <field name="product_qty"/>
+                            <field name="stock_qty"/>
+                            <field name="combo_qty"/>
+                        </tree>
+                    </field>
+                </group>
+              </page>
           </notebook>
 
       </field>

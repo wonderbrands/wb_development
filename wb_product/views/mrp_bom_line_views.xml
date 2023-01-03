@@ -1,0 +1,19 @@
+<odoo>
+  <data>
+    <record  id="mrp_bom_lines_inherit" model="ir.ui.view">
+
+      <field name="name">mrp_bom_lines_inherit</field>
+      <field name="model">mrp.bom.line</field>
+      <field name="inherit_id" ref="mrp.mrp_bom_line_view_form"/>
+      <field name="arch" type="xml">
+
+          <xpath expr="//field[@name='product_id']" position="after">
+              <field name="stock_qty"/>
+              <field name="combo_qty"/>
+          </xpath>
+
+      </field>
+    </record>
+
+  </data>
+</odoo>

@@ -109,6 +109,10 @@ class ProductTemplate(models.Model):
     #Markets Manual
     full_ventas = fields.Boolean(string='Fullfilment Ventas', help='Esquema del SKU de ventas mapeado de forma manual')
     full_oficiales = fields.Boolean(string='Fullfilment Oficiales', help='Esquema del SKU de oficiales mapeado de forma manual')
+    # Sub products
+    sub_product_line_ids = fields.One2many('mrp.bom.line', inverse_name='parent_product_tmpl_id', string='Componentes', readonly=True)
+    is_kit = fields.Boolean(string='Es un kit?', help='Este campo estará marcado si el SKU es combo o tiene lista de materiales', compute='_is_kit')
+    combo_qty = fields.Float(string='Total combos', help='Muestra la cantidad de combos que se pueden realizar con la lista de materiales actual', compute='_total_combos')
 
     # Function that prints the previous cost
     @api.depends('seller_ids')
@@ -409,3 +413,29 @@ class ProductTemplate(models.Model):
             self.product_volume = round( (self.product_width * self.product_height * self.product_length) / 5000,2)
         else:
             self.product_volume = 0.00
+
+    #Function that evaluates if product is combo or kit
+    @api.depends('is_kit')
+    def _is_kit(self):
+        self.ensure_one()
+        _logger = logging.getLogger(__name__)
+
+        if self.bom_count > 0:
+            self.is_kit = True
+        else:
+            self.is_kit = False
+
+    @api.depends('is_kit')
+    def _total_combos(self):
+        _logger = logging.getLogger(__name__)
+        for rec in self:
+            bom_list = []
+            mrp_bom = rec.env['mrp.bom'].search([('product_tmpl_id', '=', rec.id)], limit=1)
+            bom_line = mrp_bom.bom_line_ids
+            for each in bom_line:
+                stock = each.stock_qty
+                bom_list.append(stock)
+                #print('STOCK_QTY: %', stock)
+            #print(bom_list)
+            min_amount = min(bom_list, default=0)
+            rec.combo_qty = min_amount

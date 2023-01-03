@@ -6,3 +6,4 @@ from . import cat_marketplace
 from . import logistics
 from . import estatus
 from . import product
+from . import mrp_bom_line
