@@ -408,11 +408,12 @@ class ProductTemplate(models.Model):
     #Function that print the volume of product
     @api.depends('product_width','product_height','product_length')
     def _volumen(self):
-        self.ensure_one()
-        if self.product_width > 0 and self.product_height > 0 and self.product_length > 0:
-            self.product_volume = round( (self.product_width * self.product_height * self.product_length) / 5000,2)
-        else:
-            self.product_volume = 0.00
+        _logger = logging.getLogger(__name__)
+        for rec in self:
+            if rec.product_width > 0 and rec.product_height > 0 and rec.product_length > 0:
+                rec.product_volume = round( (rec.product_width * rec.product_height * rec.product_length) / 5000,2)
+            else:
+                rec.product_volume = 0.00
 
     #Function that evaluates if product is combo or kit
     @api.depends('is_kit')
