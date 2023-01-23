@@ -110,7 +110,7 @@ class ProductTemplate(models.Model):
     full_ventas = fields.Boolean(string='Fullfilment Ventas', help='Esquema del SKU de ventas mapeado de forma manual')
     full_oficiales = fields.Boolean(string='Fullfilment Oficiales', help='Esquema del SKU de oficiales mapeado de forma manual')
     # Sub products
-    sub_product_line_ids = fields.One2many('mrp.bom.line.component', inverse_name='product_id', string='Componentes', compute='_bom_lines_component')
+    sub_product_line_ids = fields.One2many('mrp.bom.line.component', inverse_name='product_id', string='Componentes')#, compute='_bom_lines_component')
     is_kit = fields.Boolean(string='Es un kit?', help='Este campo estará marcado si el SKU es combo o tiene lista de materiales', compute='_is_kit')
     combo_qty = fields.Float(string='Total combos', help='Muestra la cantidad de combos que se pueden realizar con la lista de materiales actual')#, compute='_total_combos')
 
