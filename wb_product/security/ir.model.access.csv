@@ -19,3 +19,4 @@ access_product_estatus,access_product_estatus,model_product_estatus,,1,1,1,1
 access_product_subestatus,access_product_subestatus,model_product_subestatus,,1,1,1,1
 access_internal_category,access_internal_category,model_internal_category,,1,1,1,1
 access_product_brand,access_product_brand,model_product_brand,,1,1,1,1
+access_mrp_bom_line_component,access_mrp_bom_line_component,model_mrp_bom_line_component,,1,1,1,1

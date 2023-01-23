@@ -205,6 +205,22 @@
                     </group>
                 </group>
             </page>
+            <page name="combo" string="Componentes" attrs="{'invisible':[('is_kit', '=', False)]}">
+                <group string ='Lista de materiales'>
+                    <field name="is_kit" invisible="1" />
+                    <label for="combo_qty"/>
+                    <div class="o_row" name="combo_qty">
+                        <field name="combo_qty"/><span>combos pueden crearse</span>
+                    </div>
+                    <field name="sub_product_line_ids">
+                        <tree>
+                            <field name="product"/>
+                            <field name="stock_qty"/>
+                            <field name="combo_qty"/>
+                        </tree>
+                    </field>
+                </group>
+              </page>
           </notebook>
 
       </field>
