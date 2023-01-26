@@ -15,10 +15,10 @@ class MrpBomLineComponent(models.Model):
     _description = 'Bill of Material Line'
 
     #Stock
-    product_id = fields.Char(string='Id', readonly=True)
-    product = fields.Many2one('product.product', string='Componente')
-    stock_qty = fields.Float(string='Stock', help='Muestra el stock del producto')#, compute='_bom_lines')
-    combo_qty = fields.Float(string='Total combos', help='Muestra la cantidad de combos que se pueden realizar con la lista de materiales actual', readonly=True)
+    product_id = fields.Integer(string='Id', readonly=True)
+    product = fields.Many2one('product.product', string='Componente', readonly=True)
+    stock_qty = fields.Integer(string='Stock', help='Muestra el stock del producto', readonly=True)#, compute='_bom_lines')
+    combo_qty = fields.Integer(string='Total combos', help='Muestra la cantidad de combos que se pueden realizar con la lista de materiales actual', readonly=True)
 
     #---Funcion de calculo adicionado por somos-reyes
     @api.depends('stock_qty')
