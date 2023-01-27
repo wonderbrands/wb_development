@@ -28,10 +28,12 @@ class ProductProduct(models.Model):
     stock_linio = fields.Integer(string="Stock Linio", compute='_product_total', readonly=False)
     stock_amazon = fields.Integer(string="Stock Amazon", compute='_product_total', readonly=False)
     # Sub products
-    sub_product_line_ids = fields.One2many('mrp.bom.line.component', inverse_name='product_id', string='Componentes')
+    sub_product_line_ids = fields.One2many('mrp.bom.line.component', inverse_name='product_id', string='Componentes', readonly=True)
     is_kit = fields.Boolean(string='Es un kit?', help='Este campo estará marcado si el SKU es combo o tiene lista de materiales', compute='_is_kit')
+    conditional_lines = fields.Boolean(string='Lineas del combo')
     component_lines = fields.Boolean(string='Lineas del componente', help='Este campo estará marcado si el SKU es combo o tiene lista de materiales', compute='_bom_component')
-    combo_qty = fields.Float(string='Total combos', help='Muestra la cantidad de combos que se pueden realizar con la lista de materiales actual', compute='_stock')
+    combo_qty = fields.Float(string='Total combos', help='Muestra la cantidad de combos que se pueden realizar con la lista de materiales actual', compute='_stock_combo_qty')
+    combo_revised_cost = fields.Float(string='Costo revisado combo', help='Muestra la sumatoria de costos de los componentes de un combo', compute='_combo_revised_total_cost')
 
     # Function that prints the previous cost
     @api.depends('seller_ids')
@@ -149,30 +151,35 @@ class ProductProduct(models.Model):
 
     #---Funcion de calculo adicionado por somos-reyes
     @api.depends('is_kit')
-    def _stock(self):
+    def _stock_combo_qty(self):
         _logger = logging.getLogger(__name__)
-        if self.is_kit == True:
+        if self.is_kit == True and self.bom_count > 0:
+            self.conditional_lines = True
+            self.component_lines = True
             min_stock = []
             _logger.info('ES UN COMBO')
-            for each in self:
-                if each.sub_product_line_ids:
-                    each.component_lines = True
-                    sub_product_lines = each.sub_product_line_ids.product.ids
-                    for line in sub_product_lines:
-                        product = each.env['product.product'].search([('id', '=', line)], limit=1)
-                        stock = product.stock_real
-                        min_stock.append(stock)
-                        _logger.info('Array: ', min_stock)
+            #for each in self:
+            if self.sub_product_line_ids:
+                for sub_line in self.sub_product_line_ids:
+                    self.component_lines = True
+                    sub_product_lines = sub_line.product.ids
+                    #for line in sub_product_lines:
+                    product = self.env['product.product'].search([('id', '=', sub_product_lines)], limit=1)
+                    stock = product.stock_real
+                    min_stock.append(stock)
+                    #_logger.info('Array: ', min_stock)
                     min_amount = min(min_stock, default=0)
                     _logger.info('Cantidad mínima de la lista: %s', min_amount)
-                    each.combo_qty = min_amount
-                else:
-                    each.component_lines = False
+                    self.combo_qty = min_amount
+            else:
+                self.component_lines = False
+                self.combo_qty = 0.0
         else:
+            self.combo_qty = 0.0
+            self.conditional_lines = False
             self.component_lines = False
             _logger.info('NO ES UN COMBO')
 
-    @api.onchange('previous_cost')
     @api.depends('is_kit')
     def _bom_component(self):
         _logger = logging.getLogger(__name__)
@@ -180,6 +187,7 @@ class ProductProduct(models.Model):
         #Modelo One2many
         mrp_bom_line = self.env['mrp.bom.line.component']
         if self.is_kit == True:
+            self.conditional_lines = True
             _logger.info('ES UN COMBO')
             #Lista de componentes Yuju
             bom_ids = self.yuju_kit
@@ -190,6 +198,7 @@ class ProductProduct(models.Model):
                     chk_lines = self.sub_product_line_ids.product.ids
                     product_id = bom_lines_ids.product_id.id
                     product_stock = bom_lines_ids.product_id.stock_real
+                    product_revised_cost = bom_lines_ids.product_id.revised_cost
                     for lines in chk_lines:
                         _logger.info('la tabla SI tiene datos')
                         _logger.info('PRIMERO SE EVALUARÁN LOS IDS PARA EVITAR CUPLICARLOS')
@@ -204,7 +213,7 @@ class ProductProduct(models.Model):
                             data = {'product_id': self.id,
                                     'product': product_id,
                                     'stock_qty': product_stock,
-                                    'combo_qty': 1
+                                    'combo_qty': product_revised_cost
                                     }
                             _logger.info('SKU List: %s', data)
                             # exist_record.append(product_id)
@@ -213,16 +222,42 @@ class ProductProduct(models.Model):
                     self.component_lines = True
                     product_id = bom_lines_ids.product_id.id
                     product_stock = bom_lines_ids.product_id.stock_real
+                    product_revised_cost = bom_lines_ids.product_id.revised_cost
                     _logger.info('la tabla NO tiene datos')
                     _logger.info('SE CREARAÁN NUEVOS REGISTROS')
                     data = {'product_id': self.id,
                             'product': product_id,
                             'stock_qty': product_stock,
-                            'combo_qty': 1
+                            'combo_qty': product_revised_cost
                             }
                     _logger.info('SKU List: %s', data)
                     # exist_record.append(product_id)
                     mrp_bom_line.create(data)
         else:
-            self.component_lines = True
+            self.conditional_lines = False
+            self.component_lines = False
             _logger.info('NO ES UN COMBO')
+
+    @api.depends('is_kit')
+    def _combo_revised_total_cost(self):
+        _logger = logging.getLogger(__name__)
+        revised_cost_list = []
+        for rec in self:
+            if rec.is_kit == True:
+                if rec.sub_product_line_ids:
+                    for line in rec.sub_product_line_ids:
+                        _logger.info('Si hay info en la tabla')
+                        rec.conditional_lines = True
+                        chk_lines = line.product
+                        for each in chk_lines:
+                            revised_cost = each.revised_cost
+                            revised_cost_list.append(revised_cost)
+                        sum_cost = sum(revised_cost_list)
+                        rec.combo_revised_cost = sum_cost
+                else:
+                    rec.conditional_lines = False
+                    rec.combo_revised_cost = 0.0
+                    _logger.info('No hay nada en la tabla')
+            else:
+                rec.combo_revised_cost = 0.0
+                _logger.info('No es un combo')
