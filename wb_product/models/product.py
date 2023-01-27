@@ -31,7 +31,7 @@ class ProductProduct(models.Model):
     sub_product_line_ids = fields.One2many('mrp.bom.line.component', inverse_name='product_id', string='Componentes')
     is_kit = fields.Boolean(string='Es un kit?', help='Este campo estará marcado si el SKU es combo o tiene lista de materiales', compute='_is_kit')
     component_lines = fields.Boolean(string='Lineas del componente', help='Este campo estará marcado si el SKU es combo o tiene lista de materiales', compute='_bom_component')
-    combo_qty = fields.Float(string='Total combos', help='Muestra la cantidad de combos que se pueden realizar con la lista de materiales actual')#, compute='_total_combos')
+    combo_qty = fields.Float(string='Total combos', help='Muestra la cantidad de combos que se pueden realizar con la lista de materiales actual', compute='_stock')
 
     # Function that prints the previous cost
     @api.depends('seller_ids')
@@ -148,68 +148,81 @@ class ProductProduct(models.Model):
             self.is_kit = False
 
     #---Funcion de calculo adicionado por somos-reyes
-    @api.depends('stock_qty')
+    @api.depends('is_kit')
     def _stock(self):
         _logger = logging.getLogger(__name__)
-        min_stock = []
-        for each in self:
-            product = each.env['product.product'].search([('id', '=', each.product_id.id)], limit=1)
-            #self.quantity_virtual_available = product.virtual_available
-            each.stock_qty = product.stock_real
-            min_stock.append(each.stock_qty)
-            #print(min_stock)
-        min_amount = min(min_stock, default=0)
-        #print('Cantidad mínima de la lista: ')
-        #print(min_amount)
-        #total_combos = min_amount / self.product_qty
-        self.combo_qty = min_amount
+        if self.is_kit == True:
+            min_stock = []
+            _logger.info('ES UN COMBO')
+            for each in self:
+                if each.sub_product_line_ids:
+                    each.component_lines = True
+                    sub_product_lines = each.sub_product_line_ids.product.ids
+                    for line in sub_product_lines:
+                        product = each.env['product.product'].search([('id', '=', line)], limit=1)
+                        stock = product.stock_real
+                        min_stock.append(stock)
+                        _logger.info('Array: ', min_stock)
+                    min_amount = min(min_stock, default=0)
+                    _logger.info('Cantidad mínima de la lista: %s', min_amount)
+                    each.combo_qty = min_amount
+                else:
+                    each.component_lines = False
+        else:
+            self.component_lines = False
+            _logger.info('NO ES UN COMBO')
 
-    @api.model
+    @api.onchange('previous_cost')
+    @api.depends('is_kit')
     def _bom_component(self):
         _logger = logging.getLogger(__name__)
         exist_record = []
         #Modelo One2many
         mrp_bom_line = self.env['mrp.bom.line.component']
-        #Lista de componentes Yuju
-        bom_ids = self.yuju_kit
-        bom_line = bom_ids.bom_line_ids
-        chk_lines = self.sub_product_line_ids.product.id
-        if self.bom_count > 0:
-            self.component_lines = True
-            if chk_lines != False:
-                self.component_lines = True
-                _logger.info('La tabla está vacía, se creará el registro')
-                product_id = bom_line.product_id.id
-                product_stock = bom_line.product_id.stock_real
-
-                data = {'product_id': self.id,
-                        'product': product_id,
-                        'stock_qty': product_stock,
-                        'combo_qty': 1
-                        }
-
-                _logger.info('SKU List: %s', data)
-                exist_record.append(product_id)
-                mrp_bom_line.create(data)
-            else:
-                for line in exist_record:
-                    if chk_lines != False:
-                        if line in chk_lines:
-                            self.component_lines = True
-                            _logger.info('Ya existe el SKU en la tabla')
+        if self.is_kit == True:
+            _logger.info('ES UN COMBO')
+            #Lista de componentes Yuju
+            bom_ids = self.yuju_kit
+            bom_line = bom_ids.bom_line_ids
+            for bom_lines_ids in bom_line:
+                if self.sub_product_line_ids:
+                    self.component_lines = True
+                    chk_lines = self.sub_product_line_ids.product.ids
+                    product_id = bom_lines_ids.product_id.id
+                    product_stock = bom_lines_ids.product_id.stock_real
+                    for lines in chk_lines:
+                        _logger.info('la tabla SI tiene datos')
+                        _logger.info('PRIMERO SE EVALUARÁN LOS IDS PARA EVITAR CUPLICARLOS')
+                        if product_id in chk_lines:
+                            self.component_lines = False
+                            _logger.info('Ya existe ese SKU en la tabla')
+                            _logger.info('NO se va a crear ningún registro')
                         else:
-                            product_id = bom_line.product_id.id
-                            product_stock = bom_line.product_id.stock_real
-
+                            self.component_lines = True
+                            _logger.info('Este SKU NO existe en la tabla')
+                            _logger.info('Se creará un nuevo registro')
                             data = {'product_id': self.id,
                                     'product': product_id,
                                     'stock_qty': product_stock,
                                     'combo_qty': 1
                                     }
-
                             _logger.info('SKU List: %s', data)
+                            # exist_record.append(product_id)
                             mrp_bom_line.create(data)
-                    else:
-                        _logger.info('La tabla está vacía, se creará el registro')
+                else:
+                    self.component_lines = True
+                    product_id = bom_lines_ids.product_id.id
+                    product_stock = bom_lines_ids.product_id.stock_real
+                    _logger.info('la tabla NO tiene datos')
+                    _logger.info('SE CREARAÁN NUEVOS REGISTROS')
+                    data = {'product_id': self.id,
+                            'product': product_id,
+                            'stock_qty': product_stock,
+                            'combo_qty': 1
+                            }
+                    _logger.info('SKU List: %s', data)
+                    # exist_record.append(product_id)
+                    mrp_bom_line.create(data)
         else:
-            self.component_lines = False
+            self.component_lines = True
+            _logger.info('NO ES UN COMBO')

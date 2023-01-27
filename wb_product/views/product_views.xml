@@ -39,7 +39,7 @@
                         <tree>
                             <field name="product"/>
                             <field name="stock_qty"/>
-                            <field name="combo_qty"/>
+                            <!-- <field name="combo_qty"/> -->
                         </tree>
                     </field>
                 </group>
