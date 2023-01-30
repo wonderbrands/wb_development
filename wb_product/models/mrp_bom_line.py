@@ -12,12 +12,13 @@ import requests
 
 class MrpBomLineComponent(models.Model):
     _name = 'mrp.bom.line.component'
-    _description = 'Bill of Material Line'
+    _description = 'Componentes de la lista de materiales'
 
     #Stock
     product_id = fields.Integer(string='Id', readonly=True)
     product = fields.Many2one('product.product', string='Componente', readonly=True)
     stock_qty = fields.Integer(string='Stock', help='Muestra el stock del producto', readonly=True)#, compute='_bom_lines')
+    product_qty = fields.Float(string='Cantidad', help='Muestra la cantidad necesaria del producto para realizar el combo', readonly=True)#, compute='_bom_lines')
     combo_qty = fields.Float(string='Costo Revisado', help='Muestra la cantidad de combos que se pueden realizar con la lista de materiales actual', readonly=True)#, compute='_stock')
 
     #---Funcion de calculo adicionado por somos-reyes

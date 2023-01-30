@@ -197,6 +197,7 @@ class ProductProduct(models.Model):
                     self.component_lines = True
                     chk_lines = self.sub_product_line_ids.product.ids
                     product_id = bom_lines_ids.product_id.id
+                    product_qty = bom_lines_ids.product_qty
                     product_stock = bom_lines_ids.product_id.stock_real
                     product_revised_cost = bom_lines_ids.product_id.revised_cost
                     for lines in chk_lines:
@@ -212,6 +213,7 @@ class ProductProduct(models.Model):
                             _logger.info('Se creará un nuevo registro')
                             data = {'product_id': self.id,
                                     'product': product_id,
+                                    'product_qty': product_qty,
                                     'stock_qty': product_stock,
                                     'combo_qty': product_revised_cost
                                     }
@@ -221,12 +223,14 @@ class ProductProduct(models.Model):
                 else:
                     self.component_lines = True
                     product_id = bom_lines_ids.product_id.id
+                    product_qty = bom_lines_ids.product_qty
                     product_stock = bom_lines_ids.product_id.stock_real
                     product_revised_cost = bom_lines_ids.product_id.revised_cost
                     _logger.info('la tabla NO tiene datos')
                     _logger.info('SE CREARAÁN NUEVOS REGISTROS')
                     data = {'product_id': self.id,
                             'product': product_id,
+                            'product_qty': product_qty,
                             'stock_qty': product_stock,
                             'combo_qty': product_revised_cost
                             }
@@ -249,9 +253,11 @@ class ProductProduct(models.Model):
                         _logger.info('Si hay info en la tabla')
                         rec.conditional_lines = True
                         chk_lines = line.product
+                        chk_qty = line.product_qty
                         for each in chk_lines:
                             revised_cost = each.revised_cost
-                            revised_cost_list.append(revised_cost)
+                            revised_cost_opt = revised_cost * chk_qty
+                            revised_cost_list.append(revised_cost_opt)
                         sum_cost = sum(revised_cost_list)
                         rec.combo_revised_cost = sum_cost
                 else:

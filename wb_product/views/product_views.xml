@@ -36,12 +36,13 @@
                         <field name="combo_revised_cost"/>
                         <label for="combo_qty"/>
                         <div class="o_row" name="combo_qty">
-                            <field name="combo_qty"/><span>combos pueden crearse</span>
+                            <field name="combo_qty"/><strong><span>combos pueden crearse</span></strong>
                         </div>
                     </group>
                     <field name="sub_product_line_ids" edit="0" create="0" delete="0">
                         <tree>
                             <field name="product"/>
+                            <field name="product_qty"/>
                             <field name="stock_qty"/>
                             <field name="combo_qty"/>
                         </tree>
