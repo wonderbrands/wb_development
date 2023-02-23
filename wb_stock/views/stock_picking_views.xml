@@ -1,22 +1,16 @@
 <odoo>
     <data>
     <record  id="stock_picking_form_inherit" model="ir.ui.view">
-
       <field name="name">stock_picking_form_inherit</field>
       <field name="model">stock.picking</field>
       <field name="inherit_id" ref="stock.view_picking_form"/>
       <field name="arch" type="xml">
-
           <!-- Agrega campos al formulario de Compra -->
           <xpath expr="//field[@name='origin']" position="after">
-              <!--
-              <field name="fecha_cita_almc"/>
-
-              <field name="leadtime"/>
-              <field name="invisible_field"/>
-                -->
+              <field name="pick_priority" attrs="{'invisible': ['|','|', '|', ('name','=ilike','OUT'), ('name','=ilike','IN'), ('name','=ilike','RET'), ('name','=ilike','INT') ]}"/>
+              <field name="pick_zone" attrs="{'invisible': ['|','|', '|', ('name','=ilike','OUT'), ('name','=ilike','IN'), ('name','=ilike','RET'), ('name','=ilike','INT') ]}"/>
+              <field name="priority_check" attrs="{'invisible': ['|','|', '|', ('name','=ilike','OUT'), ('name','=ilike','IN'), ('name','=ilike','RET'), ('name','=ilike','INT') ]}"/>
           </xpath>
-
       </field>
     </record>
     </data>
