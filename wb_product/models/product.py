@@ -25,6 +25,11 @@ class ProductProduct(models.Model):
     stock_mercadolibre = fields.Integer(string="Stock mercado Libre", compute='_product_total', readonly=False)
     stock_linio = fields.Integer(string="Stock Linio", compute='_product_total', readonly=False)
     stock_amazon = fields.Integer(string="Stock Amazon", compute='_product_total', readonly=False)
+    # Sub products
+    sub_product_line_ids = fields.One2many(related='bom_ids.bom_line_ids', string='Componentes', readonly=True)
+    is_kit = fields.Boolean(string='Es un kit?', help='Este campo estará marcado si el SKU es combo o tiene lista de materiales', compute='_is_kit')
+    component_list = fields.Boolean(string='Lista de componentes', help='Este campo estará marcado si el SKU es combo o tiene lista de materiales', compute='_id_yuju_kit')
+    combo_qty = fields.Float(string='Total combos', help='Muestra la cantidad de combos que se pueden realizar con la lista de materiales actual', compute='_total_combos')
 
     # Function that prints the previous cost
     @api.depends('seller_ids')
@@ -129,3 +134,32 @@ class ProductProduct(models.Model):
 
             except Exception as e:
                 _logger.error('ODOO CALCULATE|' + str(e))
+
+    #Function that evaluates if product is combo or kit
+    @api.depends('is_kit')
+    def _is_kit(self):
+        self.ensure_one()
+        _logger = logging.getLogger(__name__)
+
+        if self.bom_count > 0:
+            self.is_kit = True
+        else:
+            self.is_kit = False
+
+    @api.depends('is_kit')
+    def _total_combos(self):
+        bom_list = []
+        for rec in self:
+            sub_product_lines = rec.sub_product_line_ids.product_id
+            for each in sub_product_lines:
+                stock = each.stock_real
+                bom_list.append(stock)
+            min_amount = min(bom_list, default=0)
+            self.combo_qty = min_amount
+            print(min_amount)
+
+    #@api.onchange('yuju_kit')
+    def _id_yuju_kit(self):
+        bom_line_ids = self.env['mrp.bom.line'].search([('bom_id', '=', self.yuju_kit.id)])
+        self.component_list = True
+        self.sub_product_line_ids = bom_line_ids
