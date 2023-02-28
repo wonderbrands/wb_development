@@ -20,6 +20,7 @@ class Picking(models.Model):
                              default='0', string='Priority level', help='Field that allows to enter the priority level of pick', store=True)
     pick_zone = fields.Many2one('stock.location', string='Pick zone', help='Field that allows to choose a stock location, this field is set from the first line of the stock move line', compute='_zone_assignment', index=True) #Campo relacionado con el modelo de Ubicaciones
     priority_check = fields.Boolean(string='Priority check', help='This field will be set "True" once it has been checked by the script')
+    is_colecta = fields.Boolean(string='Es colecta', help='Campo que nos permite saber si este Pick es de Mercado Libre colecta')
 
     @api.depends('invisible_field')
     def make_invisible(self):
