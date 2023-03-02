@@ -24,8 +24,11 @@ class MrpBomLine(models.Model):
         _logger = logging.getLogger(__name__)
         min_stock = []
         for each in self:
+            product_qty = each.product_qty
             product = each.env['product.product'].search([('id', '=', each.product_id.id)], limit=1)
             each.stock_qty = product.stock_real
-            min_stock.append(each.stock_qty)
+            combo_calculation = each.stock_qty / product_qty
+            round_qty = round(combo_calculation)
+            min_stock.append(round_qty)
         min_amount = min(min_stock, default=0)
         self.combo_qty = min_amount

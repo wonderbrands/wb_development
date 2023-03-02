@@ -146,17 +146,15 @@ class ProductProduct(models.Model):
         else:
             self.is_kit = False
 
-    @api.depends('is_kit')
+    #@api.depends('is_kit')
     def _total_combos(self):
-        bom_list = []
-        for rec in self:
-            sub_product_lines = rec.sub_product_line_ids.product_id
-            for each in sub_product_lines:
-                stock = each.stock_real
-                bom_list.append(stock)
-            min_amount = min(bom_list, default=0)
-            self.combo_qty = min_amount
-            print(min_amount)
+        if self.bom_count > 0 and self.yuju_kit:
+            bom_line_ids = self.env['mrp.bom.line'].search([('bom_id', '=', self.yuju_kit.id)])
+            for each in bom_line_ids:
+                combo_calculation = each.combo_qty
+                self.combo_qty = combo_calculation
+        else:
+            self.combo_qty = 0.0
 
     #@api.onchange('yuju_kit')
     def _id_yuju_kit(self):
