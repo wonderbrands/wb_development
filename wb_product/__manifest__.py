@@ -51,6 +51,7 @@
         'views/product_template_views.xml',
         'views/templates.xml',
         'views/product_views.xml',
+        'views/mrp_bom_line_views.xml',
         #'data/product.estatus.csv',
         #'data/product.subestatus.csv',
         #'data/cat.amazon.csv',

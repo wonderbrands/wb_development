@@ -26,6 +26,28 @@
                   -->
               </group>
           </xpath>
+          <notebook>
+          <page name="combo" string="Componentes" attrs="{'invisible':[('is_kit', '=', False)]}">
+                <group string ='Lista de materiales'>
+                    <group>
+                        <field name="is_kit" invisible="1" />
+                        <field name="component_list" invisible="1"/>
+                        <label for="combo_qty"/>
+                        <div class="o_row" name="combo_qty">
+                            <field name="combo_qty"/><span>combos pueden crearse</span>
+                        </div>
+                    </group>
+                    <field name="sub_product_line_ids">
+                        <tree edit="0" create="0" delete="0">
+                            <field name="product_id"/>
+                            <field name="product_qty"/>
+                            <field name="stock_qty"/>
+                            <field name="combo_qty" invisible="1"/>
+                        </tree>
+                    </field>
+                </group>
+              </page>
+          </notebook>
 
       </field>
     </record>
