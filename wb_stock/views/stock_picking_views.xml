@@ -12,7 +12,6 @@
               <field name="priority_check" attrs="{'invisible': ['|','|', '|', ('name','=ilike','OUT'), ('name','=ilike','IN'), ('name','=ilike','RET'), ('name','=ilike','INT') ]}"/>
               <field name="is_colecta" attrs="{'invisible': ['|','|', '|', ('name','=ilike','OUT'), ('name','=ilike','IN'), ('name','=ilike','RET'), ('name','=ilike','INT') ]}"/>
           </xpath>
-          </xpath>
       </field>
     </record>
     </data>
