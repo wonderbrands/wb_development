@@ -110,6 +110,7 @@ class ProductTemplate(models.Model):
     full_ventas = fields.Boolean(string='Fullfilment Ventas', help='Esquema del SKU de ventas mapeado de forma manual')
     full_oficiales = fields.Boolean(string='Fullfilment Oficiales', help='Esquema del SKU de oficiales mapeado de forma manual')
 
+
     # Function that prints the previous cost
     @api.depends('seller_ids')
     def _previous_cost(self):
@@ -402,11 +403,11 @@ class ProductTemplate(models.Model):
             self.vat_price=0.00
 
     #Function that print the volume of product
-    @api.depends('product_width', 'product_height', 'product_length')
+    @api.depends('product_width','product_height','product_length')
     def _volumen(self):
         _logger = logging.getLogger(__name__)
         for rec in self:
             if rec.product_width > 0 and rec.product_height > 0 and rec.product_length > 0:
-                rec.product_volume = round((rec.product_width * rec.product_height * rec.product_length) / 5000, 2)
+                rec.product_volume = round( (rec.product_width * rec.product_height * rec.product_length) / 5000,2)
             else:
                 rec.product_volume = 0.00
