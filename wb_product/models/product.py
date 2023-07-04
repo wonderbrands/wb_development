@@ -166,6 +166,7 @@ class ProductProduct(models.Model):
         self.component_list = True
         self.sub_product_line_ids = bom_line_ids
 
+    #Calcula el peso y volumen para combos
     def calculated_measures(self):
         if self.bom_count > 0:
             weight_measures = []
