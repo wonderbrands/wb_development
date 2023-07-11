@@ -32,8 +32,8 @@ class ProductProduct(models.Model):
     combo_qty = fields.Float(string='Total combos', help='Muestra la cantidad de combos que se pueden realizar con la lista de materiales actual', compute='_total_combos')
     #Calculated measures
     is_calculated_combo = fields.Boolean(string='Es combo', compute='calculated_measures')
-    calculated_weight = fields.Float(string='Peso calculado', help='Muestra el cálculo del peso de los componentes del combo')
-    calculated_volume = fields.Float(string='Volumen calculado', help='Muestra el cálculo del volumen de los componentes del combo')
+    calculated_weight = fields.Float(string='Peso calculado', help='Muestra el cálculo del peso de los componentes del combo en kilogramos')
+    calculated_volume = fields.Float(string='Volumen calculado', help='Muestra el cálculo del volumen de los componentes del combo, transforma centimetros cúbicos a Litros')
 
     # Function that prints the previous cost
     @api.depends('seller_ids')
@@ -170,16 +170,31 @@ class ProductProduct(models.Model):
     def calculated_measures(self):
         if self.bom_count > 0:
             weight_measures = []
-            volume_measures = []
+            length_measures = []
+            height_measures = []
+            width_measures = []
+            volume_calculation = []
             bom_line_ids = self.env['mrp.bom.line'].search([('bom_id', '=', self.yuju_kit.id)])
             product_ids = bom_line_ids['product_id']
             for product in product_ids:
+                #Peso
                 weight = product['product_weight']
-                volume = product['product_volume']
                 weight_measures.append(weight)
-                volume_measures.append(volume)
+                #Largo
+                length = product['product_length']
+                length_measures.append(length)
+                #Alto
+                height = product['product_height']
+                height_measures.append(height)
+                #Ancho
+                width = product['product_width']
+                width_measures.append(width)
+
+            max_length = max(length_measures)
+            max_height = max(height_measures)
+            sum_width = sum(width_measures)
+            self.calculated_volume =  (max_length * max_height * sum_width) / 1000
             self.calculated_weight = sum(weight_measures)
-            self.calculated_volume = sum(volume_measures)
             self.is_calculated_combo = True
         else:
             self.is_calculated_combo = False

@@ -13,10 +13,16 @@
               </group>
           </xpath>
           <xpath expr="//group[@name='group_lots_and_weight']" position="after">
-              <group string="Medidas de Empaque" attrs="{'invisible':[('is_kit', '=', False)]}">
+              <group string="Medidas calculadas de producto" attrs="{'invisible':[('is_kit', '=', False)]}">
                   <field name="is_calculated_combo" invisible="1"/>
-                  <field name="calculated_weight"/>
-                  <field name="calculated_volume"/>
+                  <label for="calculated_weight"/>
+                        <div class="o_row" name="calculated_weight">
+                            <field name="calculated_weight"/><span>kg</span>
+                        </div>
+                  <label for="calculated_volume"/>
+                        <div class="o_row" name="calculated_volume">
+                            <field name="calculated_volume"/><span>Litros</span>
+                        </div>
               </group>
           </xpath>
           <xpath expr="//group[@name='status']" position="after">
