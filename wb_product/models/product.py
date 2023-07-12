@@ -178,16 +178,16 @@ class ProductProduct(models.Model):
             product_ids = bom_line_ids['product_id']
             for product in product_ids:
                 #Peso
-                weight = product['product_weight']
+                weight = product['packing_weight']
                 weight_measures.append(weight)
                 #Largo
-                length = product['product_length']
+                length = product['packing_length']
                 length_measures.append(length)
                 #Alto
-                height = product['product_height']
+                height = product['packing_height']
                 height_measures.append(height)
                 #Ancho
-                width = product['product_width']
+                width = product['packing_width']
                 width_measures.append(width)
 
             max_length = max(length_measures)
