@@ -13,6 +13,8 @@ import requests
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
+    #Number of Packages
+    packages_number = fields.Integer(string='Numero de Paquetes')
     #Product Measurements
     product_length = fields.Float(string='Largo producto', help="Largo del Producto en centimentros")
     product_height = fields.Float(string='Alto producto', help="Alto del Producto en centimentros")

@@ -41,6 +41,7 @@
                     <field name="product_volume"/>
                   </div>
               </group>
+              <field name="packages_number"/>
           </xpath>
           <xpath expr="//group[@name='group_lots_and_weight']" position="after">
               <!-- MEDIDAS DE EMPAQUE -->
