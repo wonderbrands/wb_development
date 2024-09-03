@@ -47,11 +47,13 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'security/security_product.xml',
         'views/product_supplierinfo_views.xml',
         'views/product_template_views.xml',
         'views/templates.xml',
         'views/product_views.xml',
         'views/mrp_bom_line_views.xml',
+        'views/product_template_view.xml',
         #'data/product.estatus.csv',
         #'data/product.subestatus.csv',
         #'data/cat.amazon.csv',
