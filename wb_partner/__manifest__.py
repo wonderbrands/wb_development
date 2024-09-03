@@ -37,6 +37,7 @@
         'views/res_partner_views.xml',
         'views/views.xml',
         'views/templates.xml',
+        'views/partner_fields_form_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
