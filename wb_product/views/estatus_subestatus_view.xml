@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vistas para product.estatus -->
+    <record id="view_product_estatus_form" model="ir.ui.view">
+        <field name="name">product.estatus.form</field>
+        <field name="model">product.estatus</field>
+        <field name="arch" type="xml">
+            <form string="Estatus de Producto">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="sequence"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_product_estatus_tree" model="ir.ui.view">
+        <field name="name">product.estatus.tree</field>
+        <field name="model">product.estatus</field>
+        <field name="arch" type="xml">
+            <tree string="Estatus de Producto">
+                <field name="name"/>
+                <field name="sequence"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vistas para product.subestatus -->
+    <record id="view_product_subestatus_form" model="ir.ui.view">
+        <field name="name">product.subestatus.form</field>
+        <field name="model">product.subestatus</field>
+        <field name="arch" type="xml">
+            <form string="Subestatus de Producto">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="subsequence"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_product_subestatus_tree" model="ir.ui.view">
+        <field name="name">product.subestatus.tree</field>
+        <field name="model">product.subestatus</field>
+        <field name="arch" type="xml">
+            <tree string="Subestatus de Producto">
+                <field name="name"/>
+                <field name="subsequence"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vistas heredadas para aplicar solo lectura -->
+    <record id="view_product_estatus_form_readonly" model="ir.ui.view">
+        <field name="name">product.estatus.form.readonly</field>
+        <field name="model">product.estatus</field>
+        <field name="inherit_id" ref="view_product_estatus_form"/>
+        <field name="groups_id" eval="[(6, 0, [ref('wb_product.group_status_product_readonly')])]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='sequence']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_product_subestatus_form_readonly" model="ir.ui.view">
+        <field name="name">product.subestatus.form.readonly</field>
+        <field name="model">product.subestatus</field>
+        <field name="inherit_id" ref="view_product_subestatus_form"/>
+        <field name="groups_id" eval="[(6, 0, [ref('wb_product.group_status_product_readonly')])]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='subsequence']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
