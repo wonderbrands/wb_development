@@ -11,5 +11,5 @@ class ProductProduct(models.Model):
     pvp_aim = fields.Float(string='PVP objetivo', help='Muestra el PVP objetivo')
     purchase_frequency = fields.Integer(string="Frecuencia de compra", help='Muestra la frecuencia de compra')
     pc1 = fields.Float(string='PC1', help='Muestra el PC1')
-    pc2 = fields.Float(string='PC2', help='Muestra el PC2')
+    pc2 = fields.Float(string='PC3', help='Muestra el PC3')
     cluster = fields.Char(string='Cluster', help='Muestra el cluster')
