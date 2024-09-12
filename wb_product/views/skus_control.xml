@@ -15,6 +15,7 @@
               <field name="pc1" widget="percentage"/>
               <field name="pc2" widget="percentage"/>
               <field name="cluster"/>
+              <field name="loading_qty_"/>
             </group>
           </page>
         </xpath>

@@ -13,3 +13,4 @@ class ProductProduct(models.Model):
     pc1 = fields.Float(string='PC1', help='Muestra el PC1')
     pc2 = fields.Float(string='PC3', help='Muestra el PC3')
     cluster = fields.Char(string='Cluster', help='Muestra el cluster')
+    loading_qty_ = fields.Integer(string="Loading qty", help='Loading qty')
