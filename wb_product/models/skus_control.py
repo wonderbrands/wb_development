@@ -14,3 +14,6 @@ class ProductProduct(models.Model):
     pc2 = fields.Float(string='PC3', help='Muestra el PC3')
     cluster = fields.Char(string='Cluster', help='Muestra el cluster')
     loading_qty_ = fields.Integer(string="Loading qty", help='Loading qty')
+
+    # Campo Male 23-oct-2024
+    data_inventory_date = fields.Datetime(string='Fecha de inventario', help='Establece la fecha del inventario')

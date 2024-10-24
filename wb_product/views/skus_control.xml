@@ -16,6 +16,7 @@
               <field name="pc2" widget="percentage"/>
               <field name="cluster"/>
               <field name="loading_qty_"/>
+              <field name="data_inventory_date"/>
             </group>
           </page>
         </xpath>

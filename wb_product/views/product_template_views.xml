@@ -66,6 +66,16 @@
                     <field name="packing_weight"/>
                     <span>kg</span>
                   </div>
+
+                  <label for="data_averages_updated_date"/>
+                  <div class="o_row" name="data_averages_updated_date">
+                    <field name="data_averages_updated_date"/>
+                  </div>
+                  <label for="data_averages_updated_by"/>
+                  <div class="o_row" name="data_averages_updated_by">
+                    <field name="data_averages_updated_by"/>
+                  </div>
+
               </group>
           </xpath>
           <!-- Agrega campos a la pagina Información General -->

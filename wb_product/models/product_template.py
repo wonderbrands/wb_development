@@ -112,6 +112,9 @@ class ProductTemplate(models.Model):
     full_ventas = fields.Boolean(string='Fullfilment Ventas', help='Esquema del SKU de ventas mapeado de forma manual')
     full_oficiales = fields.Boolean(string='Fullfilment Oficiales', help='Esquema del SKU de oficiales mapeado de forma manual')
 
+    # Campos Cecilia  22-oct-2024
+    data_averages_updated_date = fields.Datetime(string='Medidas actualizadas el', help='Establece la fecha en que se actualizaron las medidas')
+    data_averages_updated_by = fields.Many2one('res.users', string='Medidas actualizadas por', help='Establece el usuario que actualizó las medidas')
 
     # Function that prints the previous cost
     @api.depends('seller_ids')
