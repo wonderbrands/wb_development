@@ -6,7 +6,8 @@
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
-                <header>
+                <!-- Target the header tag -->
+                <xpath expr="//header" position="inside">
                     <!-- Modify the "Check Availability" button -->
                     <xpath expr="//button[@name='action_assign']" position="attributes">
                         <attribute name="attrs">{
@@ -37,28 +38,20 @@
                                           ('restocked_field', '=', True)]
                         }</attribute>
                     </xpath>
-                    <field name="restocked_field" />
+
                     <!-- Add a new conditional button -->
-                    <xpath expr="." position="before">
-                        <button name="reservation_from_superior_lvs"
-                                type="object"
-                                string="Reservación Fulfillment"
-                                class="btn-primary"
-                                attrs="{'invisible': ['!', '&amp;', 
-                              ('state', 'in', ['waiting', 'confirm']), 
-                              ('restocked_field', '=', True)]}" />
+                    <button name="reservation_from_superior_lvs"
+                            type="object"
+                            string="Reservación Fulfillment"
+                            class="btn-primary"
+                            attrs="{'invisible': ['!', '&amp;', 
+                                                  ('state', 'in', ['waiting', 'confirm']), 
+                                                  ('restocked_field', '=', True)]}" />
+                </xpath>
 
-                    </xpath>
-                </header>
-
-                <!-- Add fields after the "origin" field -->
+                <!-- Add the "restocked_field" in the body after the "origin" field -->
                 <xpath expr="//field[@name='origin']" position="after">
-                    <!-- Example fields (commented out) -->
-                    <!-- 
-                    <field name="fecha_cita_almc"/>
-                    <field name="leadtime"/>
-                    <field name="invisible_field"/>
-                    -->
+                    <field name="restocked_field" attrs="{'invisible': [('restocked_field', '=', False)]}" />
                 </xpath>
             </field>
         </record>
