@@ -8,21 +8,21 @@
             <field name="arch" type="xml">
                 <xpath expr="//header" position="inside">
                     <xpath expr="//button[@name='action_assign']" position="attributes">
-                        <attribute name="attrs">{
-                            'invisible': [('restocked_field', '=', True)]
-                        }</attribute>
+                        <attribute name="attrs">
+                            {'invisible': [('show_full_button', '=', True)]}
+                        </attribute>
                     </xpath>
 
                     <xpath expr="//button[@name='button_validate' and @class='oe_highlight']" position="attributes">
-                        <attribute name="attrs">{
-                            'invisible': [('restocked_field', '=', True)]
-                        }</attribute>
+                        <attribute name="attrs">
+                            {'invisible': [('show_full_button', '=', True)]}
+                        </attribute>
                     </xpath>
 
                     <xpath expr="//button[@name='button_validate' and @class='o_btn_validate']" position="attributes">
-                        <attribute name="attrs">{
-                            'invisible': [('restocked_field', '=', True)]
-                        }</attribute>
+                        <attribute name="attrs">
+                            {'invisible': [('show_full_button', '=', True)]}
+                        </attribute>
                     </xpath>
 
                     <button name="reservation_from_superior_lvs"
