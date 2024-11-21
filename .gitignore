@@ -1,2 +1,4 @@
 # Ignorar archivos de configuración de IDE
 .idea/
+__pycache__/
+*.py[cod]
