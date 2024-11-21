@@ -1,23 +1,64 @@
 <odoo>
     <data>
-    <record  id="stock_picking_form_inherit" model="ir.ui.view">
+        <record id="stock_picking_form_inherit" model="ir.ui.view">
+            <field name="name">stock_picking_form_inherit</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <header>
+                    <!-- Modify the "Check Availability" button -->
+                    <xpath expr="//button[@name='action_assign']" position="attributes">
+                        <attribute name="attrs">{
+                            'invisible': ['|', 
+                                          ('show_check_availability', '=', False), 
+                                          ('restocked', '=', True)]
+                        }</attribute>
+                    </xpath>
 
-      <field name="name">stock_picking_form_inherit</field>
-      <field name="model">stock.picking</field>
-      <field name="inherit_id" ref="stock.view_picking_form"/>
-      <field name="arch" type="xml">
+                    <!-- Modify the first "Validate" button -->
+                    <xpath expr="//button[@name='button_validate' and @class='oe_highlight']" position="attributes">
+                        <attribute name="attrs">{
+                            'invisible': ['|', 
+                                          '|', 
+                                          ('state', 'in', ('waiting', 'confirmed')), 
+                                          ('show_validate', '=', False), 
+                                          ('restocked', '=', True)]
+                        }</attribute>
+                    </xpath>
 
-          <!-- Agrega campos al formulario de Compra -->
-          <xpath expr="//field[@name='origin']" position="after">
-              <!--
-              <field name="fecha_cita_almc"/>
+                    <!-- Modify the second "Validate" button -->
+                    <xpath expr="//button[@name='button_validate' and @class='o_btn_validate']" position="attributes">
+                        <attribute name="attrs">{
+                            'invisible': ['|', 
+                                          '|', 
+                                          ('state', 'not in', ('waiting', 'confirmed')), 
+                                          ('show_validate', '=', False), 
+                                          ('restocked', '=', True)]
+                        }</attribute>
+                    </xpath>
 
-              <field name="leadtime"/>
-              <field name="invisible_field"/>
-                -->
-          </xpath>
+                    <!-- Add a new conditional button -->
+                    <xpath expr="." position="before">
+                        <button name="reservation_from_superior_lvs"
+                                type="object"
+                                string="Reservación Fulfillment"
+                                class="btn-primary"
+                                attrs="{'invisible': ['!', '&', 
+                                                      ('state', 'in', ['waiting', 'confirm']), 
+                                                      ('restocked', '=', True)]}" />
+                    </xpath>
+                </header>
 
-      </field>
-    </record>
+                <!-- Add fields after the "origin" field -->
+                <xpath expr="//field[@name='origin']" position="after">
+                    <!-- Example fields (commented out) -->
+                    <!-- 
+                    <field name="fecha_cita_almc"/>
+                    <field name="leadtime"/>
+                    <field name="invisible_field"/>
+                    -->
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
