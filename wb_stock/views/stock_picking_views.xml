@@ -9,29 +9,19 @@
                 <xpath expr="//header" position="inside">
                     <xpath expr="//button[@name='action_assign']" position="attributes">
                         <attribute name="attrs">{
-                            'invisible': ['|', 
-                                          ('show_check_availability', '=', False), 
-                                          ('restocked_field', '=', True)]
+                            'invisible': [('restocked_field', '=', True)]
                         }</attribute>
                     </xpath>
 
                     <xpath expr="//button[@name='button_validate' and @class='oe_highlight']" position="attributes">
                         <attribute name="attrs">{
-                            'invisible': ['|', 
-                                          '|', 
-                                          ('state', 'in', ('waiting', 'confirmed')), 
-                                          ('show_validate', '=', False), 
-                                          ('restocked_field', '=', True)]
+                            'invisible': [('restocked_field', '=', True)]
                         }</attribute>
                     </xpath>
 
                     <xpath expr="//button[@name='button_validate' and @class='o_btn_validate']" position="attributes">
                         <attribute name="attrs">{
-                            'invisible': ['|', 
-                                          '|', 
-                                          ('state', 'not in', ('waiting', 'confirmed')), 
-                                          ('show_validate', '=', False), 
-                                          ('restocked_field', '=', True)]
+                            'invisible': [('restocked_field', '=', True)]
                         }</attribute>
                     </xpath>
 
@@ -39,13 +29,12 @@
                             type="object"
                             string="Reservación Fulfillment"
                             class="btn-primary"
-                            attrs="{'invisible': ['!', '&amp;', 
-                                                  ('state', 'in', ['waiting', 'confirm']), 
-                                                  ('restocked_field', '=', True)]}" />
+                            attrs="{'invisible': [('show_full_button', '=', False)]}" />
                 </xpath>
 
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="restocked_field" />
+                    <field name="show_full_button" />
                 </xpath>
             </field>
         </record>

@@ -21,6 +21,21 @@ class Picking(models.Model):
         default=False
     )
     
+    show_full_button = fields.Boolean(
+        string="Show full button",
+        compute='_compute_show_full_button',
+        store=True
+    )
+
+    @api.depends('state', 'restocked_field')
+    def _compute_show_full_button(self):
+        for each in self:
+            if each.state in ['waiting', 'confirmed'] and each.restocked_field:
+                each.show_full_button = True
+            else:
+                each.show_full_button = False
+
+
     @api.depends('invisible_field')
     def make_invisible(self):
         self.ensure_one()
