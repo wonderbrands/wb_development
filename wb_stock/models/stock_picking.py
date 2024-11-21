@@ -16,7 +16,11 @@ class Picking(models.Model):
     fecha_cita_almc = fields.Datetime(string='Fecha cita en almacén')#, compute='make_invisible', store=True)
     # leadtime = fields.Integer(string='Leadtime', help='Tiempo de entrega estimado del proveedor')
     invisible_field = fields.Boolean(string='Es IN?', help='Un campo de ayuda al programador para saber si el movimiento de almacén es un IN')
-
+    restocked = fields.Boolean(
+        string="Is restocked?",
+        default=False
+    )
+    
     @api.depends('invisible_field')
     def make_invisible(self):
         self.ensure_one()
