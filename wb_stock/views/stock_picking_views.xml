@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
         <record id="stock_picking_form_inherit" model="ir.ui.view">
@@ -38,14 +39,14 @@
                     </xpath>
 
                     <!-- Add a new conditional button -->
-                    <button name="reservation_from_superior_lvs"
-                            type="object"
-                            string="Reservaci&oacute;n Fulfillment"
-                            class="btn-primary"
-                            attrs="{'invisible': ['!', '&', 
-                              ('state', 'in', ['waiting', 'confirm']), 
-                              ('restocked', '=', True)]}" />
-
+                    <xpath expr="." position="before">
+                        <button name="reservation_from_superior_lvs"
+                                type="object"
+                                string="Reservación Fulfillment"
+                                class="btn-primary"
+                                attrs="{'invisible': ['!', '&', 
+                                                      ('state', 'in', ['waiting', 'confirm']), 
+                                                      ('restocked', '=', True)]}" />
                     </xpath>
                 </header>
 
