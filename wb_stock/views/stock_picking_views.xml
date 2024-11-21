@@ -12,7 +12,7 @@
                         <attribute name="attrs">{
                             'invisible': ['|', 
                                           ('show_check_availability', '=', False), 
-                                          ('restocked', '=', True)]
+                                          ('restocked_field', '=', True)]
                         }</attribute>
                     </xpath>
 
@@ -23,7 +23,7 @@
                                           '|', 
                                           ('state', 'in', ('waiting', 'confirmed')), 
                                           ('show_validate', '=', False), 
-                                          ('restocked', '=', True)]
+                                          ('restocked_field', '=', True)]
                         }</attribute>
                     </xpath>
 
@@ -34,10 +34,10 @@
                                           '|', 
                                           ('state', 'not in', ('waiting', 'confirmed')), 
                                           ('show_validate', '=', False), 
-                                          ('restocked', '=', True)]
+                                          ('restocked_field', '=', True)]
                         }</attribute>
                     </xpath>
-                    <field name="restocked" />
+                    <field name="restocked_field" />
                     <!-- Add a new conditional button -->
                     <xpath expr="." position="before">
                         <button name="reservation_from_superior_lvs"
@@ -46,7 +46,7 @@
                                 class="btn-primary"
                                 attrs="{'invisible': ['!', '&amp;', 
                               ('state', 'in', ['waiting', 'confirm']), 
-                              ('restocked', '=', True)]}" />
+                              ('restocked_field', '=', True)]}" />
 
                     </xpath>
                 </header>

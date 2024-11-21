@@ -16,7 +16,7 @@ class Picking(models.Model):
     fecha_cita_almc = fields.Datetime(string='Fecha cita en almacén')#, compute='make_invisible', store=True)
     # leadtime = fields.Integer(string='Leadtime', help='Tiempo de entrega estimado del proveedor')
     invisible_field = fields.Boolean(string='Es IN?', help='Un campo de ayuda al programador para saber si el movimiento de almacén es un IN')
-    restocked = fields.Boolean(
+    restocked_field = fields.Boolean(
         string="Is restocked?",
         default=False
     )
@@ -37,12 +37,12 @@ class Picking(models.Model):
     def reservation_from_superior_lvs(self):
         pattern = re.compile(r"(AG/Stock/TL/N|AG/Stock/N)([0-9]|[1-9][0-9]|100)\b")
         locations = [location.complete_name for location in self.env["stock.location"].search([
-            '&',
+            #'&',
             ('usage', '=', 'internal'),  
-            '|',
-            ('complete_name', 'ilike', 'AG/Stock/TL/N'),
-            ('complete_name', 'ilike', 'AG/Stock/N')
-        ]) if pattern.match(location.complete_name)]
+            #'|',
+            #('complete_name', 'ilike', 'AG/Stock/TL/N'),
+            #('complete_name', 'ilike', 'AG/Stock/N')
+        ]) ]#if pattern.match(location.complete_name)]
         locations.sort(reverse=True)
         products = self.move_ids_without_package
         prods_witho_stock = []
