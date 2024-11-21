@@ -38,14 +38,14 @@
                     </xpath>
 
                     <!-- Add a new conditional button -->
-                    <xpath expr="." position="before">
-                        <button name="reservation_from_superior_lvs"
-                                type="object"
-                                string="Reservación Fulfillment"
-                                class="btn-primary"
-                                attrs="{'invisible': ['!', '&', 
-                                                      ('state', 'in', ['waiting', 'confirm']), 
-                                                      ('restocked', '=', True)]}" />
+                    <button name="reservation_from_superior_lvs"
+                            type="object"
+                            string="Reservaci&oacute;n Fulfillment"
+                            class="btn-primary"
+                            attrs="{'invisible': ['!', '&', 
+                              ('state', 'in', ['waiting', 'confirm']), 
+                              ('restocked', '=', True)]}" />
+
                     </xpath>
                 </header>
 
