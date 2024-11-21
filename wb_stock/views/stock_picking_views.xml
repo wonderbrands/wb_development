@@ -37,7 +37,7 @@
                                           ('restocked', '=', True)]
                         }</attribute>
                     </xpath>
-
+                    <field name="restocked" />
                     <!-- Add a new conditional button -->
                     <xpath expr="." position="before">
                         <button name="reservation_from_superior_lvs"
