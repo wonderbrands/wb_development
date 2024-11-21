@@ -24,7 +24,6 @@ class Picking(models.Model):
     show_full_button = fields.Boolean(
         string="Show full button",
         compute='_compute_show_full_button',
-        store=True
     )
 
     @api.depends('state', 'restocked_field')
