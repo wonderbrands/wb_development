@@ -45,7 +45,7 @@
                 </xpath>
 
                 <xpath expr="//field[@name='partner_id']" position="after">
-                    <field name="restocked_field" attrs="{'invisible': [('restocked_field', '=', False)]}" />
+                    <field name="restocked_field" />
                 </xpath>
             </field>
         </record>
