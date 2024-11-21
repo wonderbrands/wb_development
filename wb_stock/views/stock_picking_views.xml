@@ -44,9 +44,10 @@
                                 type="object"
                                 string="Reservación Fulfillment"
                                 class="btn-primary"
-                                attrs="{'invisible': ['!', '&', 
-                                                      ('state', 'in', ['waiting', 'confirm']), 
-                                                      ('restocked', '=', True)]}" />
+                                attrs="{'invisible': ['!', '&amp;', 
+                              ('state', 'in', ['waiting', 'confirm']), 
+                              ('restocked', '=', True)]}" />
+
                     </xpath>
                 </header>
 
