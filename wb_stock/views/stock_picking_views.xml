@@ -6,9 +6,7 @@
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
-                <!-- Target the header tag -->
                 <xpath expr="//header" position="inside">
-                    <!-- Modify the "Check Availability" button -->
                     <xpath expr="//button[@name='action_assign']" position="attributes">
                         <attribute name="attrs">{
                             'invisible': ['|', 
@@ -17,7 +15,6 @@
                         }</attribute>
                     </xpath>
 
-                    <!-- Modify the first "Validate" button -->
                     <xpath expr="//button[@name='button_validate' and @class='oe_highlight']" position="attributes">
                         <attribute name="attrs">{
                             'invisible': ['|', 
@@ -28,7 +25,6 @@
                         }</attribute>
                     </xpath>
 
-                    <!-- Modify the second "Validate" button -->
                     <xpath expr="//button[@name='button_validate' and @class='o_btn_validate']" position="attributes">
                         <attribute name="attrs">{
                             'invisible': ['|', 
@@ -39,7 +35,6 @@
                         }</attribute>
                     </xpath>
 
-                    <!-- Add a new conditional button -->
                     <button name="reservation_from_superior_lvs"
                             type="object"
                             string="Reservación Fulfillment"
@@ -49,8 +44,7 @@
                                                   ('restocked_field', '=', True)]}" />
                 </xpath>
 
-                <!-- Add the "restocked_field" in the body after the "origin" field -->
-                <xpath expr="//field[@name='origin']" position="after">
+                <xpath expr="//field[@name='sale_id']" position="after">
                     <field name="restocked_field" attrs="{'invisible': [('restocked_field', '=', False)]}" />
                 </xpath>
             </field>
