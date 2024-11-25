@@ -30,6 +30,7 @@
     'data': [
         # 'security/ir.model.access.csv',
         'views/stock_picking_views.xml',
+        'views/reserve_under_sale.xml',
         'views/views.xml',
         'views/templates.xml',
     ],

@@ -34,7 +34,7 @@ class Picking(models.Model):
         Compute whether to show the "Full" button based on the picking's state and restocked status.
         """
         for picking in self:
-            picking.show_full_button = picking.state in ['waiting', 'confirmed'] and picking.restocked_field
+            picking.show_full_button = picking.state in ['waiting', 'confirmed', 'draft'] and picking.restocked_field
 
     @api.depends('invisible_field')
     def make_invisible(self):
