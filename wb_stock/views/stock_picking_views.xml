@@ -31,6 +31,9 @@
                             class="btn-primary"
                             attrs="{'invisible': [('show_full_button', '=', False)]}" />
                 </xpath>
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="show_full_button" invisible="True"/>
+                </xpath>
             </field>
         </record>
     </data>
