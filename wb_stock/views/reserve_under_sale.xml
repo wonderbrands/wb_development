@@ -5,7 +5,7 @@
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="wb_prio_picking.prio_picking_form_inherit"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='sale_id']" position="after">
+              <xpath expr="//field[@name='origin']" position="after">
                 <field name="restocked_field" string="Es reserva para full" />
             </xpath>
         </field>
