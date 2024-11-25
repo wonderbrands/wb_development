@@ -32,7 +32,6 @@
         'views/stock_picking_views.xml',
         'views/views.xml',
         'views/templates.xml',
-        'views/reserve_under_sale.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
