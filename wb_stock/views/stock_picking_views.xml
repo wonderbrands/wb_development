@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//button[@name='action_assign']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('show_full_button', '=', True)]}</attribute>
+                    <attribute name="attrs">{'invisible': [('restocked_field', '=', True)]}</attribute>
                 </xpath>
                 <xpath expr="//header" position="inside">
                     <button name="reservation_from_superior_lvs"
