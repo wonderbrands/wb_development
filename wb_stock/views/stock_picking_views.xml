@@ -1,23 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-    <record  id="stock_picking_form_inherit" model="ir.ui.view">
+        <record id="stock_picking_form_inherit" model="ir.ui.view">
+            <field name="name">stock_picking_form_inherit</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_assign']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('restocked_field', '=', True)]}</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_confirm']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('restocked_field', '=', True)]}</attribute>
+                </xpath>
+                <xpath expr="//header" position="inside">
+                    <button name="reservation_from_superior_lvs"
+                            type="object"
+                            string="Reservación Fulfillment"
+                            class="btn-primary"
+                            attrs="{'invisible': [('show_full_button', '=', False)]}" />
+                </xpath>
 
-      <field name="name">stock_picking_form_inherit</field>
-      <field name="model">stock.picking</field>
-      <field name="inherit_id" ref="stock.view_picking_form"/>
-      <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="restocked_field" string="Es reserva para full" />
+                </xpath>
 
-          <!-- Agrega campos al formulario de Compra -->
-          <xpath expr="//field[@name='origin']" position="after">
-              <!--
-              <field name="fecha_cita_almc"/>
-
-              <field name="leadtime"/>
-              <field name="invisible_field"/>
-                -->
-          </xpath>
-
-      </field>
-    </record>
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="show_full_button" invisible="True"/>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
