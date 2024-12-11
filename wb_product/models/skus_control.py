@@ -19,4 +19,4 @@ class ProductProduct(models.Model):
     data_inventory_date = fields.Datetime(string='Fecha de inventario', help='Establece la fecha del inventario')
 
     # Campo Male 10-dic-2024
-    data_supplier_code = fields.Char(string='Proveedor', help='Código del proveedor')
+    data_supplier_code = fields.Char(string='Proveedor', help='Código o nombre del proveedor')
