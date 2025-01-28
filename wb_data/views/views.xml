@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="wb_data_dashboards_list_view_tree" model="ir.ui.view">
+            <field name="name">wb_data_dashboards_list_view_tree</field>
+            <field name="model">wb_data.dashboards_list</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="title" string="Title"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="wb_data_dashboards_list_view_form" model="ir.ui.view">
+            <field name="name">wb_data_dashboards_list_view_form</field>
+            <field name="model">wb_data.dashboards_list</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <label for="title" string="Title"/>
+                            <h1>
+                                <field name="title" string="Title"/>
+                            </h1>
+                            <field name="description" string="Description"/>
+                        </group>
+                        <notebook>
+                            <page name="components" string="Components">
+                                <group>
+                                    <field name="components" string="Components">
+                                        <tree string="Components">
+                                            <field name="title" string="Title"/>
+                                            <field name="graph_type" string="Graph Type"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                            <page name="access_control" string="Access Control">
+                                <group>
+                                    <field name="users" string="Allowed Users" />
+                                    <field name="groups" string="Allowed Groups" />
+                                </group>
+                            </page>
+                            <page name="access_exceptions" string="Access Exceptions">
+                                <group>
+                                    <field name="graph_exceptions" string="Blocked Users &amp; Groups" />
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

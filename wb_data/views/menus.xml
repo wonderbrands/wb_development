@@ -1,0 +1,21 @@
+<odoo>
+    <data>
+        <menuitem
+                id="wb_data_root"
+                name="Wonderbrands Data"
+                sequence="150"/>
+
+        <menuitem
+                id="wb_data_Dashboards_Settings"
+                name="Dashboards Settings"
+                parent="wb_data_root"
+                action="wb_data_Dashboards_Settings_action"
+                sequence="3"/>
+
+        <menuitem id="wb_data_dashboards_display"
+                  name="Dashboards"
+                  parent="wb_data_root"
+                  action="wb_data_dashboards_client"
+                  sequence="1"/>
+    </data>
+</odoo>

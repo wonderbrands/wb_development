@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dashboard_menu,dashboard_developer,model_wb_data_dashboards_list,wb_data_developer,1,1,1,1
+add_exceptions_developer,dashboard_exceptions_developer,model_wb_data_graph_exception_list,wb_data_developer,1,1,1,1
+add_exceptions,dashboard_exceptions,model_wb_data_graph_exception_list,wb_data_access_manager,1,1,1,1
+access_dashboard_menu_permissions,dashboard_permissions,model_wb_data_dashboards_list,wb_data_access_manager,1,1,0,0
+js_graphics,dashboards_js_engine,model_wb_data_graph_type_list,wb_data_developer,1,1,1,1
+parameters_developer,dashboard_parameters_developer,model_wb_data_parameters_list,wb_data_developer,1,1,1,1
+components_list,dashboard_components_developer,model_wb_data_components_list,wb_data_developer,1,1,1,1

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="wb_data_Dashboards_Settings_action"
+                model="ir.actions.act_window">
+            <field name="name">Dashboards Settings</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wb_data.dashboards_list</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="wb_data_dashboards_client" model="ir.actions.client">
+            <field name="name">Dashboards</field>
+            <field name="tag">wb_data.dashboards_display_client</field>
+        </record>
+    </data>
+</odoo>

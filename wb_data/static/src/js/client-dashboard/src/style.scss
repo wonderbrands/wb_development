@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import 'primeicons/primeicons.css';
+
+
+body {
+  font-family: "Open Sans", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}  
+
+.dashboard-container{
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    justify-content: start;
+    align-items: start;
+    width: 90vw;
+    height: 85vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 0;
+    margin: 0;
+}
+
+.charts{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: start;
+    width: 90vw;
+    height: 100%;
+    flex-wrap: wrap;
+}
+

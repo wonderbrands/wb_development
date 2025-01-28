@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="wb_data_developer" model="res.groups">
+            <field name="name">WB Dashboard Developer</field>
+        </record>
+
+        <record id="wb_data_access_manager" model="res.groups">
+            <field name="name">WB Dashboard Access Manager</field>
+        </record>
+    </data>
+</odoo>
