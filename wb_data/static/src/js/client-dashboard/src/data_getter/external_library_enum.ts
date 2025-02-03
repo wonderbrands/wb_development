@@ -1,0 +1,10 @@
+/*
+WRITE HERE ALL EXTERNAL LIBRARIES THAT YOU WILL USE
+TO RENDER A CHART IN THE APP, A CLASS IS GOING TO READ IT
+*/
+
+export enum ExternalLibrary {
+    ChartJs = 0,
+    PrimeVue = 1,
+    D3JS = 2
+}

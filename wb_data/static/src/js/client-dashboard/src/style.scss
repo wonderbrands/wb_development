@@ -23,7 +23,7 @@ body {
     height: 85vh;
     overflow-y: scroll;
     overflow-x: hidden;
-    padding: 0;
+    padding: 1em;
     margin: 0;
 }
 
@@ -32,8 +32,71 @@ body {
     flex-direction: row;
     justify-content: start;
     align-items: start;
-    width: 90vw;
+    width: 100%;
     height: 100%;
+    flex-wrap: wrap;
+    padding: 2em;
+}
+
+.general_search_bar{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    margin-bottom: 1em;
+}
+
+.outline{
+    outline: 1px solid  var(--p-inputtext-hover-border-color);
+    border-radius: var(--p-inputtext-border-radius);;
+}
+
+.padding_for_input{
+    padding-right: 1em; 
+}
+
+.component_inputs{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    width: 50%;
     flex-wrap: wrap;
 }
 
+.server_parameters_inputs{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    padding-bottom: 1em;
+}
+
+.padding_for_icon{
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid black;
+    border-bottom-color: var(--p-primary-hover-color);;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+} 

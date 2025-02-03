@@ -2,7 +2,7 @@
     <div v-if="$store.getters.getDisplayedDashboard" class="dashboard-container">
         <h1>{{ $store.getters.getDisplayedDashboard.getName()}}</h1>
         <div class="charts">
-            <div style="width: 100%;" v-for="chart, index in $store.getters.getDisplayedDashboard.getComponents()" :key="index">
+            <div :style="chart.getStyling()" v-for="chart, index in $store.getters.getDisplayedDashboard.getComponents()" :key="index">
                 <component :is="chart.getChartType()" :chart_data="chart" :index="index"/>
             </div>
         </div>

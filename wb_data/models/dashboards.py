@@ -45,9 +45,10 @@ class Parameters(models.Model):
             ("string", "String"),
             ("number", "Number"),
             ("date", "Date"),
+            ("datetime", "Data Time")
             ("boolean", "Boolean")
         ],
-        string="Field ype"
+        string="Field type"
     )
     component = fields.Many2one('wb_data.components_list', string='Component')
 

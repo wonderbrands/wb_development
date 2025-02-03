@@ -58,11 +58,45 @@ class AvailableDashboards {
 class AvailableDashboardsFrontend extends AvailableDashboards{
     constructor() {
         super();
-        this.availableDashboards = [
+    }
+
+    async getAvailableDashboardsFromServer(): Promise<void> {
+        await setTimeout(() => {
+            console.log("Emulate waiting server") 
+        }, 1000);
+        this.availableDashboards = await [
             new Dashboard("Dashboard 1"),
             new Dashboard("Dashboard 2"),
             new Dashboard("Dashboard 3"),
         ];
+        
+    }
+}
+
+class AvailableDashboardsOdoo extends AvailableDashboards{
+    constructor() {
+        super();
+    }
+
+    async getAvailableDashboardsFromServer() {
+        try {
+            const response = await fetch("/wb_data/available_dashboards", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+                body: JSON.stringify({}),
+            });
+            const data = await response.json();
+            data.result.dashboards.forEach(element => {
+                this.availableDashboards.push(
+                    new Dashboard(element.title, element.description)
+                );
+            });
+        } catch (error) {
+            console.error('Error fetching dashboards:', error);
+        }
     }
 }
 
@@ -70,6 +104,8 @@ class AvailableDashboardsFactory {
     getInstance(): AvailableDashboards | void {
         if (import.meta.env.VITE_AVAILABLE_DASHBOARD_ENGINE === 'frontend') {
             return new AvailableDashboardsFrontend();
+        } else if (import.meta.env.VITE_AVAILABLE_DASHBOARD_ENGINE === 'backend_odoo') {
+            return new AvailableDashboardsOdoo();
         }
     }
 }
@@ -79,8 +115,9 @@ export let availableDashboardsState = {
 }
 
 export let availableDashboardsGetters = {
-    getAvailableDashboards(state) {
-        return state.availableDashboards.getAvailableDashboards();
+    async getAvailableDashboards(state) {
+        await state.availableDashboards.getAvailableDashboardsFromServer();
+        return await state.availableDashboards.getAvailableDashboards();
     },
     getSelectedDashboard(state) {
         return state.availableDashboards.getAvailableDashboards().find(d => d.selected);

@@ -1,8 +1,9 @@
 <template>
     <div>
         <Drawer v-model:visible="$store.state.drawerDisplayed" header="Tableros disponibles">
-            <Accordion>
-                <AccordionPanel v-for="dashboard, index in $store.getters.getAvailableDashboards" :key="index" :value="index">
+            <LoaderComponent v-if="avDashboards.length == 0"/>
+            <Accordion v-else>
+                <AccordionPanel v-for="dashboard, index in avDashboards" :key="index" :value="index">
                     <AccordionHeader>{{ dashboard.getName() }}</AccordionHeader>
                     <AccordionContent>
                         <p class="m-0">{{ dashboard.getDescription() }}</p>
@@ -22,9 +23,15 @@ import Accordion from 'primevue/accordion';
 import AccordionPanel from 'primevue/accordionpanel';
 import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
+import LoaderComponent from '../LoaderComponent.vue'
 
 export default {
     name: 'AvailableDashboards',
+    data(){
+        return{
+            avDashboards: []
+        }
+    },
     methods: {
         selectDashboard(dashboard) {
             this.$store.commit('selectDashboard', dashboard);
@@ -32,13 +39,17 @@ export default {
             this.$store.commit('hideDrawer');
         }
     },
+    async beforeMount(){
+        this.avDashboards = await this.$store.getters.getAvailableDashboards
+    },
     components: {
         Drawer,
         Accordion,
         AccordionPanel,
         AccordionHeader,
         AccordionContent,
-        Button
+        Button,
+        LoaderComponent
     }
 }
 </script>

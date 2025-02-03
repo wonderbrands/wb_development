@@ -33,21 +33,101 @@ class DashboardData extends Dashboard {
     }
 }
 
-class ChartComponent {
+export enum parameterType{
+    string = 0,
+    number = 1,
+    date = 2,
+    datetime = 3,
+    boolean = 4,
+    selection = 5
+}
+
+class ServerParameters{
+    name: string
+    value: string
+    type: parameterType
+    available_values: string[]
+    default_value: string
+
+    constructor(name: string, 
+                value: string, 
+                type: parameterType,
+                default_value: string = "", 
+                available_values: string[] = []){
+        this.name = name
+        this.value = value
+        this.type = type
+        this.default_value = default_value
+        this.available_values = available_values
+    }
+
+    getName(): string{
+        return this.name
+    }
+
+    setName(name: string){
+        this.name = name
+    }
+
+    setValue(value: string){
+        this.value = value
+    }
+
+    getValue(): string{
+        return this.value
+    }
+
+    setValueType(type: parameterType){
+        this.type = type
+    }
+
+    getType(): parameterType{
+        return this.type
+    }
+
+    setAvailableValues(available_values: string[]){
+        this.available_values = available_values
+    }
+
+    getAvailableValues(): string[]{
+        return this.available_values
+    }
+
+    setDefaultValue(default_value: string){
+        this.default_value = default_value
+    }
+
+    getDefaultValue(): string{
+        return this.default_value
+    }
+}
+
+export class ChartComponent {
     dashboard: Dashboard
     title: string
     data_source_type: string
     data_source_path: string
     is_realtime: boolean
     chart_type: string
+    search_parameters: ServerParameters[]
+    styling: string
 
-    constructor(dashboard: Dashboard, title: string, data_source_type: string, data_source_path: string, is_realtime: boolean, chart_type: string) {
+    constructor(dashboard: Dashboard, 
+                title: string, 
+                data_source_type: string, 
+                data_source_path: string, 
+                is_realtime: boolean, 
+                chart_type: string,
+                search_parameters: ServerParameters[],
+                styling: string){
         this.dashboard = dashboard;
         this.title = title;
         this.data_source_type = data_source_type;
         this.data_source_path = data_source_path;
         this.is_realtime = is_realtime;
         this.chart_type = chart_type
+        this.search_parameters = search_parameters
+        this.styling = styling
     }
 
     getDashboard(): Dashboard {
@@ -98,6 +178,31 @@ class ChartComponent {
         this.chart_type = chart_type;
     }
 
+    getSearchParameters(): ServerParameters[] {
+        return this.search_parameters;
+    }
+
+    setSearchParameters(search_parameters: ServerParameters[]): void {
+        this.search_parameters = search_parameters;
+    }
+
+    getSearchParameterByName(name: string): ServerParameters | void {
+        const result = this.getSearchParameters().filter(
+            x => x.getName() === name
+        );
+        if (result.length>0){
+            return result[0];
+        }
+    }
+
+    getStyling(): string {
+        return this.styling;
+    }
+
+    setStyling(styling: string): void {
+        this.styling = styling;
+    }
+
 }
 
 const test_dashboard_data: DashboardData[] = [
@@ -109,14 +214,20 @@ const test_dashboard_data: DashboardData[] = [
             "api", 
             "/api/line-chart", 
             false, 
-            "LineChart"), 
+            "LineChart",
+            [],
+            "width: 50%; height: 50%;"
+        ), 
         new ChartComponent(
             new Dashboard("Dashboard 1"), 
             "Bar Chart Random Example", 
             "api", 
             "/api/bar-chart", 
             false, 
-            "BarChart")]
+            "BarChart",
+            [],
+            "width: 50%; height: 50%;"
+        )]
     ),
     new DashboardData(
         new Dashboard("Dashboard 2"),
@@ -126,21 +237,37 @@ const test_dashboard_data: DashboardData[] = [
             "api",
             "/api/data-table", 
             false, 
-            "TableData"),
+            "TableData",
+            [
+                new ServerParameters("parameter1", "abcdefg", parameterType.string, "abcdefg"),
+                new ServerParameters("parameter2", "123456", parameterType.number, "123456"),
+                new ServerParameters("parameter3", "2023-01-01", parameterType.date, "2023-01-01"),
+                new ServerParameters("parameter4", "2023-01-01 00:00:00", parameterType.datetime, "2023-01-01 00:00:00"),
+                new ServerParameters("parameter5", "true", parameterType.boolean, "true"),
+                new ServerParameters("parameter6", "value1", parameterType.selection, "value1",["value1", "value2", "value3"])
+            ],
+            "width: 50%; height: 50%;"
+        ),
         new ChartComponent(
             new Dashboard("Dashboard 2"), 
             "Bubble chart Random Example", 
             "api",
             "/api/bubble-chart", 
             false, 
-            "BubbleChart"),
+            "BubbleChart",
+            [],
+            "width: 50%; height: 50%;"
+        ),
         new ChartComponent(
             new Dashboard("Dashboard 2"), 
             "Pie chart Random Example", 
             "api",
             "/api/pie-chart", 
             false, 
-            "PieChart")
+            "PieChart",
+            [],
+            "width: 50%; height: 50%;"
+            )
         ]
     ),
     new DashboardData(
@@ -150,15 +277,36 @@ const test_dashboard_data: DashboardData[] = [
 ]
 
 class DashboardDataFactory{
-    getInstance(name: string): DashboardData | void {
-        if (import.meta.env.VITE_DASHBOARD_DATA_ENGINE === 'frontend') {
-            const result = test_dashboard_data.filter(
-                x => x.getName() === name
-            );
-            if (result.length>0){
-                return result[0];
-            }
-        }
+    async getInstance(name: string): DashboardData | void {
+        switch (import.meta.env.VITE_DASHBOARD_DATA_ENGINE){
+            case 'frontend':
+                await setTimeout(() => {
+                    console.log("Emulating server responce time latency")
+                }, 2000);
+                const result = await test_dashboard_data.filter(
+                    x => x.getName() === name
+                );
+                if (result.length>0){
+                    return result[0];
+                }
+                break
+            case 'backend_odoo':
+                try {
+                    const response = await fetch(`/wb_data/get_dashboard?name=${name}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-Requested-With": "XMLHttpRequest",
+                        },
+                        body: JSON.stringify({}),
+                    });
+                    const data = await response.json();
+                    console.log(data.result)
+                } catch (error) {
+                    console.error('Error fetching dashboard data:', error);
+                }
+                break
+        }   
     }
 }
 
