@@ -50310,8 +50310,8 @@ class TableDataHandler extends DataHandler {
   getData() {
     return null;
   }
-  processIntoTable() {
-    const data21 = this.getData();
+  async processIntoTable() {
+    const data21 = await this.getData();
     const columnNames = data21.columnNames;
     let fields = columnNames.map((columnName) => {
       return columnName.split(" ").join("_").toLowerCase();
@@ -50345,6 +50345,7 @@ class TableDataHandlerBackend extends TableDataHandler {
   async getData() {
     console.log(this.component);
     console.log(this.interpretDefaults(this.component.search_parameters));
+    console.log(this.parameters);
     const component = this.component;
     switch (component.data_source_type) {
       case "API":
@@ -50359,6 +50360,7 @@ class TableDataHandlerBackend extends TableDataHandler {
           });
           const data21 = await response.json();
           console.log(data21);
+          return data21.result;
         } catch (error) {
           console.error("Error fetching table data:", error);
         }
@@ -50367,7 +50369,7 @@ class TableDataHandlerBackend extends TableDataHandler {
   }
 }
 class TableDataFactory {
-  getInstance(component, context, parameters) {
+  async getInstance(component, context, parameters) {
     {
       return new TableDataHandlerBackend(component, ExternalLibrary.PrimeVue, context, parameters);
     }
@@ -50386,15 +50388,16 @@ const _sfc_main$4 = {
     };
   },
   methods: {
-    updateServerParameters(updatedValues) {
-      const data21 = new TableDataFactory().getInstance(this.chart_data, null, updatedValues);
-      this.table = data21.processIntoTable();
+    async updateServerParameters(updatedValues) {
+      const data21 = await new TableDataFactory().getInstance(this.chart_data, null, updatedValues);
+      this.table = await data21.processIntoTable();
       this.rows = this.table.rows;
     }
   },
-  beforeMount() {
-    const data21 = new TableDataFactory().getInstance(this.chart_data, null);
-    this.table = data21.processIntoTable();
+  async beforeMount() {
+    const data21 = await new TableDataFactory().getInstance(this.chart_data, null);
+    console.log(data21);
+    this.table = await data21.processIntoTable();
     this.rows = this.table.rows;
   },
   components: {

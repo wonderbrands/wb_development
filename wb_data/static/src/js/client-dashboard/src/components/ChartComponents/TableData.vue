@@ -36,15 +36,16 @@ export default {
         }
     },
     methods: {
-        updateServerParameters(updatedValues) {
-            const data = new TableDataFactory().getInstance(this.chart_data, null, updatedValues);
-            this.table = data.processIntoTable()
+        async updateServerParameters(updatedValues) {
+            const data = await new TableDataFactory().getInstance(this.chart_data, null, updatedValues);
+            this.table = await data.processIntoTable()
             this.rows = this.table.rows
         }
     },
-    beforeMount() {
-        const data = new TableDataFactory().getInstance(this.chart_data, null, );
-        this.table = data.processIntoTable()
+    async beforeMount() {
+        const data = await new TableDataFactory().getInstance(this.chart_data, null, );
+        console.log(data)
+        this.table = await data.processIntoTable()
         this.rows = this.table.rows
     },
     components: {

@@ -25,8 +25,8 @@ class TableDataHandler extends DataHandler {
         return null
     }
 
-    processIntoTable(){
-        const data = this.getData();
+    async processIntoTable(){
+        const data = await this.getData();
         const columnNames = data.columnNames;
         let fields = columnNames.map((columnName) => {
             return columnName.split(' ').join('_').toLowerCase();
@@ -55,7 +55,10 @@ class TableDataHandlerFrontend extends TableDataHandler {
         super(component, renderer, ctx, parameters);
     }
 
-    getData(): ExpectedTableDataPayload{
+    async getData(): ExpectedTableDataPayload{
+        await setTimeout(() => {
+           console.log("Emulating server") 
+        }, 2000);
         if (!this.getParameters()) {
             return {
                 columnNames: ["Code", "Name", "Category", "Quantity", "Price"],
@@ -102,6 +105,7 @@ class TableDataHandlerBackend extends TableDataHandler {
     async getData(): ExpectedTableDataPayload{
         console.log(this.component)
         console.log(this.interpretDefaults(this.component.search_parameters))
+        console.log(this.parameters)
         const component = this.component
         switch (component.data_source_type) {
             case "API":
@@ -116,6 +120,7 @@ class TableDataHandlerBackend extends TableDataHandler {
                     });
                     const data = await response.json();
                     console.log(data)
+                    return data.result
                 } catch (error) {
                     console.error('Error fetching table data:', error);
                 }
@@ -125,7 +130,7 @@ class TableDataHandlerBackend extends TableDataHandler {
 }
 
 export class TableDataFactory {
-    getInstance(component: ChartComponent, context: any, parameters: any): DataHandler | void {
+    async getInstance(component: ChartComponent, context: any, parameters: any): DataHandler | void {
         if (import.meta.env.VITE_DASHBOARD_DATA_ENGINE === 'frontend') {
             return new TableDataHandlerFrontend(component, ExternalLibrary.PrimeVue, context, parameters )
         } 
