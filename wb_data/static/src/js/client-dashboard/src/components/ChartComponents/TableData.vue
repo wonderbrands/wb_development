@@ -43,7 +43,7 @@ export default {
         }
     },
     beforeMount() {
-        const data = new TableDataFactory().getInstance(this.chart_data, null);
+        const data = new TableDataFactory().getInstance(this.chart_data, null, );
         this.table = data.processIntoTable()
         this.rows = this.table.rows
     },

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="data_source_type_api" model="wb_data.data_source_type">
+            <field name="name">API</field>
+        </record>
+    </data>
+</odoo>

@@ -83,16 +83,54 @@ class TableDataHandlerFrontend extends TableDataHandler {
                 ]
             }
         }
+    }
+}
 
+class TableDataHandlerBackend extends TableDataHandler {
+    constructor(component: ChartComponent, renderer: ExternalLibrary, ctx: any, parameters: any = null) {
+        super(component, renderer, ctx, parameters);
     }
 
+    interpretDefaults(parameters){
+        let updated_values = {};
+        for (var i = 0; i < parameters.length; i++) {
+            updated_values[parameters[i].name] = parameters[i].default_value;
+        }
+        return updated_values   
+    }
+
+    async getData(): ExpectedTableDataPayload{
+        console.log(this.component)
+        console.log(this.interpretDefaults(this.component.search_parameters))
+        const component = this.component
+        switch (component.data_source_type) {
+            case "API":
+                try {
+                    const response = await fetch(component.data_source_path, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-Requested-With": "XMLHttpRequest",
+                        },
+                        body: JSON.stringify(this.parameters ? this.parameters : this.interpretDefaults(component.search_parameters)),
+                    });
+                    const data = await response.json();
+                    console.log(data)
+                } catch (error) {
+                    console.error('Error fetching table data:', error);
+                }
+                break;
+        }
+    }
 }
 
 export class TableDataFactory {
     getInstance(component: ChartComponent, context: any, parameters: any): DataHandler | void {
         if (import.meta.env.VITE_DASHBOARD_DATA_ENGINE === 'frontend') {
             return new TableDataHandlerFrontend(component, ExternalLibrary.PrimeVue, context, parameters )
-            
+        } 
+        else if (import.meta.env.VITE_DASHBOARD_DATA_ENGINE === 'backend_odoo') {
+            return new TableDataHandlerBackend(component, ExternalLibrary.PrimeVue, context, parameters )
         }
     }
 }

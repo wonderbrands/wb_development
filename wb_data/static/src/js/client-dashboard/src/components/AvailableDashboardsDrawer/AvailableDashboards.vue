@@ -33,9 +33,9 @@ export default {
         }
     },
     methods: {
-        selectDashboard(dashboard) {
+        async selectDashboard(dashboard) {
             this.$store.commit('selectDashboard', dashboard);
-            this.$store.commit('setDisplayedDashboard', dashboard);
+            await this.$store.commit('setDisplayedDashboard', dashboard);
             this.$store.commit('hideDrawer');
         }
     },

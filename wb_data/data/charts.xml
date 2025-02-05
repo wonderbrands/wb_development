@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="linechart" model="wb_data.graph_type_list">
+            <field name="name">LineChart</field>
+            <field name="js_framework">graphjs</field>
+        </record>
+
+        <record id="barchart" model="wb_data.graph_type_list">
+            <field name="name">BarChart</field>
+            <field name="js_framework">graphjs</field>
+        </record>
+
+        <record id="table" model="wb_data.graph_type_list">
+            <field name="name">TableData</field>
+            <field name="js_framework">prime_vue</field>
+        </record>
+
+        <record id="piechart" model="wb_data.graph_type_list">
+            <field name="name">PieChart</field>
+            <field name="js_framework">graphjs</field>
+        </record>
+
+         <record id="bubblechart" model="wb_data.graph_type_list">
+            <field name="name">BubbleChart</field>
+            <field name="js_framework">graphjs</field>
+        </record>
+    </data>
+</odoo>

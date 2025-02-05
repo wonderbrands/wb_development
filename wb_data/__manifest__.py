@@ -26,7 +26,9 @@
         "views/views.xml",
         "views/actions.xml",
         "views/menus.xml",
-        "security/ir.model.access.csv"
+        "security/ir.model.access.csv",
+        "data/charts.xml",
+        "data/data_source.xml",
     ],
 
     'assets': {

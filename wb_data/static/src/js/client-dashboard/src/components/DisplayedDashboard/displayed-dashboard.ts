@@ -277,7 +277,7 @@ const test_dashboard_data: DashboardData[] = [
 ]
 
 class DashboardDataFactory{
-    async getInstance(name: string): DashboardData | void {
+    async getInstance(name: string, dashboard: Dashboard): DashboardData | void {
         switch (import.meta.env.VITE_DASHBOARD_DATA_ENGINE){
             case 'frontend':
                 await setTimeout(() => {
@@ -292,21 +292,65 @@ class DashboardDataFactory{
                 break
             case 'backend_odoo':
                 try {
-                    const response = await fetch(`/wb_data/get_dashboard?name=${name}`, {
+                    const response = await fetch(`/wb_data/get_dashboard`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
                             "X-Requested-With": "XMLHttpRequest",
                         },
-                        body: JSON.stringify({}),
+                        body: JSON.stringify({
+                            name: name
+                        }),
                     });
                     const data = await response.json();
-                    console.log(data.result)
+                    console.log(data)
+                    return this.convertServerComponent(data.result, dashboard);
                 } catch (error) {
                     console.error('Error fetching dashboard data:', error);
                 }
                 break
         }   
+    }
+
+    convertServerComponent(data: any, dashboard: Dashboard): DashboardData{
+        let dashboard_data = data.dashboard_data
+        //for each component
+        let components = []
+        //for each parameter
+        let parameters = []
+        dashboard_data.components.forEach(component => {
+            parameters = []
+            component.parameters.forEach(parameter => {
+                parameters.push(
+                    new ServerParameters(
+                        parameter.name,
+                        parameter.default,
+                        parameterType[parameter.type],
+                        parameter.default,
+                        parameter.available_values
+                    )
+                )
+            });
+            components.push(
+                new ChartComponent(
+                    dashboard,
+                    component.title,
+                    component.data_source_type,
+                    component.data_source_path,
+                    component.is_realtime,
+                    component.graph_type,
+                    parameters,
+                    component.css
+                )
+            )
+        });
+        
+        let new_dashboard: DashboardData =  new DashboardData(
+            dashboard,
+            components
+        )
+
+        return new_dashboard
     }
 }
 
@@ -321,7 +365,8 @@ export let displayedDashboardGetters = {
 }
 
 export let displayedDashboardMutations = {
-    setDisplayedDashboard: (state, dashboard) => {
-        state.displayedDashboard = new DashboardDataFactory().getInstance(dashboard.getName());
+    setDisplayedDashboard: async (state, dashboard) => {
+        let dashboard_data = new DashboardDataFactory();
+        state.displayedDashboard = await dashboard_data.getInstance(dashboard.getName(), dashboard);
     }
 }

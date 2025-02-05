@@ -51,5 +51,78 @@
                 </form>
             </field>
         </record>
+
+        <record id="wb_data.components_list_view_form" model="ir.ui.view">
+            <field name="name">wb_data.components_list_view_form</field>
+            <field name="model">wb_data.components_list</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <label for="title" string="Component title"/>
+                            <h1>
+                                <field name="title" string="Title"/>
+                            </h1>
+                        </group>
+                        <group>
+                            <field name="data_source_type" string="Data source type"/>
+                            <field name="data_source_path" string="Path"/>
+                            <field name="is_realtime" string="Realtime data stream"/>
+                        </group>
+                        <group>
+                            <field name="graph_type" string="Chart type"/>
+                        </group>
+                        <group>
+                            <field name="css" string="Style Tag"/>
+                        </group>
+                         <notebook>
+                            <page name="parameters" string="Parameters">
+                                <group>
+                                    <field name="parameters" string="Parameters">
+                                        <tree string="Parameters">
+                                            <field name="name" />
+                                            <field name="type" />
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="wb_data.parameters_list_form" model="ir.ui.view">
+            <field name="name">wb_data.parameters_list_form</field>
+            <field name="model">wb_data.parameters_list</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <label for="name" string="Parameter name"/>
+                            <h1>
+                                <field name="name" string="Parameter name"/>
+                            </h1>
+                        </group>
+                        <group>
+                            <field name="type" string="Data type"/>
+                        </group>
+                        <group>
+                            <field name="code_interpreted_default" string="Interpret default value"/>
+                            <field name="default" string="Default value/code"/>
+                        </group>
+                        <group>
+                            <field name="code_interpreted_selection" string="Interpret selection values" attrs="{'invisible': [('type', '!=', 'selection')]}"/>
+                            <field name="selection_code" string="Code selection list" attrs="{'invisible': [('type', '!=', 'selection')]}"/>
+                            <field name="options" string="Selectable options" attrs="{'invisible': [('type', '!=', 'selection')]}">
+                                <tree editable="bottom">
+                                    <field name="value" string="value" />
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
     </data>
 </odoo>

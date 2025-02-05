@@ -1,5 +1,5 @@
 <template>
-    <div v-if="$store.getters.getDisplayedDashboard" class="dashboard-container">
+    <div v-if="$store.getters.getDisplayedDashboard">
         <h1>{{ $store.getters.getDisplayedDashboard.getName()}}</h1>
         <div class="charts">
             <div :style="chart.getStyling()" v-for="chart, index in $store.getters.getDisplayedDashboard.getComponents()" :key="index">
@@ -15,6 +15,7 @@ import BarChart from '../ChartComponents/BarChart.vue';
 import TableData from '../ChartComponents/TableData.vue';
 import BubbleChart from '../ChartComponents/BubbleChart.vue';
 import PieChart from '../ChartComponents/PieChart.vue';
+import LoaderComponent from '../LoaderComponent.vue'
 export default {
     name: 'DisplayedDashboard',
     components: {
@@ -22,7 +23,8 @@ export default {
         BarChart,
         TableData,
         BubbleChart, 
-        PieChart
+        PieChart,
+        LoaderComponent
     }
 }
 </script>

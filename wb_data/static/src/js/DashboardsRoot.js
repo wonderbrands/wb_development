@@ -8,10 +8,8 @@ class DashboardsRoot extends Component {
         onMounted(async () => {
             /*(async ()=>{
             })();*/
-            
-
             (async ()=>{
-                var __defProp = Object.defineProperty;
+              var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value2) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value: value2 }) : obj[key] = value2;
 var __publicField = (obj, key, value2) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value2);
 var _a;
@@ -1717,33 +1715,33 @@ function watch$1(source, cb, options2 = EMPTY_OBJ) {
   watchHandle.stop = watchHandle;
   return watchHandle;
 }
-function traverse(value2, depth = Infinity, seen2) {
+function traverse(value2, depth = Infinity, seen) {
   if (depth <= 0 || !isObject$3(value2) || value2["__v_skip"]) {
     return value2;
   }
-  seen2 = seen2 || /* @__PURE__ */ new Set();
-  if (seen2.has(value2)) {
+  seen = seen || /* @__PURE__ */ new Set();
+  if (seen.has(value2)) {
     return value2;
   }
-  seen2.add(value2);
+  seen.add(value2);
   depth--;
   if (isRef(value2)) {
-    traverse(value2.value, depth, seen2);
+    traverse(value2.value, depth, seen);
   } else if (isArray$2(value2)) {
     for (let i = 0; i < value2.length; i++) {
-      traverse(value2[i], depth, seen2);
+      traverse(value2[i], depth, seen);
     }
   } else if (isSet(value2) || isMap(value2)) {
     value2.forEach((v) => {
-      traverse(v, depth, seen2);
+      traverse(v, depth, seen);
     });
   } else if (isPlainObject(value2)) {
     for (const key in value2) {
-      traverse(value2[key], depth, seen2);
+      traverse(value2[key], depth, seen);
     }
     for (const key of Object.getOwnPropertySymbols(value2)) {
       if (Object.prototype.propertyIsEnumerable.call(value2, key)) {
-        traverse(value2[key], depth, seen2);
+        traverse(value2[key], depth, seen);
       }
     }
   }
@@ -1981,7 +1979,7 @@ function queuePostFlushCb(cb) {
   }
   queueFlush();
 }
-function flushPreFlushCbs(instance, seen2, i = flushIndex + 1) {
+function flushPreFlushCbs(instance, seen, i = flushIndex + 1) {
   for (; i < queue.length; i++) {
     const cb = queue[i];
     if (cb && cb.flags & 2) {
@@ -2000,7 +1998,7 @@ function flushPreFlushCbs(instance, seen2, i = flushIndex + 1) {
     }
   }
 }
-function flushPostFlushCbs(seen2) {
+function flushPostFlushCbs(seen) {
   if (pendingPostFlushCbs.length) {
     const deduped = [...new Set(pendingPostFlushCbs)].sort(
       (a, b) => getId(a) - getId(b)
@@ -2024,7 +2022,7 @@ function flushPostFlushCbs(seen2) {
   }
 }
 const getId = (job) => job.id == null ? job.flags & 2 ? -1 : Infinity : job.id;
-function flushJobs(seen2) {
+function flushJobs(seen) {
   try {
     for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
       const job = queue[flushIndex];
@@ -8288,7 +8286,7 @@ class AvailableDashboardsOdoo extends AvailableDashboards$1 {
       const data21 = await response.json();
       data21.result.dashboards.forEach((element) => {
         this.availableDashboards.push(
-          new Dashboard(element.title)
+          new Dashboard(element.title, element.description)
         );
       });
     } catch (error) {
@@ -8570,15 +8568,75 @@ const test_dashboard_data = [
   )
 ];
 class DashboardDataFactory {
-  getInstance(name) {
-    {
-      const result = test_dashboard_data.filter(
-        (x) => x.getName() === name
-      );
-      if (result.length > 0) {
-        return result[0];
-      }
+  async getInstance(name, dashboard) {
+    switch ("backend_odoo") {
+      case "frontend":
+        await setTimeout(() => {
+          console.log("Emulating server responce time latency");
+        }, 2e3);
+        const result = await test_dashboard_data.filter(
+          (x) => x.getName() === name
+        );
+        if (result.length > 0) {
+          return result[0];
+        }
+        break;
+      case "backend_odoo":
+        try {
+          const response = await fetch(`/wb_data/get_dashboard`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest"
+            },
+            body: JSON.stringify({
+              name
+            })
+          });
+          const data21 = await response.json();
+          console.log(data21);
+          return this.convertServerComponent(data21.result, dashboard);
+        } catch (error) {
+          console.error("Error fetching dashboard data:", error);
+        }
+        break;
     }
+  }
+  convertServerComponent(data21, dashboard) {
+    let dashboard_data = data21.dashboard_data;
+    let components = [];
+    let parameters = [];
+    dashboard_data.components.forEach((component) => {
+      parameters = [];
+      component.parameters.forEach((parameter) => {
+        parameters.push(
+          new ServerParameters$1(
+            parameter.name,
+            parameter.default,
+            parameterType[parameter.type],
+            parameter.default,
+            parameter.available_values
+          )
+        );
+      });
+      components.push(
+        new ChartComponent(
+          dashboard,
+          component.title,
+          component.data_source_type,
+          component.data_source_path,
+          component.is_realtime,
+          component.graph_type,
+          parameters,
+          component.css
+        )
+      );
+    });
+    let new_dashboard = new DashboardData(
+      dashboard,
+      components
+    );
+    return new_dashboard;
   }
 }
 let displayedDashboardState = {
@@ -8590,8 +8648,9 @@ let displayedDashboardGetters = {
   }
 };
 let displayedDashboardMutations = {
-  setDisplayedDashboard: (state, dashboard) => {
-    state.displayedDashboard = new DashboardDataFactory().getInstance(dashboard.getName());
+  setDisplayedDashboard: async (state, dashboard) => {
+    let dashboard_data = new DashboardDataFactory();
+    state.displayedDashboard = await dashboard_data.getInstance(dashboard.getName(), dashboard);
   }
 };
 const store = createStore({
@@ -19253,9 +19312,9 @@ const _sfc_main$8 = {
     };
   },
   methods: {
-    selectDashboard(dashboard) {
+    async selectDashboard(dashboard) {
       this.$store.commit("selectDashboard", dashboard);
-      this.$store.commit("setDisplayedDashboard", dashboard);
+      await this.$store.commit("setDisplayedDashboard", dashboard);
       this.$store.commit("hideDrawer");
     }
   },
@@ -33635,57 +33694,6 @@ const registerables = [
   scales
 ];
 Chart.register(...registerables);
-const auto = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  Animation,
-  Animations,
-  ArcElement,
-  BarController,
-  BarElement,
-  BasePlatform,
-  BasicPlatform,
-  BubbleController,
-  CategoryScale,
-  Chart,
-  Colors: plugin_colors,
-  DatasetController,
-  Decimation: plugin_decimation,
-  DomPlatform,
-  DoughnutController,
-  Element: Element$1,
-  Filler: index,
-  Interaction,
-  Legend: plugin_legend,
-  LineController,
-  LineElement,
-  LinearScale,
-  LogarithmicScale,
-  PieController,
-  PointElement,
-  PolarAreaController,
-  RadarController,
-  RadialLinearScale,
-  Scale,
-  ScatterController,
-  SubTitle: plugin_subtitle,
-  Ticks,
-  TimeScale,
-  TimeSeriesScale,
-  Title: plugin_title,
-  Tooltip: plugin_tooltip,
-  _adapters: adapters,
-  _detectPlatform,
-  animator,
-  controllers,
-  default: Chart,
-  defaults,
-  elements,
-  layouts,
-  plugins,
-  registerables,
-  registry,
-  scales
-}, Symbol.toStringTag, { value: "Module" }));
 const _sfc_main$7 = {
   name: "LineChart",
   props: ["chart_data", "index"],
@@ -33751,70 +33759,6 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 const LineChart = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$7]]);
-const scriptRel = "modulepreload";
-const assetsURL = function(dep) {
-  return "/" + dep;
-};
-const seen = {};
-const __vitePreload = function preload(baseModule, deps, importerUrl) {
-  let promise = Promise.resolve();
-  if (deps && deps.length > 0) {
-    document.getElementsByTagName("link");
-    const cspNonceMeta = document.querySelector(
-      "meta[property=csp-nonce]"
-    );
-    const cspNonce = (cspNonceMeta == null ? void 0 : cspNonceMeta.nonce) || (cspNonceMeta == null ? void 0 : cspNonceMeta.getAttribute("nonce"));
-    promise = Promise.allSettled(
-      deps.map((dep) => {
-        dep = assetsURL(dep);
-        if (dep in seen) return;
-        seen[dep] = true;
-        const isCss = dep.endsWith(".css");
-        const cssSelector = isCss ? '[rel="stylesheet"]' : "";
-        if (document.querySelector(`link[href="${dep}"]${cssSelector}`)) {
-          return;
-        }
-        const link = document.createElement("link");
-        link.rel = isCss ? "stylesheet" : scriptRel;
-        if (!isCss) {
-          link.as = "script";
-        }
-        link.crossOrigin = "";
-        link.href = dep;
-        if (cspNonce) {
-          link.setAttribute("nonce", cspNonce);
-        }
-        document.head.appendChild(link);
-        if (isCss) {
-          return new Promise((res, rej) => {
-            link.addEventListener("load", res);
-            link.addEventListener(
-              "error",
-              () => rej(new Error(`Unable to preload CSS for ${dep}`))
-            );
-          });
-        }
-      })
-    );
-  }
-  function handlePreloadError(err) {
-    const e = new Event("vite:preloadError", {
-      cancelable: true
-    });
-    e.payload = err;
-    window.dispatchEvent(e);
-    if (!e.defaultPrevented) {
-      throw err;
-    }
-  }
-  return promise.then((res) => {
-    for (const item of res || []) {
-      if (item.status !== "rejected") continue;
-      handlePreloadError(item.reason);
-    }
-    return baseModule().catch(handlePreloadError);
-  });
-};
 class DataHandler {
   constructor(component, parameters) {
     __publicField(this, "component");
@@ -33843,96 +33787,8 @@ var ExternalLibrary = /* @__PURE__ */ ((ExternalLibrary2) => {
   ExternalLibrary2[ExternalLibrary2["D3JS"] = 2] = "D3JS";
   return ExternalLibrary2;
 })(ExternalLibrary || {});
-class BarChartHandler extends DataHandler {
-  constructor(component, renderer2, ctx) {
-    super(component);
-    __publicField(this, "renderer");
-    __publicField(this, "type", "bar");
-    __publicField(this, "ctx");
-    this.renderer = renderer2;
-    this.ctx = ctx;
-  }
-}
-class BarChartHandlerFrontend extends BarChartHandler {
-  constructor(component, renderer2, ctx) {
-    super(component, renderer2, ctx);
-  }
-  getData() {
-    return {
-      datasets: [
-        {
-          label: "Sales 2024",
-          data: [65, 59, 80, 81, 56, 55],
-          backgroundColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-          borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-          borderWidth: 1
-        },
-        {
-          label: "Sales 2023",
-          data: [45, 49, 60, 71, 46, 45],
-          backgroundColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-          borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-          borderWidth: 1
-        },
-        {
-          label: "Sales 2022",
-          data: [25, 29, 40, 51, 26, 25],
-          backgroundColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-          borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-          borderWidth: 1
-        }
-      ],
-      labels: ["January", "February", "March", "April", "May", "June"],
-      xAxisTitle: {
-        axis: "x",
-        title: "Months"
-      },
-      yAxisTitle: {
-        axis: "y",
-        title: "Sales"
-      }
-    };
-  }
-  async renderChart() {
-    const chart_data = this.getData();
-    if (this.renderer === ExternalLibrary.ChartJs) {
-      const { default: Chart2 } = await __vitePreload(async () => {
-        const { default: Chart3 } = await Promise.resolve().then(() => auto);
-        return { default: Chart3 };
-      }, true ? void 0 : void 0);
-      new Chart2(this.ctx, {
-        type: this.type,
-        data: {
-          labels: chart_data.labels,
-          datasets: chart_data.datasets
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: chart_data.yAxisTitle.title
-              }
-            },
-            x: {
-              title: {
-                display: true,
-                text: chart_data.xAxisTitle.title
-              }
-            }
-          }
-        }
-      });
-    }
-  }
-}
 class BarChartFactory {
   getInstance(component, context) {
-    {
-      return new BarChartHandlerFrontend(component, ExternalLibrary.ChartJs, context);
-    }
   }
 }
 const _sfc_main$6 = {
@@ -50475,44 +50331,45 @@ class TableDataHandler extends DataHandler {
     };
   }
 }
-class TableDataHandlerFrontend extends TableDataHandler {
+class TableDataHandlerBackend extends TableDataHandler {
   constructor(component, renderer2, ctx, parameters = null) {
     super(component, renderer2, ctx, parameters);
   }
-  getData() {
-    if (!this.getParameters()) {
-      return {
-        columnNames: ["Code", "Name", "Category", "Quantity", "Price"],
-        rows: [
-          ["R01", "Product 1", "Category 1", 10, 757],
-          ["R02", "Product 2", "Category 2", 20, 123],
-          ["R03", "Product 3", "Category 3", 30, 456],
-          ["R04", "Product 4", "Category 4", 40, 789],
-          ["R05", "Product 5", "Category 5", 50, 1011],
-          ["R06", "Product 6", "Category 6", 60, 1213],
-          ["R07", "Product 7", "Category 7", 70, 1415],
-          ["R08", "Product 8", "Category 8", 80, 1617],
-          ["R09", "Product 9", "Category 9", 90, 1819],
-          ["R10", "Product 10", "Category 10", 100, 2021]
-        ]
-      };
-    } else {
-      return {
-        columnNames: ["Code", "Name", "Category", "Quantity", "Price"],
-        rows: [
-          ["R01", "Product 1", "Category 1", 10, 757],
-          ["R02", "Product 2", "Category 2", 20, 123],
-          ["R03", "Product 3", "Category 3", 30, 456],
-          ["R04", "Product 4", "Category 4", 40, 789]
-        ]
-      };
+  interpretDefaults(parameters) {
+    let updated_values = {};
+    for (var i = 0; i < parameters.length; i++) {
+      updated_values[parameters[i].name] = parameters[i].default_value;
+    }
+    return updated_values;
+  }
+  async getData() {
+    console.log(this.component);
+    console.log(this.interpretDefaults(this.component.search_parameters));
+    const component = this.component;
+    switch (component.data_source_type) {
+      case "API":
+        try {
+          const response = await fetch(component.data_source_path, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest"
+            },
+            body: JSON.stringify(this.parameters ? this.parameters : this.interpretDefaults(component.search_parameters))
+          });
+          const data21 = await response.json();
+          console.log(data21);
+        } catch (error) {
+          console.error("Error fetching table data:", error);
+        }
+        break;
     }
   }
 }
 class TableDataFactory {
   getInstance(component, context, parameters) {
     {
-      return new TableDataHandlerFrontend(component, ExternalLibrary.PrimeVue, context, parameters);
+      return new TableDataHandlerBackend(component, ExternalLibrary.PrimeVue, context, parameters);
     }
   }
 }
@@ -50743,13 +50600,11 @@ const _sfc_main$1 = {
     BarChart,
     TableData,
     BubbleChart,
-    PieChart
+    PieChart,
+    LoaderComponent
   }
 };
-const _hoisted_1 = {
-  key: 0,
-  class: "dashboard-container"
-};
+const _hoisted_1 = { key: 0 };
 const _hoisted_2 = { class: "charts" };
 function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   return _ctx.$store.getters.getDisplayedDashboard ? (openBlock(), createElementBlock("div", _hoisted_1, [
@@ -50805,72 +50660,6 @@ app.use(PrimeVue, {
 app.mount("#app");
 
             })();
-            //await import("./client-dashboard/dist/assets/index-DfUb5dG4")
-            /*
-            // Define the app
-            const App = {
-                data() {
-                    return {
-                        message: "",
-                        drawerOpen: true, // State to toggle the drawer
-                        drawerItems: [],
-                    };
-                },
-                methods: {
-                    toggleDrawer() {
-                        this.drawerOpen = !this.drawerOpen; // Toggle the drawer
-                    },
-                },
-                async mounted() {
-                    try {
-                        fetch("/wb_data/available_dashboards", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "X-Requested-With": "XMLHttpRequest",
-                            },
-                            body: JSON.stringify({}),
-                        })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                this.drawerItems = data;
-                                console.log(":D");
-                            })
-                    } catch (error) {
-                        console.error('Error fetching dashboards:', error);
-                        this.drawerItems = [];
-                    }
-                },
-                template: `
-                    <div>
-                        <!-- Header -->
-                        <button @click="toggleDrawer" class="menu-btn">Ver Dashboards</button>
-
-                        <!-- Drawer Sidebar -->
-                        <div class="drawer" :class="{ open: drawerOpen }">
-                            <button @click="toggleDrawer" class="close-btn">&times;</button>
-                            <ul>
-                                <li><a href="#home">Home</a></li>
-                                <li><a href="#about">About</a></li>
-                                <li><a href="#services">Services</a></li>
-                                <li><a href="#contact">Contact</a></li>
-                            </ul>
-                        </div>
-
-                        <!-- Overlay -->
-                        <div class="overlay" v-if="drawerOpen" @click="toggleDrawer"></div>
-
-                        <!-- Main Content -->
-                        <div id="content">
-                            <h1>{{ drawerItems }}</h1>
-                        
-                        </div>
-                    </div>
-                `,
-            };
-
-            // Mount the app
-            createApp(App).mount('#root');*/
         });
     }
 }
