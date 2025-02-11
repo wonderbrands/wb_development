@@ -1,134 +1,140 @@
 export class Dashboard {
-    name: string;
-    selected: boolean = false;
-    description: string = "lorem ipsum dolor sit amet";
+  name: string;
+  selected: boolean = false;
+  description: string = "lorem ipsum dolor sit amet";
 
-    constructor(name: string, description: string = "lorem ipsum dolor sit amet") {
-        this.description = description;
-        this.name = name;
-    }
+  constructor(
+    name: string,
+    description: string = "lorem ipsum dolor sit amet",
+  ) {
+    this.description = description;
+    this.name = name;
+  }
 
-    getName(): string {
-        return this.name;
-    }
+  getName(): string {
+    return this.name;
+  }
 
-    setName(name: string): void {
-        this.name = name;
-    }
+  setName(name: string): void {
+    this.name = name;
+  }
 
-    isSelected(): boolean {
-        return this.selected;
-    }
+  isSelected(): boolean {
+    return this.selected;
+  }
 
-    setSelected(selected: boolean): void {
-        this.selected = selected;
-    }
+  setSelected(selected: boolean): void {
+    this.selected = selected;
+  }
 
-    getDescription(): string {
-        return this.description;
-    }
+  getDescription(): string {
+    return this.description;
+  }
 
-    setDescription(description: string): void {
-        this.description = description;
-    }
+  setDescription(description: string): void {
+    this.description = description;
+  }
 }
 
 class AvailableDashboards {
-    availableDashboards: Dashboard[] = [];
+  availableDashboards: Dashboard[] = [];
 
-    getAvailableDashboards(): Dashboard[] {
-        return this.availableDashboards;
-    }
+  getAvailableDashboards(): Dashboard[] {
+    return this.availableDashboards;
+  }
 
-    resetAvailableDashboards(): void {
-        this.availableDashboards = [];
-    }
+  resetAvailableDashboards(): void {
+    this.availableDashboards = [];
+  }
 
-    selectDashboard(dashboard: Dashboard): void {
-        this.getAvailableDashboards().forEach(d => {
-            if (d.name === dashboard.name) {
-                d.selected = true;
-            } else {
-                d.selected = false;
-            }
-        })
-    }
+  selectDashboard(dashboard: Dashboard): void {
+    this.getAvailableDashboards().forEach((d) => {
+      if (d.name === dashboard.name) {
+        d.selected = true;
+      } else {
+        d.selected = false;
+      }
+    });
+  }
 }
 
-class AvailableDashboardsFrontend extends AvailableDashboards{
-    constructor() {
-        super();
-    }
+class AvailableDashboardsFrontend extends AvailableDashboards {
+  constructor() {
+    super();
+  }
 
-    async getAvailableDashboardsFromServer(): Promise<void> {
-        await setTimeout(() => {
-            console.log("Emulate waiting server") 
-        }, 1000);
-        this.availableDashboards = await [
-            new Dashboard("Dashboard 1"),
-            new Dashboard("Dashboard 2"),
-            new Dashboard("Dashboard 3"),
-        ];
-        
-    }
+  async getAvailableDashboardsFromServer(): Promise<void> {
+    await setTimeout(() => {
+      console.log("Emulate waiting server");
+    }, 1000);
+    this.availableDashboards = await [
+      new Dashboard("Dashboard 1"),
+      new Dashboard("Dashboard 2"),
+      new Dashboard("Dashboard 3"),
+    ];
+  }
 }
 
-class AvailableDashboardsOdoo extends AvailableDashboards{
-    constructor() {
-        super();
-    }
+class AvailableDashboardsOdoo extends AvailableDashboards {
+  constructor() {
+    super();
+  }
 
-    async getAvailableDashboardsFromServer() {
-        try {
-            const response = await fetch("/wb_data/available_dashboards", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-                body: JSON.stringify({}),
-            });
-            const data = await response.json();
-            data.result.dashboards.forEach(element => {
-                this.availableDashboards.push(
-                    new Dashboard(element.title, element.description)
-                );
-            });
-        } catch (error) {
-            console.error('Error fetching dashboards:', error);
-        }
+  async getAvailableDashboardsFromServer() {
+    try {
+      const response = await fetch("/wb_data/available_dashboards", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify({}),
+      });
+      const data = await response.json();
+      data.result.dashboards.forEach((element) => {
+        this.availableDashboards.push(
+          new Dashboard(element.title, element.description),
+        );
+      });
+    } catch (error) {
+      console.error("Error fetching dashboards:", error);
     }
+  }
 }
 
 class AvailableDashboardsFactory {
-    getInstance(): AvailableDashboards | void {
-        if (import.meta.env.VITE_AVAILABLE_DASHBOARD_ENGINE === 'frontend') {
-            return new AvailableDashboardsFrontend();
-        } else if (import.meta.env.VITE_AVAILABLE_DASHBOARD_ENGINE === 'backend_odoo') {
-            return new AvailableDashboardsOdoo();
-        }
+  getInstance(): AvailableDashboards | void {
+    if (import.meta.env.VITE_AVAILABLE_DASHBOARD_ENGINE === "frontend") {
+      return new AvailableDashboardsFrontend();
+    } else if (
+      import.meta.env.VITE_AVAILABLE_DASHBOARD_ENGINE === "backend_odoo"
+    ) {
+      return new AvailableDashboardsOdoo();
     }
+  }
 }
-    
+
 export let availableDashboardsState = {
-    availableDashboards: new AvailableDashboardsFactory().getInstance()
-}
+  availableDashboards: new AvailableDashboardsFactory().getInstance(),
+};
 
 export let availableDashboardsGetters = {
-    async getAvailableDashboards(state) {
-        await state.availableDashboards.getAvailableDashboardsFromServer();
-        return await state.availableDashboards.getAvailableDashboards();
-    },
-    getSelectedDashboard(state) {
-        return state.availableDashboards.getAvailableDashboards().find(d => d.selected);
-    }
-}
+  async getAvailableDashboards(state) {
+    await state.availableDashboards.getAvailableDashboardsFromServer();
+    return await state.availableDashboards.getAvailableDashboards();
+  },
+  getSelectedDashboard(state) {
+    return state.availableDashboards
+      .getAvailableDashboards()
+      .find((d) => d.selected);
+  },
+};
 
 export let availableDashboardsMutations = {
-    resetAvailableDashboards(state) {
-        state.availableDashboards.resetAvailableDashboards();
-    },
-    selectDashboard(state, dashboard: Dashboard) {
-        state.availableDashboards.selectDashboard(dashboard);
-    }
-}
+  resetAvailableDashboards(state) {
+    state.availableDashboards.resetAvailableDashboards();
+  },
+  selectDashboard(state, dashboard: Dashboard) {
+    state.availableDashboards.selectDashboard(dashboard);
+  },
+};

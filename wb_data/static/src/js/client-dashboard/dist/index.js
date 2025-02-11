@@ -1,14 +1,3 @@
-/** @odoo-module **/
-import core from 'web.core';
-const { Component } = owl;
-const { useRef, useState, onMounted } = owl.hooks;
-
-class DashboardsRoot extends Component {
-    setup() {
-        onMounted(async () => {
-            /*(async ()=>{
-            })();*/
-            (async ()=>{
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value2) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value: value2 }) : obj[key] = value2;
 var __publicField = (obj, key, value2) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value2);
@@ -50720,11 +50709,3 @@ app.use(PrimeVue, {
   }
 });
 app.mount("#app");
-            })();
-        });
-    }
-}
-
-DashboardsRoot.template = "wb_data.DashboardRoot";
-core.action_registry.add("wb_data.dashboards_display_client", DashboardsRoot);
-
