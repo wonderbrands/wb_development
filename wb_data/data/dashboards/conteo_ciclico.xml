@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="1">
+    <!--CREAR DASHBOARD-->
+    <record id="cycle_count" model="wb_data.dashboards_list">
+      <field name="title">Cycle Count</field>
+      <field name="description">Visualiza el proceso de conteo cíclico dependiendo los parametros establecidos</field>
+    </record>
+
+    <!--CREAR COMPONENTE-->
+    <record id="table_cycle_count" model="wb_data.components_list">
+      <field name="title">Conteo por pasillos</field>
+      <field name="data_source_type" ref="wb_data.data_source_type_api" />
+      <field name="data_source_path">/wb_cycle_count/table</field>
+      <field name="graph_type" ref="wb_data.table"/>
+      <field name="dashboard" ref="wb_data.cycle_count"/>
+    </record>
+
+    <!--CREAR LOS FILTROS-->
+    <record id="since" model="wb_data.parameters_list">
+      <field name="name">Desde</field>
+      <field name="type">datetime</field>
+      <field name="code_interpreted_default">True</field>
+      <field name="default">datetime.now() - timedelta(days=1)</field>
+      <field name="component" ref="wb_data.table_cycle_count" /> 
+    </record>
+
+    <record id="until" model="wb_data.parameters_list">
+      <field name="name">Hasta</field>
+      <field name="type">datetime</field>
+      <field name="code_interpreted_default">True</field>
+      <field name="default">datetime.now()</field>
+      <field name="component" ref="wb_data.table_cycle_count" /> 
+    </record>
+
+    <record id="aisle" model="wb_data.parameters_list">
+      <field name="name">Pasillo</field>
+      <field name="type">selection</field>
+      <field name="code_interpreted_default">False</field>
+      <field name="default">A</field>
+      <field name="code_interpreted_selection">True</field>
+      <field name="selection_code">[chr(i) for i in range(65, 91)] + ["Ñ"]</field>
+      <field name="component" ref="wb_data.table_cycle_count" /> 
+    </record>
+
+    <record id="wave" model="wb_data.parameters_list">
+      <field name="name">Sesión</field>
+      <field name="type">selection</field>
+      <field name="code_interpreted_default">False</field>
+      <field name="default">WAVE-01</field>
+      <field name="code_interpreted_selection">True</field>
+      <field name="selection_code">['WAVE-01', 'WAVE-02', 'WAVE-03', 'WAVE-04']</field>
+      <field name="component" ref="wb_data.table_cycle_count" /> 
+    </record>
+
+     </data>
+</odoo>
