@@ -19,6 +19,10 @@ class SaleOrder(models.Model):
     time_zone = fields.Datetime(string='Zona horaria', help='Prueba de la zona horaria')
 
     auto_invoiced = fields.Boolean(string='Fue autofacturado',help='Muestra si la SO activa fue facturada de manera automática')
+    
+    data_total_carrier_tracking = fields.Integer(
+        string="Total de guias"
+    )
 
     @api.onchange('other')
     def _clear_field(self):
