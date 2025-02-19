@@ -35,6 +35,7 @@ const store = createStore({
     ...availableDashboardsGetters,
     ...frontendControllersGetters,
     ...displayedDashboardGetters,
+    ...userInfoGetters,
   },
 });
 

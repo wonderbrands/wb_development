@@ -18,8 +18,7 @@ export default {
     Button,
   },
   async beforeMount() {
-    let data = await this.$store.getUserInfo()
-    console.log(data)
+    await this.$store.getters.getUserInfo
   },
 };
 </script>

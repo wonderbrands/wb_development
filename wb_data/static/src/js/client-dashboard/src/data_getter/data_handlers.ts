@@ -32,4 +32,29 @@ export class DataHandler {
     }
     return updated_values;
   }
+
+  async getDataServer(){
+    switch (this.component.data_source_type) {
+      case "API":
+        try {
+          const response = await fetch(this.component.data_source_path, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+            },
+            body: JSON.stringify(
+              this.parameters
+                ? this.parameters
+                : this.interpretDefaults(this.component.search_parameters),
+            ),
+          });
+          const data = await response.json();
+          return data.result;
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+        break;
+    }
+  }
 }

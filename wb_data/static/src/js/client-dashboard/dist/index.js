@@ -8575,7 +8575,9 @@ const test_dashboard_data = [
   new DashboardData(new Dashboard("Dashboard 3"), [])
 ];
 class DashboardDataFactory {
-  async getInstance(name, dashboard) {
+  async getInstance(name, dashboard, userInfo) {
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    console.log(userInfo);
     switch ("backend_odoo") {
       case "frontend":
         await setTimeout(() => {
@@ -8602,14 +8604,16 @@ class DashboardDataFactory {
           });
           const data21 = await response.json();
           console.log(data21);
-          return this.convertServerComponent(data21.result, dashboard);
+          return this.convertServerComponent(data21.result, dashboard, userInfo);
         } catch (error) {
           console.error("Error fetching dashboard data:", error);
         }
         break;
     }
   }
-  convertServerComponent(data21, dashboard) {
+  convertServerComponent(data21, dashboard, userInfo) {
+    console.log("=========================");
+    console.log(userInfo);
     let dashboard_data = data21.dashboard_data;
     let components = [];
     let parameters = [];
@@ -8617,8 +8621,11 @@ class DashboardDataFactory {
       parameters = [];
       component.parameters.forEach((parameter) => {
         let parameter_value = parameter.default;
-        if (parameterType[parameter.type] == 2 || 3) {
+        if (parameterType[parameter.type] == 2 || parameterType[parameter.type] == 3) {
           parameter_value = new Date(parameter_value);
+          parameter_value.setHours(parameter_value.getHours() - userInfo.getUTCTimeDiff());
+        } else {
+          console.log("not any type");
         }
         parameters.push(
           new ServerParameters$1(
@@ -8656,16 +8663,89 @@ let displayedDashboardGetters = {
   }
 };
 let displayedDashboardMutations = {
-  setDisplayedDashboard: async (state, dashboard) => {
+  setDisplayedDashboard: async (state, input) => {
+    console.log("**********************************");
+    console.log(input.userInfo);
     let dashboard_data = new DashboardDataFactory();
     state.displayedDashboard = await dashboard_data.getInstance(
-      dashboard.getName(),
-      dashboard
+      input.dashboard.getName(),
+      input.dashboard,
+      input.userInfo
     );
   }
 };
+class UserInfo {
+  constructor(utc_time_diff) {
+    __publicField(this, "utc_time_diff");
+    this.utc_time_diff = utc_time_diff;
+  }
+  getUTCTimeDiff() {
+    return this.utc_time_diff;
+  }
+  setUTCTimeDiff(time_uff) {
+    this.utc_time_diff = time_uff;
+  }
+}
+async function getDataFrontend() {
+  try {
+    console.log("Fetching data...");
+    const response = await (async () => {
+      return new Promise((resolve2, reject) => {
+        setTimeout(() => {
+          if (Math.random() > 0.2) {
+            resolve2({ utc_diff: -6 });
+          } else {
+            reject(new Error("Network error!"));
+          }
+        }, 3e3);
+      });
+    })();
+    return response;
+  } catch (error) {
+    console.error("Error fetching data:", error.message);
+    return { error: error.message };
+  }
+}
+async function getDataBackend() {
+  try {
+    const response = await fetch(`/wb_data/get_user_info`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      body: JSON.stringify({})
+    });
+    const data21 = await response.json();
+    return data21.result;
+  } catch (error) {
+    console.error(error);
+  }
+}
+class UserInfoFactory {
+  async getInstance() {
+    let data21 = null;
+    switch ("backend_odoo") {
+      case "frontend":
+        data21 = await getDataFrontend();
+        break;
+      case "backend_odoo":
+        data21 = await getDataBackend();
+        break;
+    }
+    let info = new UserInfo(data21.utc_diff);
+    return info;
+  }
+}
 const userInfoState = {
   userInfo: null
+};
+const userInfoGetters = {
+  getUserInfo: async (state) => {
+    let userInfoObj = new UserInfoFactory();
+    state.userInfo = await userInfoObj.getInstance();
+    return state.userInfo;
+  }
 };
 const store = createStore({
   state: {
@@ -8683,7 +8763,8 @@ const store = createStore({
   getters: {
     ...availableDashboardsGetters,
     ...frontendControllersGetters,
-    ...displayedDashboardGetters
+    ...displayedDashboardGetters,
+    ...userInfoGetters
   }
 });
 var __defProp$1 = Object.defineProperty;
@@ -19329,7 +19410,11 @@ const _sfc_main$8 = {
   methods: {
     async selectDashboard(dashboard) {
       this.$store.commit("selectDashboard", dashboard);
-      await this.$store.commit("setDisplayedDashboard", dashboard);
+      console.log(this.$store.state.userInfo);
+      await this.$store.commit("setDisplayedDashboard", {
+        dashboard,
+        userInfo: this.$store.state.userInfo
+      });
       this.$store.commit("hideDrawer");
     }
   },
@@ -50679,8 +50764,7 @@ const _sfc_main = {
     Button: script$T
   },
   async beforeMount() {
-    let data21 = await this.$store.getUserInfo;
-    console.log(data21);
+    await this.$store.getters.getUserInfo;
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {

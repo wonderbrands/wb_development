@@ -109,32 +109,8 @@ class TableDataHandlerBackend extends TableDataHandler {
     console.log(this.component);
     console.log(this.interpretDefaults(this.component.search_parameters));
     console.log(this.parameters);
-    const component = this.component;
-    switch (component.data_source_type) {
-      case "API":
-        try {
-          const response = await fetch(component.data_source_path, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-            },
-            body: JSON.stringify(
-              this.parameters
-                ? this.parameters
-                : this.interpretDefaults(component.search_parameters),
-            ),
-          });
-          const data = await response.json();
-          console.log(data);
-          return data.result;
-        } catch (error) {
-          console.error("Error fetching table data:", error);
-        }
-        break;
-    }
+    const component = 
   }
-}
 
 export class TableDataFactory {
   async getInstance(

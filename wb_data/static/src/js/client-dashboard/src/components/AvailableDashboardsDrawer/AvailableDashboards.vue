@@ -46,10 +46,14 @@ export default {
   methods: {
     async selectDashboard(dashboard) {
       this.$store.commit("selectDashboard", dashboard);
-      await this.$store.commit("setDisplayedDashboard", dashboard);
+      console.log(this.$store.state.userInfo)
+      await this.$store.commit("setDisplayedDashboard", {
+        dashboard: dashboard, 
+        userInfo: this.$store.state.userInfo
+      });
       this.$store.commit("hideDrawer");
     },
-  },
+  }, 
   async beforeMount() {
     this.avDashboards = await this.$store.getters.getAvailableDashboards;
   },

@@ -1,4 +1,4 @@
-class UserInfo {
+export class UserInfo {
   utc_time_diff: number;
 
   constructor(utc_time_diff: number) {
@@ -6,7 +6,7 @@ class UserInfo {
   }
 
   getUTCTimeDiff() {
-return this.utc_time_diff;
+    return this.utc_time_diff;
   }
 
   setUTCTimeDiff(time_uff: number) {
@@ -80,9 +80,6 @@ export const userInfoGetters = {
   getUserInfo: async (state) => {
     let userInfoObj = new UserInfoFactory()
     state.userInfo = await userInfoObj.getInstance()
-    console.log("======================0")
-    console.log(state.userInfo)
-    console.log("======================0")
     return state.userInfo
   }
 }

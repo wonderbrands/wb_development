@@ -1,4 +1,6 @@
 import { Dashboard } from "../AvailableDashboardsDrawer/available_dashboards";
+import { UserInfo } from "../../store/user_server_info"
+
 class DashboardData extends Dashboard {
   components: ChartComponent[];
 
@@ -301,7 +303,7 @@ const test_dashboard_data: DashboardData[] = [
 ];
 
 class DashboardDataFactory {
-  async getInstance(name: string, dashboard: Dashboard): DashboardData | void {
+  async getInstance(name: string, dashboard: Dashboard, userInfo: UserInfo): DashboardData | void {
     switch (import.meta.env.VITE_DASHBOARD_DATA_ENGINE) {
       case "frontend":
         await setTimeout(() => {
@@ -328,7 +330,7 @@ class DashboardDataFactory {
           });
           const data = await response.json();
           console.log(data);
-          return this.convertServerComponent(data.result, dashboard);
+          return this.convertServerComponent(data.result, dashboard, userInfo);
         } catch (error) {
           console.error("Error fetching dashboard data:", error);
         }
@@ -336,7 +338,7 @@ class DashboardDataFactory {
     }
   }
 
-  convertServerComponent(data: any, dashboard: Dashboard): DashboardData {
+  convertServerComponent(data: any, dashboard: Dashboard, userInfo:UserInfo): DashboardData {
     let dashboard_data = data.dashboard_data;
     //for each component
     let components = [];
@@ -348,13 +350,12 @@ class DashboardDataFactory {
         //DEAL WITH DATATYPES
         let parameter_value = parameter.default;
         if (
-          parameterType[parameter.type] == parameterType.date ||
-          parameterType.datetime
+          (parameterType[parameter.type] == parameterType.date) || (parameterType[parameter.type] == parameterType.datetime)
         ) {
           parameter_value = new Date(parameter_value);
-        } else {
-          console.log("not any type");
-        }
+          parameter_value.setHours(parameter_value.getHours() + userInfo.getUTCTimeDiff()); // Subtract n hours
+
+        } 
 
         parameters.push(
           new ServerParameters(
@@ -397,11 +398,12 @@ export let displayedDashboardGetters = {
 };
 
 export let displayedDashboardMutations = {
-  setDisplayedDashboard: async (state, dashboard) => {
+  setDisplayedDashboard: async (state, input: any) => {
     let dashboard_data = new DashboardDataFactory();
     state.displayedDashboard = await dashboard_data.getInstance(
-      dashboard.getName(),
-      dashboard,
+      input.dashboard.getName(),
+      input.dashboard,
+      input.userInfo
     );
   },
 };
