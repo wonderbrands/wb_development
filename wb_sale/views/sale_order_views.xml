@@ -36,7 +36,7 @@
         <record id="sale_order_form_inherit_guide" model="ir.ui.view">
             <field name="name">sale.order.form.inherit_guide</field>
             <field name="model">sale.order</field>
-            <field name="inherit_id" ref="madkting.view_order_form_inherit"/>  <!-- Reference Odoo Studio view -->
+            <field name="inherit_id" ref="sale.view_order_form"/>  <!-- Reference Odoo Studio view -->
             <field name="arch" type="xml">
                 <!-- Add the data_total_carrier_tracking field after yuju_carrier_tracking_ref -->
                 <xpath expr="//field[@name='yuju_carrier_tracking_ref']" position="after">
