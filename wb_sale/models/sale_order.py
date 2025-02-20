@@ -11,6 +11,9 @@ import requests
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    data_total_carrier_tracking = fields.Integer(
+        string="Total de guias"
+    )
     availability = fields.Boolean(string='Disponibilidad', help='Venta negada o cancelada por disponibilidad')
     delivery_time = fields.Boolean(string='Tiempo de entrega', help='Venta negada o cancelada por tiempo de entrega')
     sale_price = fields.Boolean(string='Precio de venta', help='Venta negada o cancelada por precio de venta')
@@ -19,6 +22,8 @@ class SaleOrder(models.Model):
     time_zone = fields.Datetime(string='Zona horaria', help='Prueba de la zona horaria')
 
     auto_invoiced = fields.Boolean(string='Fue autofacturado',help='Muestra si la SO activa fue facturada de manera automática')
+    
+    
 
     @api.onchange('other')
     def _clear_field(self):

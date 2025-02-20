@@ -26,7 +26,9 @@
     'depends': ['base',
                 'product',
                 'sale',
-                'stock'],
+                'stock',
+                'madkting'
+                ],
 
     # always loaded
     'data': [
