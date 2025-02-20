@@ -11,6 +11,9 @@
                 <field name="auto_invoiced"/>
               </group>
           </xpath>
+          <xpath expr="//field[@name='yuju_carrier_tracking_ref']" position="after">
+            <field name="data_total_carrier_tracking"/>
+          </xpath>
           <notebook>
               <page name="denied" string="Motivos de cancelación" attrs="{'invisible':[('state', '!=', 'cancel')]}">
                   <group>
