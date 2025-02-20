@@ -1,41 +1,48 @@
 <odoo>
     <data>
-    <record  id="sale_order_form_inherit" model="ir.ui.view">
-      <field name="name">sale_order_form_inherit</field>
-      <field name="model">sale.order</field>
-      <field name="inherit_id" ref="sale.view_order_form"/>
-      <field name="arch" type="xml">
-          <!-- Agrega campos al formulario de Venta-->
-          <xpath expr="//group[@name='order_details']" position="after">
-              <group>
-                <field name="auto_invoiced"/>
-              </group>
-          </xpath>
-          <notebook>
-              <page name="denied" string="Motivos de cancelación" attrs="{'invisible':[('state', '!=', 'cancel')]}">
-                  <group>
-                      <group string='Motivos de cancelación de venta'>
-                          <field name="availability"/>
-                          <field name="delivery_time"/>
-                          <field name="sale_price"/>
-                          <field name="other"/>
-                          <field name="message" attrs="{'invisible':[('other', '=', False)]}"/>
-                      </group>
-                  </group>
-              </page>
-          </notebook>
-      </field>
-    </record>
+        <!-- Inherit the standard sale.order form view -->
+        <record id="sale_order_form_inherit" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <!-- Add fields to the sale order form -->
+                <xpath expr="//group[@name='order_details']" position="after">
+                    <group>
+                        <field name="auto_invoiced"/>
+                    </group>
+                </xpath>
 
-      <record id="sale_order_form_inherit_guide" model="ir.ui.view">
-        <field name="name">sale.order.form.inherit_guide</field>
-        <field name="model">sale.order</field>
-        <field name="inherit_id" ref="madkting.view_order_form_inherit"/>  <!-- Reference Odoo Studio view -->
-        <field name="arch" type="xml">
-          <xpath expr="//field[@name='yuju_carrier_tracking_ref']" position="after">
-            <field name="data_total_carrier_tracking"/>
-          </xpath>
-        </field>
-      </record>
+                <!-- Add a new notebook page for cancellation reasons -->
+                <xpath expr="//sheet" position="inside">
+                    <notebook>
+                        <page name="denied" string="Motivos de cancelación" attrs="{'invisible': [('state', '!=', 'cancel')]}">
+                            <group>
+                                <group string="Motivos de cancelación de venta">
+                                    <field name="availability"/>
+                                    <field name="delivery_time"/>
+                                    <field name="sale_price"/>
+                                    <field name="other"/>
+                                    <field name="message" attrs="{'invisible': [('other', '=', False)]}"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Inherit the Odoo Studio custom view -->
+        <record id="sale_order_form_inherit_guide" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit_guide</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="madkting.view_order_form_inherit"/>  <!-- Reference Odoo Studio view -->
+            <field name="arch" type="xml">
+                <!-- Add the data_total_carrier_tracking field after yuju_carrier_tracking_ref -->
+                <xpath expr="//field[@name='yuju_carrier_tracking_ref']" position="after">
+                    <field name="data_total_carrier_tracking"/>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
