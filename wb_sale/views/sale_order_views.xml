@@ -11,9 +11,6 @@
                 <field name="auto_invoiced"/>
               </group>
           </xpath>
-          <xpath expr="//field[@name='yuju_carrier_tracking_ref']" position="after">
-            <field name="data_total_carrier_tracking"/>
-          </xpath>
           <notebook>
               <page name="denied" string="Motivos de cancelación" attrs="{'invisible':[('state', '!=', 'cancel')]}">
                   <group>
@@ -29,5 +26,16 @@
           </notebook>
       </field>
     </record>
+
+    <record id="sale_order_form_inherit" model="ir.ui.view">
+    <field name="name">sale.order.form.inherit</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="studio_customization.odoo_studio_sale_ord_922be633-25ab-4f27-8859-bdeaf84a8577"/>  <!-- Reference Odoo Studio view -->
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='yuju_carrier_tracking_ref']" position="after">
+            <field name="data_total_carrier_tracking"/>
+        </xpath>
+    </field>
+</record>
     </data>
 </odoo>
