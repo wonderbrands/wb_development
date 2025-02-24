@@ -4,15 +4,17 @@ class WatchedFields(models.Model):
     _name = "wb_log.watched_fields"
 
     model = fields.Many2one(
-        comodel = "ir.model",
+        comodel_name = "ir.model",
         string = "Model",
-        required = True
+        required = True,
+        ondelete="cascade"
     )
 
     field = fields.Many2one(
-        comodel = "ir.model_fields",
+        comodel_name = "ir.model.fields",
         string = "Field",
         required = True,
+        ondelete="cascade"
     )
 
     check_when_create = fields.Boolean(
@@ -29,6 +31,7 @@ class WatchedFields(models.Model):
 
 
 
+    
     @api.onchange('model')
     def _onchange_model(self):
         """Dynamically set the domain for 'field' based on the selected model"""

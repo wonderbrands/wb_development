@@ -1,0 +1,20 @@
+<odoo>
+    <data>
+      <menuitem id="menu_wb_log_root" 
+                name="Wonderbrands System Logs" 
+                sequence="50"/>
+
+        <menuitem id="menu_wb_log_log_list" 
+                  name="Logs" 
+                  parent="menu_wb_log_root" 
+                  action="action_wb_log_log_list" 
+                  sequence="10"/>
+
+        <menuitem id="menu_wb_log_watch_fields" 
+                  name="Watched fields" 
+                  parent="menu_wb_log_root" 
+                  action="action_wb_logs_watched_fields" 
+                  sequence="20"/>
+    </data>
+</odoo>
+

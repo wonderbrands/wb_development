@@ -1,0 +1,17 @@
+<odoo>
+    <data>
+      <record id="action_wb_log_log_list" model="ir.actions.act_window">
+          <field name="name">Log</field>
+            <field name="res_model">wb_log.log</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_wb_log_log_list"/>
+        </record>
+        <record id="action_wb_logs_watched_fields" model="ir.actions.act_window">
+            <field name="name">Watched fields</field>
+            <field name="res_model">wb_log.watched_fields</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_wb_logs_watched_fields"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,53 @@
+<odoo>
+    <data>    
+        <record id="view_wb_log_log_list" model="ir.ui.view">
+            <field name="name">view_wb_log_log_list</field>
+            <field name="model">wb_log.log</field>
+            <field name="arch" type="xml">
+                <tree>  
+                  <field name="link_2_rec" />
+                  <field name="model" />
+                  <field name="field" />
+                  <field name="prev_value" />
+                  <field name="new_value" />
+                  <field name="at" />
+                  <field name="user" />
+                  <field name="movment_type" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_wb_logs_watched_fields" model="ir.ui.view">
+            <field name="name">view_wb_logs_watched_fields</field>
+            <field name="model">wb_log.watched_fields</field>
+            <field name="arch" type="xml">
+                <tree>  
+                    <field name="model" />  
+                    <field name="field" />  
+                    <field name="check_when_create" />  
+                    <field name="check_when_update" />  
+                    <field name="check_when_remove" />  
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_wb_logs_watched_fields_form" model="ir.ui.view">
+            <field name="name">view_wb_logs_watched_fields_form</field>
+            <field name="model">wb_log.watched_fields</field>
+            <field name="arch" type="xml">
+                <form>
+                    <span>
+                        <h1>
+                            <field name="model" />  
+                            <field name="field" />  
+                        </h1>
+                    </span>
+                    <field name="check_when_create" />  
+                    <field name="check_when_update" />  
+                    <field name="check_when_remove" /> 
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
+
