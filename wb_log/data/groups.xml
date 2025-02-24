@@ -1,0 +1,20 @@
+<odoo>
+    <data noupdate="1">
+        <record id="wb_log_group_listing" model="ir.module.category">
+            <field name="name">Wonderbrands Group Logs</field>
+            <field name="sequence">10</field> 
+        </record>
+
+        <record id="wb_log_log_viewer" model="res.groups">
+            <field name="name">Log viewer</field>
+            <field name="category_id" ref="wb_log.wb_log_group_listing"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="wb_log_field_definer" model="res.groups">
+            <field name="name">Define followed fields</field>
+            <field name="category_id" ref="wb_log.wb_log_group_listing"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+    </data>
+</odoo>

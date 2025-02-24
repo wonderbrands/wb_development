@@ -139,3 +139,39 @@ class WriteInLog(models.BaseModel):
         _logger.info("================================")
         return record
 
+    def unlink(self):
+        _logger.info("================================")
+        fields = list(self._fields.keys())
+        prev_record = self.read(fields)
+        _logger.info(prev_record)
+        record = super().unlink()
+        watched_fields = self._is_model_and_field_being_watched(
+            model = self._name, 
+            fields = self._fields.keys()
+        )
+        _logger.info(watched_fields)
+        _logger.info(self._name)
+        _logger.info(self._rec_name)
+        if watched_fields["is_watched"]:
+            for field in watched_fields["fields"]:
+                _logger.info(field)
+                _logger.info(field.field.name)
+                if field.check_when_remove:
+                    _logger.info("......................................")
+                    _logger.info(record)
+                    _logger.info(field.field.name)
+                    _logger.info("......................................")
+                    for index, rec in enumerate(prev_record):
+                        self._write_log(
+                            model = field.model.id,
+                            field = field.field.id,
+                            record = prev_record[index][self.name if not self._rec_name else self._rec_name],
+                            prev_val = prev_record[index][field.field.name],
+                            next_val = False,
+                            operation_type = "deleted",
+                            rec_id = prev_record[index]["id"]
+                        )
+        
+        _logger.info("================================")
+        return record
+

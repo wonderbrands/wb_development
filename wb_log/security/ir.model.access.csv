@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_wb_log_inherited,wb_log.access_wb_log_inherited,model_wb_log_watched_fields,base.group_user,1,0,0,0
 access_wb_log_log_write,wb_log.access_wb_log_log_write,model_wb_log_log,base.group_user,0,1,1,0
+access_wb_log_log_view,wb_log.access_wb_log_log_view,model_wb_log_log,wb_log.wb_log_log_viewer,1,0,0,0
+access_wb_log_inherited_define,wb_log.access_wb_log_inherited_define,model_wb_log_watched_fields,wb_log.wb_log_field_definer,1,1,1,1
