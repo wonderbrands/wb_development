@@ -121,16 +121,17 @@ class WriteInLog(models.BaseModel):
                     _logger.info("......................................")
                     _logger.info(record)
                     _logger.info(field.field.name)
+                    
                     _logger.info("......................................")
                     for index, rec in enumerate(prev_record):
-                        record_val = vals
+                        record_val = self.read()
                         _logger.info(record_val)
                         self._write_log(
                             model = field.model.id,
                             field = field.field.id,
-                            record = getattr(self, self.name if not self._rec_name else self._rec_name),
+                            record = record_val[index][self.name if not self._rec_name else self._rec_name],
                             prev_val = prev_record[index][field.field.name],
-                            next_val = getattr (self, field.field.name),
+                            next_val = record_val[index][field.field.name],
                             operation_type = "updated",
                             rec_id = self.id
                         )
