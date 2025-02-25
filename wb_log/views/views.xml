@@ -24,7 +24,7 @@
                 <tree>  
                     <field name="model" />  
                     <field name="field" />  
-                    <field name="check_when_create" />  
+                    <!--<field name="check_when_create" />-->  
                     <field name="check_when_update" />  
                     <field name="check_when_remove" />  
                 </tree>
@@ -50,7 +50,7 @@
                           </h1>
                       </span>
                       <group>
-                        <field name="check_when_create" string="Log when create"/>  
+                        <!--<field name="check_when_create" string="Log when create"/>-->  
                         <field name="check_when_update" string="Log when update"/>  
                         <field name="check_when_remove" string="Log when delete"/>
                       </group>

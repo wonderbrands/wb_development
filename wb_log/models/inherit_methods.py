@@ -13,10 +13,10 @@ class WriteInLog(models.BaseModel):
                                           field = None):
 
 
-        _logger.info("------------------------------")
-        _logger.info(list(fields))
-        _logger.info(model)
-        _logger.info("------------------------------")
+        #_logger.info("------------------------------")
+        #_logger.info(list(fields))
+        #_logger.info(model)
+        #_logger.info("------------------------------")
         if fields:
             watched_field = self.env["wb_log.watched_fields"].search(
                 [
@@ -64,27 +64,27 @@ class WriteInLog(models.BaseModel):
         )
 
     def create(self, vals):
-        _logger.info("================================")
+        #_logger.info("================================")
         fields = list(self._fields.keys())
         prev_record = self.read(fields)
-        _logger.info(prev_record)
+        #_logger.info(prev_record)
         record = super().create(vals)
-        _logger.info(record)
+        #_logger.info(record)
         watched_fields = self._is_model_and_field_being_watched(
             model = self._name, 
             fields = self._fields.keys()
         )
-        _logger.info(watched_fields)
-        _logger.info(self._name)
-        _logger.info(self._rec_name)
+        #_logger.info(watched_fields)
+        #_logger.info(self._name)
+        #_logger.info(self._rec_name)
         if watched_fields["is_watched"]:
             for field in watched_fields["fields"]:
-                _logger.info(field)
-                _logger.info(field.field.name)
+                #_logger.info(field)
+                #_logger.info(field.field.name)
                 if field.check_when_create:
                     for rec in record:
                         record_val = rec.read()[0]
-                        _logger.info(record_val)
+                        #_logger.info(record_val)
                         self._write_log(
                             model = field.model.id,
                             field = field.field.id,
@@ -95,37 +95,37 @@ class WriteInLog(models.BaseModel):
                             rec_id = record_val["id"]
                         )
         
-        _logger.info("================================")
+        #_logger.info("================================")
         return record
 
     def write(self, vals):
-        _logger.info("================================")
+        #_logger.info("================================")
         fields = list(self._fields.keys())
         prev_record = self.read(fields)
-        _logger.info(prev_record)
-        _logger.info(vals)
+        #_logger.info(prev_record)
+        #_logger.info(vals)
         record = super().write(vals)
-        _logger.info(record)
+        #_logger.info(record)
         watched_fields = self._is_model_and_field_being_watched(
             model = self._name, 
             fields = self._fields.keys()
         )
-        _logger.info(watched_fields)
-        _logger.info(self._name)
-        _logger.info(self._rec_name)
+        #_logger.info(watched_fields)
+        #_logger.info(self._name)
+        #_logger.info(self._rec_name)
         if watched_fields["is_watched"]:
             for field in watched_fields["fields"]:
-                _logger.info(field)
-                _logger.info(field.field.name)
+                #_logger.info(field)
+                #_logger.info(field.field.name)
                 if field.check_when_update and field.field.name in list(vals.keys()):
-                    _logger.info("......................................")
-                    _logger.info(record)
-                    _logger.info(field.field.name)
+                    #_logger.info("......................................")
+                    #_logger.info(record)
+                    #_logger.info(field.field.name)
                     
-                    _logger.info("......................................")
+                    #_logger.info("......................................")
                     for index, rec in enumerate(prev_record):
                         record_val = self.read()
-                        _logger.info(record_val)
+                        #_logger.info(record_val)
                         self._write_log(
                             model = field.model.id,
                             field = field.field.id,
@@ -136,31 +136,31 @@ class WriteInLog(models.BaseModel):
                             rec_id = self.id
                         )
         
-        _logger.info("================================")
+        #_logger.info("================================")
         return record
 
     def unlink(self):
-        _logger.info("================================")
+        #_logger.info("================================")
         fields = list(self._fields.keys())
         prev_record = self.read(fields)
-        _logger.info(prev_record)
-        record = super().unlink()
+        #_logger.info(prev_record)
+        record = super().unlink(vals)
         watched_fields = self._is_model_and_field_being_watched(
             model = self._name, 
             fields = self._fields.keys()
         )
-        _logger.info(watched_fields)
-        _logger.info(self._name)
-        _logger.info(self._rec_name)
+        #_logger.info(watched_fields)
+        #_logger.info(self._name)
+        #_logger.info(self._rec_name)
         if watched_fields["is_watched"]:
             for field in watched_fields["fields"]:
-                _logger.info(field)
-                _logger.info(field.field.name)
+                #_logger.info(field)
+                #_logger.info(field.field.name)
                 if field.check_when_remove:
-                    _logger.info("......................................")
-                    _logger.info(record)
-                    _logger.info(field.field.name)
-                    _logger.info("......................................")
+                    #_logger.info("......................................")
+                    #_logger.info(record)
+                    #_logger.info(field.field.name)
+                    #_logger.info("......................................")
                     for index, rec in enumerate(prev_record):
                         self._write_log(
                             model = field.model.id,
@@ -172,6 +172,6 @@ class WriteInLog(models.BaseModel):
                             rec_id = prev_record[index]["id"]
                         )
         
-        _logger.info("================================")
+        #_logger.info("================================")
         return record
 
