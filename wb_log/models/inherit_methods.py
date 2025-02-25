@@ -63,6 +63,7 @@ class WriteInLog(models.BaseModel):
             }
         )
 
+    """
     def create(self, vals):
         #_logger.info("================================")
         fields = list(self._fields.keys())
@@ -97,6 +98,7 @@ class WriteInLog(models.BaseModel):
         
         #_logger.info("================================")
         return record
+    """
 
     def write(self, vals):
         #_logger.info("================================")
