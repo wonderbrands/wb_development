@@ -63,9 +63,9 @@ class FieldsLog(models.Model):
             if record.record and record.model and record.rec_id:
                 base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
                 url = f"<a href=\"{base_url}/web#id={record.rec_id}&model={record.model.model}\">{record.record}</a>"
-                _logger.info("***********************************")
-                _logger.info(url)
-                _logger.info("***********************************")
+                #_logger.info("***********************************")
+                #_logger.info(url)
+                #_logger.info("***********************************")
                 record.link_2_rec = url
             else: 
                 record.link_2_rec = False

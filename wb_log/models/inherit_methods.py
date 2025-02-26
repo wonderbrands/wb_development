@@ -1,179 +1,111 @@
 from odoo import models, fields, api
 from datetime import datetime
 import logging
+import threading
+import time
 
 _logger = logging.getLogger(__name__)
+
+THREAD_LIMIT = 10  # Adjust based on server capacity
+thread_semaphore = threading.Semaphore(THREAD_LIMIT)
 
 class WriteInLog(models.BaseModel):
     _inherit = "base"
 
-    def _is_model_and_field_being_watched(self, 
-                                          model = None, 
-                                          fields = None,
-                                          field = None):
+    def _safe_write_update_log(self, prev_record, vals, new_record):
+        """Thread-safe ORM operation with explicit cursor closing."""
+        with thread_semaphore:  # Limit concurrent threads
+            try:
+                with self.env.registry.cursor() as cr:
+                    env = api.Environment(cr, self.env.uid, self.env.context)
+                    start = time.perf_counter()
+                    watched_fields = env["wb_log.watched_fields"].search(
+                        [("model.model", "=", self._name), ("field.name", "in", list(vals.keys()))]
+                    )
+                    end = time.perf_counter()
+                    _logger.info(f"Time elapsed for the search {end-start}")
+                    if watched_fields:
+                        for field in watched_fields:
+                            if field.check_when_update:
+                                for index, rec in enumerate(prev_record):
+                                    env["wb_log.log"].create({
+                                        "record": new_record[index][self._rec_name or "name"],
+                                        "model": field.model.id,
+                                        "field": field.field.id,
+                                        "user": env.user.id,
+                                        "at": datetime.now(),
+                                        "prev_value": prev_record[index][field.field.name],
+                                        "new_value": new_record[index][field.field.name],
+                                        "movment_type": "updated",
+                                        "rec_id": new_record[index]["id"]
+                                    })
+                    cr.commit()
 
-
-        #_logger.info("------------------------------")
-        #_logger.info(list(fields))
-        #_logger.info(model)
-        #_logger.info("------------------------------")
-        if fields:
-            watched_field = self.env["wb_log.watched_fields"].search(
-                [
-                    ("model.model", "=", model),
-                    ("field.name", "in", list(fields))
-                ]
-            )
-            return {
-                "is_watched": not len(watched_field)==0,
-                "fields": watched_field
-            }
-        if field:
-            watched_field = self.env["wb_log.watched_fields"].search(
-                [
-                    ("model.name", "=", model),
-                    ("field.name", "=", field)
-                ]
-            )
-            return {
-                "is_watched": not len(watched_field)==0,
-                "field": watched_field
-            }
-
-    def _write_log(self,
-                   model, 
-                   field, 
-                   record,  
-                   prev_val, 
-                   next_val, 
-                   operation_type,
-                   rec_id):
-
-        self.env["wb_log.log"].create(    
-            {
-                "record": str(record),
-                "model": str(model),
-                "field": field,
-                "user": self.env.user.id,
-                "at": datetime.now(),
-                "prev_value": str(prev_val),
-                "new_value": str(next_val),
-                "movment_type": operation_type,
-                "rec_id": rec_id
-            }
-        )
-
-    """
-    def create(self, vals):
-        #_logger.info("================================")
-        fields = list(self._fields.keys())
-        prev_record = self.read(fields)
-        #_logger.info(prev_record)
-        record = super().create(vals)
-        #_logger.info(record)
-        watched_fields = self._is_model_and_field_being_watched(
-            model = self._name, 
-            fields = self._fields.keys()
-        )
-        #_logger.info(watched_fields)
-        #_logger.info(self._name)
-        #_logger.info(self._rec_name)
-        if watched_fields["is_watched"]:
-            for field in watched_fields["fields"]:
-                #_logger.info(field)
-                #_logger.info(field.field.name)
-                if field.check_when_create:
-                    for rec in record:
-                        record_val = rec.read()[0]
-                        #_logger.info(record_val)
-                        self._write_log(
-                            model = field.model.id,
-                            field = field.field.id,
-                            record = record_val[self.name if not self._rec_name else self._rec_name],
-                            prev_val = False,
-                            next_val = record_val[field.field.name],
-                            operation_type = "created",
-                            rec_id = record_val["id"]
-                        )
-        
-        #_logger.info("================================")
-        return record
-    """
+            except Exception as e:
+                _logger.error(f"Error in _write_update_log thread: {e}")
 
     def write(self, vals):
-        #_logger.info("================================")
-        fields = list(self._fields.keys())
-        prev_record = self.read(fields)
-        #_logger.info(prev_record)
-        #_logger.info(vals)
-        record = super().write(vals)
-        #_logger.info(record)
-        watched_fields = self._is_model_and_field_being_watched(
-            model = self._name, 
-            fields = self._fields.keys()
-        )
-        #_logger.info(watched_fields)
-        #_logger.info(self._name)
-        #_logger.info(self._rec_name)
-        if watched_fields["is_watched"]:
-            for field in watched_fields["fields"]:
-                #_logger.info(field)
-                #_logger.info(field.field.name)
-                if field.check_when_update and field.field.name in list(vals.keys()):
-                    #_logger.info("......................................")
-                    #_logger.info(record)
-                    #_logger.info(field.field.name)
-                    
-                    #_logger.info("......................................")
-                    for index, rec in enumerate(prev_record):
-                        record_val = self.read()
-                        #_logger.info(record_val)
-                        self._write_log(
-                            model = field.model.id,
-                            field = field.field.id,
-                            record = record_val[index][self.name if not self._rec_name else self._rec_name],
-                            prev_val = prev_record[index][field.field.name],
-                            next_val = record_val[index][field.field.name],
-                            operation_type = "updated",
-                            rec_id = self.id
-                        )
-        
-        #_logger.info("================================")
-        return record
+        if self.env.registry.ready:  # Only use threads if Odoo is fully initialized
+            """Override write method to use threading only when Odoo is fully loaded."""
+            prev_record = self.read(list(self._fields.keys()))
+            result = super().write(vals)
+            new_record = self.read(list(self._fields.keys()))
+
+            thread = threading.Thread(
+                target=self._safe_write_update_log,
+                args=(prev_record, vals, new_record),
+                daemon=True
+            )
+            thread.start()
+        else:
+            result = super().write(vals)
+        return result
+
+    def _safe_write_delete_log(self, prev_record):
+        """Thread-safe delete logging."""
+        with thread_semaphore:  # Limit concurrent threads
+            try:
+                with self.env.registry.cursor() as cr:
+                    env = api.Environment(cr, self.env.uid, self.env.context)
+
+                    start = time.perf_counter()
+                    watched_fields = env["wb_log.watched_fields"].search(
+                        [("model.model", "=", self._name)]
+                    )
+                    end = time.perf_counter()
+                    _logger.info(f"Time elapsed for the search {end-start}")
+                    if watched_fields:
+                        for field in watched_fields:
+                            if field.check_when_remove:
+                                for rec in prev_record:
+                                    env["wb_log.log"].create({
+                                        "record": rec[self._rec_name or "name"],
+                                        "model": field.model.id,
+                                        "field": field.field.id,
+                                        "user": env.user.id,
+                                        "at": datetime.now(),
+                                        "prev_value": rec[field.field.name],
+                                        "new_value": False,
+                                        "movment_type": "deleted",
+                                        "rec_id": rec["id"]
+                                    })
+                    cr.commit()
+
+            except Exception as e:
+                _logger.error(f"Error in _write_delete_log thread: {e}")
 
     def unlink(self):
-        #_logger.info("================================")
-        fields = list(self._fields.keys())
-        prev_record = self.read(fields)
-        #_logger.info(prev_record)
-        record = super().unlink(vals)
-        watched_fields = self._is_model_and_field_being_watched(
-            model = self._name, 
-            fields = self._fields.keys()
-        )
-        #_logger.info(watched_fields)
-        #_logger.info(self._name)
-        #_logger.info(self._rec_name)
-        if watched_fields["is_watched"]:
-            for field in watched_fields["fields"]:
-                #_logger.info(field)
-                #_logger.info(field.field.name)
-                if field.check_when_remove:
-                    #_logger.info("......................................")
-                    #_logger.info(record)
-                    #_logger.info(field.field.name)
-                    #_logger.info("......................................")
-                    for index, rec in enumerate(prev_record):
-                        self._write_log(
-                            model = field.model.id,
-                            field = field.field.id,
-                            record = prev_record[index][self.name if not self._rec_name else self._rec_name],
-                            prev_val = prev_record[index][field.field.name],
-                            next_val = False,
-                            operation_type = "deleted",
-                            rec_id = prev_record[index]["id"]
-                        )
-        
-        #_logger.info("================================")
-        return record
+        if self.env.registry.ready:  # Only use threads if Odoo is fully initialized
+            """Override unlink method to use threading only when Odoo is fully loaded."""
+            prev_record = self.read(list(self._fields.keys()))
+            result = super().unlink()
+            thread = threading.Thread(
+                target=self._safe_write_delete_log,
+                args=(prev_record,),
+                daemon=True
+            )
+            thread.start()
+        else:
+            result = super().unlink()
+        return result
 
