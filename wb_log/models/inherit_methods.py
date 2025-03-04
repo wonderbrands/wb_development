@@ -54,10 +54,15 @@ class WriteInLog(models.BaseModel):
                 """Override write method to use threading only when Odoo is fully loaded."""
                 _logger.info("------------------------------------")
                 _logger.info(self._fields.keys())
-                _logger.info("------------------------------------")
                 prev_record = self.read(list(self._fields.keys()))
+                _logger.info("prev record read")
                 result = super().write(vals)
                 new_record = self.read(list(self._fields.keys()))
+                _logger.info(prev_record)
+                _logger.info(result)
+                _logger.info(new_record)
+                _logger.info("------------------------------------")
+
                 _logger.info("THREAD INITIALIZED")
 
                 thread = threading.Thread(
