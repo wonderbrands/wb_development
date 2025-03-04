@@ -24,7 +24,7 @@ class WriteInLog(models.BaseModel):
                         [("model.model", "=", self._name), ("field.name", "in", list(vals.keys()))]
                     )
                     end = time.perf_counter()
-                    _logger.info(f"Time elapsed for the search {end-start}")
+                    #logger.info(f"Time elapsed for the search {end-start}")
                     if watched_fields:
                         for field in watched_fields:
                             if field.check_when_update:
@@ -46,26 +46,26 @@ class WriteInLog(models.BaseModel):
                 _logger.error(f"Error in _write_update_log thread: {e}")
 
     def write(self, vals):
-        _logger.info("WRITE METHOD")
+        #logger.info("WRITE METHOD")
         if self.env.registry.ready:
             try:
-                _logger.info("ODOO INITIALIZED")
+                #logger.info("ODOO INITIALIZED")
                   # Only use threads if Odoo is fully initialized
                 """Override write method to use threading only when Odoo is fully loaded."""
-                _logger.info("------------------------------------")
-                #_logger.info(vals)
-                #_logger.info(self._fields.keys())
+                #logger.info("------------------------------------")
+                ##logger.info(vals)
+                ##logger.info(self._fields.keys())
                 #prev_record = self.read(list(self._fields.keys()))
                 prev_record = self.read(list(vals.keys()))
-                _logger.info("prev record read")
+                #logger.info("prev record read")
                 result = super().write(vals)
-                new_record = self.read(list(self._fields.keys()))
-                _logger.info(prev_record)
-                _logger.info(result)
-                _logger.info(new_record)
-                _logger.info("------------------------------------")
+                new_record = self.read(list(vals.keys()))
+                #logger.info(prev_record)
+                #logger.info(result)
+                #logger.info(new_record)
+                #logger.info("------------------------------------")
 
-                _logger.info("THREAD INITIALIZED")
+                #logger.info("THREAD INITIALIZED")
 
                 thread = threading.Thread(
                     target=self._safe_write_update_log,
@@ -79,7 +79,7 @@ class WriteInLog(models.BaseModel):
                 _logger.error(f"Error in write method: {e}")
                 _logger.error("******************ERROR ON READ*******************")
         else:
-            _logger.info("ODOO NOT INITIALIZED")
+            #logger.info("ODOO NOT INITIALIZED")
             result = super().write(vals)
         return result
 
@@ -95,7 +95,7 @@ class WriteInLog(models.BaseModel):
                         [("model.model", "=", self._name)]
                     )
                     end = time.perf_counter()
-                    _logger.info(f"Time elapsed for the search {end-start}")
+                    #logger.info(f"Time elapsed for the search {end-start}")
                     if watched_fields:
                         for field in watched_fields:
                             if field.check_when_remove:
@@ -120,9 +120,9 @@ class WriteInLog(models.BaseModel):
         if self.env.registry.ready:  # Only use threads if Odoo is fully initialized
             """Override unlink method to use threading only when Odoo is fully loaded."""
             prev_record = self.read(list(self._fields.keys()))
-            _logger.info("------------------------------------")
-            _logger.info(self._fields.keys())
-            _logger.info("------------------------------------")
+            #logger.info("------------------------------------")
+            #logger.info(self._fields.keys())
+            #logger.info("------------------------------------")
             result = super().unlink()
             thread = threading.Thread(
                 target=self._safe_write_delete_log,
