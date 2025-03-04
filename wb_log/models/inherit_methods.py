@@ -46,8 +46,10 @@ class WriteInLog(models.BaseModel):
                 _logger.error(f"Error in _write_update_log thread: {e}")
 
     def write(self, vals):
+        _logger.info("WRITE METHOD")
         if self.env.registry.ready:
             try:
+                _logger.info("ODOO INITIALIZED")
                   # Only use threads if Odoo is fully initialized
                 """Override write method to use threading only when Odoo is fully loaded."""
                 _logger.info("------------------------------------")
@@ -56,6 +58,7 @@ class WriteInLog(models.BaseModel):
                 prev_record = self.read(list(self._fields.keys()))
                 result = super().write(vals)
                 new_record = self.read(list(self._fields.keys()))
+                _logger.info("THREAD INITIALIZED")
 
                 thread = threading.Thread(
                     target=self._safe_write_update_log,
@@ -69,6 +72,7 @@ class WriteInLog(models.BaseModel):
                 _logger.error(f"Error in write method: {e}")
                 _logger.error("******************ERROR ON READ*******************")
         else:
+            _logger.info("ODOO NOT INITIALIZED")
             result = super().write(vals)
         return result
 
