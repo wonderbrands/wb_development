@@ -3,6 +3,7 @@ from datetime import datetime
 import logging
 import threading
 import time
+import traceback
 
 _logger = logging.getLogger(__name__)
 
@@ -45,18 +46,28 @@ class WriteInLog(models.BaseModel):
                 _logger.error(f"Error in _write_update_log thread: {e}")
 
     def write(self, vals):
-        if self.env.registry.ready:  # Only use threads if Odoo is fully initialized
-            """Override write method to use threading only when Odoo is fully loaded."""
-            prev_record = self.read(list(self._fields.keys()))
-            result = super().write(vals)
-            new_record = self.read(list(self._fields.keys()))
+        if self.env.registry.ready:
+            try:
+                  # Only use threads if Odoo is fully initialized
+                """Override write method to use threading only when Odoo is fully loaded."""
+                _logger.info("------------------------------------")
+                _logger.info(self._fields.keys())
+                _logger.info("------------------------------------")
+                prev_record = self.read(list(self._fields.keys()))
+                result = super().write(vals)
+                new_record = self.read(list(self._fields.keys()))
 
-            thread = threading.Thread(
-                target=self._safe_write_update_log,
-                args=(prev_record, vals, new_record),
-                daemon=True
-            )
-            thread.start()
+                thread = threading.Thread(
+                    target=self._safe_write_update_log,
+                    args=(prev_record, vals, new_record),
+                    daemon=True
+                )
+                thread.start()
+            except Exception as e:  
+                _logger.error("******************ERROR ON READ*******************")
+                _logger.error(traceback.format_exc())
+                _logger.error(f"Error in write method: {e}")
+                _logger.error("******************ERROR ON READ*******************")
         else:
             result = super().write(vals)
         return result
@@ -98,6 +109,9 @@ class WriteInLog(models.BaseModel):
         if self.env.registry.ready:  # Only use threads if Odoo is fully initialized
             """Override unlink method to use threading only when Odoo is fully loaded."""
             prev_record = self.read(list(self._fields.keys()))
+            _logger.info("------------------------------------")
+            _logger.info(self._fields.keys())
+            _logger.info("------------------------------------")
             result = super().unlink()
             thread = threading.Thread(
                 target=self._safe_write_delete_log,
