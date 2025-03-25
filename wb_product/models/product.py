@@ -190,11 +190,16 @@ class ProductProduct(models.Model):
                 width = product['packing_width']
                 width_measures.append(width)
 
-            max_length = max(length_measures)
-            max_height = max(height_measures)
-            sum_width = sum(width_measures)
-            self.calculated_volume =  (max_length * max_height * sum_width) / 1000
-            self.calculated_weight = sum(weight_measures)
-            self.is_calculated_combo = True
+            max_length = False if len(length_measures) == 0 else max(length_measures)
+            max_height = False if len(height_measures) == 0 else max(height_measures)
+            sum_width = False if len(width_measures) == 0 else sum(width_measures)
+            if max_length and max_height and sum_width:
+                self.calculated_volume =  (max_length * max_height * sum_width) / 1000
+                self.calculated_weight = sum(weight_measures)
+                self.is_calculated_combo = True
+            else:
+                self.is_calculated_combo = False
+                self.calculated_volume = 0
+                self.calculated_weight = 0
         else:
             self.is_calculated_combo = False
