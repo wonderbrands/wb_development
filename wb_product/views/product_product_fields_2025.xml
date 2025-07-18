@@ -10,9 +10,11 @@
             <field name="arch" type="xml">
             <notebook position="inside">
                 <page string="Información adicional">
-                    <field name="target_items" string="Venta objetivo"/>
-                    <field name="purchase_active" string="Resurtible"/>
-                    <field name="variant" string="Variante"/>
+                    <group>
+                        <field name="target_items" string="Venta objetivo"/>
+                        <field name="purchase_active" string="Resurtible"/>
+                        <field name="variant" string="Variante"/>
+                    </group>
                 </page>
             </notebook>
             </field>
