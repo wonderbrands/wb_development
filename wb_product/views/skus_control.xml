@@ -6,7 +6,7 @@
       <field name="inherit_id" ref="product.product_template_form_view"/>
       <field name="arch" type="xml">
         <xpath expr="//notebook" position="inside">
-          <page string="Control SKUs">
+          <page name="control_skus" string="Control SKUs">
             <group>
               <field name="security_stock"/>
               <field name="visualization_stock"/>

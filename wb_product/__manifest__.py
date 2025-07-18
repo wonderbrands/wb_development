@@ -74,6 +74,7 @@
         #'data/esquema.logistico.csv',
         'data/internal.category.csv',
         'data/product.brand.csv',
+        'views/product_product_fields_2025.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

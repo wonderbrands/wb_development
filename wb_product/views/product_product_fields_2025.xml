@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="product_product_form_inherit" model="ir.ui.view">
+            <field name="name">product.product.form.inherit.wb_product</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product_template_form_inherit_2"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='control_skus']" position="inside">
+                    <group>
+                        <field name="target_items" string="Venta objetivo"/>
+                        <field name="purchase_active" string="Resurtible"/>
+                        <field name="variant" string="Variante"/>
+                    </group>       
+                </xpath>
+            </field>
+        </record>
+    </data>
+    
+
+</odoo>
