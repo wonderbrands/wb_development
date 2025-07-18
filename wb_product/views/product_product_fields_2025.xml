@@ -2,18 +2,19 @@
 <odoo>
 
     <data>
-        <record id="product_product_form_inherit" model="ir.ui.view">
-            <field name="name">product.product.form.inherit.wb_product</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product_template_form_inherit_2"/>
+
+        <record id="view_product_product_form_custom" model="ir.ui.view">
+            <field name="name">product.product.form.custom.page</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="arch" type="xml">
-                <xpath expr="//page[@name='control_skus']" position="inside">
-                    <group>
-                        <field name="target_items" string="Venta objetivo"/>
-                        <field name="purchase_active" string="Resurtible"/>
-                        <field name="variant" string="Variante"/>
-                    </group>       
-                </xpath>
+            <notebook position="inside">
+                <page string="Información adicional">
+                    <field name="target_items" string="Venta objetivo"/>
+                    <field name="purchase_active" string="Resurtible"/>
+                    <field name="variant" string="Variante"/>
+                </page>
+            </notebook>
             </field>
         </record>
     </data>
